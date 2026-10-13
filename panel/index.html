@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel – Bębny Pawła Małkowskiego</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f3ece1; --bg-2:#e9dfcf; --card:#fbf8f3; --ink:#2a2119; --ink-soft:#6a5b4d;
+  --dark:#16110d; --ochre:#b5762f; --rust:#8c3f22; --ok:#3f6b3a; --line:rgba(42,33,25,.15);
+  --serif:'Cormorant Garamond', Georgia, serif; --sans:'Work Sans', system-ui, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:var(--serif);font-weight:700;line-height:1.1}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+
+header{background:var(--dark);color:#f6efe4}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+header h1{font-size:24px}
+header h1 small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:#b9a88f;letter-spacing:1px;text-transform:uppercase}
+header a,header button{color:#e6dac7;background:none;border:1px solid rgba(246,239,228,.25);border-radius:999px;padding:7px 14px;font-size:14px;text-decoration:none;cursor:pointer}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font-weight:600;cursor:pointer;text-decoration:none;font-size:15px;min-height:46px}
+.btn-primary{background:var(--ochre);color:#fff}
+.btn-primary:hover{background:var(--rust)}
+.btn-dark{background:var(--dark);color:#f6efe4}
+.btn-light{background:var(--bg-2);color:var(--ink)}
+.btn-danger{background:transparent;color:var(--rust);border:1.5px solid var(--rust)}
+.btn-danger.armed{background:var(--rust);color:#fff}
+.btn:disabled{opacity:.55;cursor:wait}
+:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+
+main{padding-block:28px 80px}
+.card{background:var(--card);border-radius:14px;padding:22px;box-shadow:0 1px 0 var(--line)}
+
+/* logowanie */
+.login{max-width:420px;margin:40px auto;display:grid;gap:16px}
+.login h2{font-size:34px}
+.login p{color:var(--ink-soft)}
+label{display:grid;gap:6px;font-size:14px;font-weight:500;color:var(--ink-soft)}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=url],select,textarea{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 13px;font-size:16px;color:var(--ink)}
+textarea{resize:vertical;min-height:110px}
+.hint{font-size:13px;color:var(--ink-soft);font-weight:400}
+.linkbtn{background:none;border:0;color:var(--ochre);text-decoration:underline;cursor:pointer;justify-self:start;padding:4px 0}
+.error{background:#f6dcd2;color:var(--rust);border-radius:10px;padding:10px 14px;font-size:14px}
+
+/* zakładki */
+.tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:500}
+.tabs button.on{background:var(--dark);color:#f6efe4;border-color:var(--dark)}
+
+/* lista */
+.list-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.list-head h2{font-size:32px}
+.items{display:grid;gap:10px}
+.item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;background:var(--card);border-radius:12px;padding:10px;box-shadow:0 1px 0 var(--line)}
+.item img,.item .noimg{width:72px;height:72px;border-radius:8px;object-fit:cover;background:var(--bg-2)}
+.item-main{min-width:0}
+.item-main strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);margin-top:4px}
+.chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--bg-2)}
+.chip.dostepny{background:#dfe9d8;color:var(--ok)}
+.chip.sprzedany{background:#e5ddd3;color:#6a5b4d}
+.chip.wkrotce{background:#ddd5f0;color:#4b3f75}
+.chip.na_zamowienie{background:#f3e0c4;color:#8a5317}
+.chip.ukryty{background:#f6dcd2;color:var(--rust)}
+.item-actions{display:flex;gap:6px;align-items:center}
+.icon{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft)}
+
+/* formularz */
+.form{display:grid;gap:18px}
+.form h2{font-size:32px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+fieldset{border:0;display:grid;gap:10px}
+legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.ph{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1/1;background:var(--bg-2)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph .main-tag{position:absolute;left:6px;top:6px;background:var(--ochre);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px}
+.ph .ph-actions{position:absolute;inset:auto 6px 6px 6px;display:flex;justify-content:space-between}
+.ph .ph-actions button{width:34px;height:34px;border-radius:50%;border:0;background:rgba(22,17,13,.78);color:#fff;cursor:pointer;font-size:15px}
+.ph.loading::after{content:"Wysyłam…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(243,236,225,.8);font-size:13px;font-weight:600}
+.add-photo{border:2px dashed var(--line);border-radius:10px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--ink-soft);font-size:14px;text-align:center;padding:8px;background:#fff}
+.add-photo span{font-size:30px;line-height:1;color:var(--ochre)}
+.add-photo input{display:none}
+.check{display:flex;gap:10px;align-items:center;font-size:15px;color:var(--ink)}
+.check input{width:22px;height:22px;accent-color:var(--ochre)}
+.yt-preview{max-width:360px;border-radius:10px;overflow:hidden}
+.yt-preview img{width:100%;display:block}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;position:sticky;bottom:0;background:var(--bg);padding-block:14px;border-top:1px solid var(--line)}
+.form-actions div{display:flex;gap:10px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--dark);color:#f6efe4;padding:12px 20px;border-radius:999px;font-size:15px;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center}
+.toast.err{background:var(--rust)}
+
+@media (max-width:640px){
+  .row,.row2{grid-template-columns:1fr}
+  .item{grid-template-columns:60px 1fr;}
+  .item img,.item .noimg{width:60px;height:60px}
+  .item-actions{grid-column:1/-1;justify-content:flex-end}
+  .card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1><small>Panel</small>Bębny Pawła</h1>
+    <div style="display:flex;gap:8px">
+      <a href="../" target="_blank" rel="noopener">Zobacz stronę</a>
+      <button id="wyloguj" type="button" hidden>Wyloguj</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div id="brak-konfiguracji" class="card login" hidden>
+    <h2>Panel nie jest jeszcze podłączony</h2>
+    <p>Trzeba wpisać adres i klucz bazy Supabase w pliku <code>config.js</code>. Instrukcja jest w pliku <code>supabase/INSTRUKCJA.md</code>.</p>
+  </div>
+
+  <!-- Logowanie -->
+  <form id="logowanie" class="card login" hidden>
+    <h2>Zaloguj się</h2>
+    <p>Tu dodajesz i opisujesz swoje bębny.</p>
+    <div class="error" id="login-blad" hidden></div>
+    <label>Login<input type="text" id="login-email" autocomplete="username" autocapitalize="none" spellcheck="false" required placeholder="pawel"></label>
+    <label>Hasło<input type="password" id="login-haslo" autocomplete="current-password" required></label>
+    <button class="btn btn-primary" type="submit" id="login-btn">Zaloguj</button>
+    <button class="linkbtn" type="button" id="zapomnialem">Nie pamiętam hasła</button>
+  </form>
+
+  <!-- Nowe hasło (po kliknięciu linku z e-maila) -->
+  <form id="nowe-haslo" class="card login" hidden>
+    <h2>Ustaw nowe hasło</h2>
+    <label>Nowe hasło<input type="password" id="nowe-haslo-pole" autocomplete="new-password" minlength="8" required></label>
+    <p class="hint">Co najmniej 8 znaków.</p>
+    <button class="btn btn-primary" type="submit">Zapisz hasło</button>
+  </form>
+
+  <!-- Panel -->
+  <div id="panel" hidden>
+    <div class="tabs" role="tablist">
+      <button type="button" class="on" data-tab="lista">Moje bębny</button>
+      <button type="button" data-tab="filmy">Filmy na stronie</button>
+    </div>
+
+    <section id="tab-lista">
+      <div class="list-head">
+        <h2>Moje bębny</h2>
+        <button class="btn btn-primary" type="button" id="dodaj">+ Dodaj bęben</button>
+      </div>
+      <div class="items" id="lista"></div>
+    </section>
+
+    <section id="tab-filmy" hidden>
+      <form class="card form" id="filmy-form">
+        <h2>Filmy na stronie</h2>
+        <label>Film „Jak stroję bęben” (link z YouTube)
+          <input type="url" id="film-strojenie" placeholder="https://www.youtube.com/watch?v=…">
+          <span class="hint">Wrzuć film na YouTube (może być „niepubliczny”), skopiuj link i wklej tutaj. Film pojawi się na stronie w części o strojeniu dętkowym. Puste pole = brak filmu.</span>
+        </label>
+        <div class="yt-preview" id="film-strojenie-podglad"></div>
+        <div><button class="btn btn-primary" type="submit">Zapisz</button></div>
+      </form>
+    </section>
+
+    <!-- Edycja bębna -->
+    <form id="edycja" class="form" hidden>
+      <h2 id="edycja-tytul">Nowy bęben</h2>
+
+      <div class="card form">
+        <label>Nazwa *<input type="text" id="f-nazwa" required placeholder="np. Bęben szamański 55 cm – skóra łaciata"></label>
+        <div class="row2">
+          <label>Rodzaj
+            <select id="f-kategoria">
+              <option>Bęben szamański</option>
+              <option>Bęben basowy</option>
+              <option>Konga</option>
+              <option>Renowacja</option>
+              <option>Akcesoria</option>
+              <option>Inne</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="f-status">
+              <option value="dostepny">Dostępny – do kupienia</option>
+              <option value="na_zamowienie">Na zamówienie</option>
+              <option value="wkrotce">Wkrótce</option>
+              <option value="sprzedany">Sprzedany</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <label>Cena (zł)<input type="number" id="f-cena" min="0" step="1" inputmode="numeric" placeholder="np. 870"></label>
+          <label>Cena przed promocją (zł)<input type="number" id="f-cena-przed" min="0" step="1" inputmode="numeric" placeholder="puste = bez promocji"></label>
+          <label id="omnibus-pole">Najniższa cena z 30 dni (zł)<input type="number" id="f-cena-30" min="0" step="1" inputmode="numeric"></label>
+        </div>
+        <p class="hint" id="omnibus-hint">Przy promocji prawo wymaga podania najniższej ceny z 30 dni przed obniżką.</p>
+      </div>
+
+      <div class="card">
+        <fieldset>
+          <legend>Zdjęcia – pierwsze jest główne (★ zmienia główne)</legend>
+          <div class="photos" id="zdjecia">
+            <label class="add-photo" id="dodaj-zdjecie"><span>+</span>Dodaj zdjęcia<input type="file" id="f-pliki" accept="image/*" multiple></label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="card form">
+        <label>Najważniejsze cechy (każda w nowej linii, na karcie pokażą się 4 pierwsze)
+          <textarea id="f-cechy" rows="5" placeholder="membrana 55 cm, korpus 8 cm&#10;skóra krowia, golona do zera&#10;strojenie dętkowe&#10;2 pałki filcowe w zestawie"></textarea>
+        </label>
+        <label>Opis
+          <textarea id="f-opis" rows="9" placeholder="Opowiedz o brzmieniu, skórze, wykonaniu… Pustą linią oddzielasz akapity."></textarea>
+        </label>
+        <label>Film o tym bębnie (link z YouTube, opcjonalnie)
+          <input type="url" id="f-film" placeholder="https://youtu.be/…">
+        </label>
+        <div class="yt-preview" id="f-film-podglad"></div>
+        <label class="check"><input type="checkbox" id="f-widoczny" checked> Pokazuj na stronie</label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-danger" type="button" id="usun">Usuń bęben</button>
+        <div>
+          <button class="btn btn-light" type="button" id="anuluj">Anuluj</button>
+          <button class="btn btn-primary" type="submit" id="zapisz">Zapisz</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const cfg = window.SKLEP_CONFIG || {};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STATUS = { dostepny: 'Dostępny', na_zamowienie: 'Na zamówienie', wkrotce: 'Wkrótce', sprzedany: 'Sprzedany' };
+const BUCKET = 'zdjecia';
+// Login bez @ (np. „pawel”) zamieniamy na adres konta w Supabase: pawel@panel.bebny
+const LOGIN_DOMENA = '@panel.bebny';
+const naEmail = (login) => login.includes('@') ? login : login.toLowerCase() + LOGIN_DOMENA;
+
+let toastT;
+function toast(msg, err) {
+  const t = $('toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, err ? 6000 : 3000);
+}
+function pokaz(id) {
+  ['brak-konfiguracji', 'logowanie', 'nowe-haslo', 'panel'].forEach((x) => $(x).hidden = x !== id);
+  $('wyloguj').hidden = id !== 'panel';
+}
+
+if (!cfg.supabaseUrl || !cfg.supabaseKey) {
+  pokaz('brak-konfiguracji');
+  throw new Error('Brak konfiguracji Supabase');
+}
+
+const sb = supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
+let produkty = [];
+let edytowany = null;      // obiekt produktu albo null dla nowego
+let zdjecia = [];          // adresy zdjęć w formularzu
+let doUsuniecia = [];      // zdjęcia z bazy usunięte w formularzu
+let wysylane = 0;
+
+// ---------- logowanie ----------
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') return pokaz('nowe-haslo');
+  if (session) { if ($('panel').hidden) start(); }
+  else pokaz('logowanie');
+});
+
+$('logowanie').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('login-btn'); btn.disabled = true; $('login-blad').hidden = true;
+  const { error } = await sb.auth.signInWithPassword({ email: naEmail($('login-email').value.trim()), password: $('login-haslo').value });
+  btn.disabled = false;
+  if (error) { $('login-blad').textContent = 'Nie udało się zalogować. Sprawdź login i hasło.'; $('login-blad').hidden = false; }
+});
+
+$('zapomnialem').addEventListener('click', async () => {
+  const email = $('login-email').value.trim();
+  if (email && !email.includes('@')) { $('login-blad').textContent = 'Hasło do loginu „' + email + '” zmienia Michał – napisz do niego.'; $('login-blad').hidden = false; return; }
+  if (!email) { $('login-blad').textContent = 'Wpisz najpierw swój login, a potem kliknij „Nie pamiętam hasła”.'; $('login-blad').hidden = false; return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.href.split('#')[0] });
+  if (error) toast('Nie udało się wysłać e-maila. Spróbuj za chwilę.', true);
+  else toast('Wysłałem link do zmiany hasła na ' + email);
+});
+
+$('nowe-haslo').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const { error } = await sb.auth.updateUser({ password: $('nowe-haslo-pole').value });
+  if (error) return toast('Nie udało się zmienić hasła: ' + error.message, true);
+  toast('Hasło zmienione'); start();
+});
+
+$('wyloguj').addEventListener('click', () => sb.auth.signOut());
+
+// ---------- zakładki ----------
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b));
+  $('tab-lista').hidden = b.dataset.tab !== 'lista';
+  $('tab-filmy').hidden = b.dataset.tab !== 'filmy';
+  $('edycja').hidden = true;
+}));
+
+async function start() {
+  pokaz('panel');
+  await Promise.all([wczytaj(), wczytajFilmy()]);
+}
+
+// ---------- lista ----------
+async function wczytaj() {
+  const { data, error } = await sb.from('produkty').select('*').order('kolejnosc').order('created_at', { ascending: false });
+  if (error) return toast('Nie udało się wczytać bębnów: ' + error.message, true);
+  produkty = data;
+  rysujListe();
+}
+
+function rysujListe() {
+  const el = $('lista');
+  if (!produkty.length) {
+    el.innerHTML = '<div class="card empty">Nie masz jeszcze żadnego bębna na stronie.<br>Kliknij „+ Dodaj bęben”.</div>';
+    return;
+  }
+  el.innerHTML = produkty.map((p, i) =>
+    '<div class="item">' +
+      (p.zdjecia[0] ? '<img src="' + esc(p.zdjecia[0]) + '" alt="">' : '<div class="noimg"></div>') +
+      '<div class="item-main"><strong>' + esc(p.nazwa) + '</strong>' +
+        '<div class="item-meta"><span class="chip ' + p.status + '">' + STATUS[p.status] + '</span>' +
+        (p.widoczny ? '' : '<span class="chip ukryty">Ukryty</span>') +
+        (p.cena != null ? '<span>' + p.cena.toLocaleString('pl-PL') + ' zł</span>' : '') +
+        '<span>' + p.zdjecia.length + ' zdj.</span>' + (p.film ? '<span>▶ film</span>' : '') + '</div></div>' +
+      '<div class="item-actions">' +
+        '<button class="icon" type="button" data-akcja="gora" data-i="' + i + '" aria-label="Przesuń wyżej"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+        '<button class="icon" type="button" data-akcja="dol" data-i="' + i + '" aria-label="Przesuń niżej"' + (i === produkty.length - 1 ? ' disabled' : '') + '>↓</button>' +
+        '<button class="btn btn-dark" type="button" data-akcja="edytuj" data-i="' + i + '">Edytuj</button>' +
+      '</div></div>').join('');
+}
+
+$('lista').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-akcja]'); if (!b) return;
+  const i = +b.dataset.i;
+  if (b.dataset.akcja === 'edytuj') return otworzEdycje(produkty[i]);
+  const j = b.dataset.akcja === 'gora' ? i - 1 : i + 1;
+  if (j < 0 || j >= produkty.length) return;
+  [produkty[i], produkty[j]] = [produkty[j], produkty[i]];
+  rysujListe();
+  const zmiany = produkty.map((p, k) => ({ id: p.id, kolejnosc: k + 1 })).filter((z, k) => produkty[k].kolejnosc !== z.kolejnosc);
+  zmiany.forEach((z) => produkty.find((p) => p.id === z.id).kolejnosc = z.kolejnosc);
+  for (const z of zmiany) {
+    const { error } = await sb.from('produkty').update({ kolejnosc: z.kolejnosc }).eq('id', z.id);
+    if (error) { toast('Nie udało się zmienić kolejności', true); return wczytaj(); }
+  }
+});
+
+// ---------- edycja ----------
+$('dodaj').addEventListener('click', () => otworzEdycje(null));
+$('anuluj').addEventListener('click', zamknijEdycje);
+
+function otworzEdycje(p) {
+  edytowany = p;
+  zdjecia = p ? [...p.zdjecia] : [];
+  doUsuniecia = [];
+  $('edycja-tytul').textContent = p ? 'Edytuj bęben' : 'Nowy bęben';
+  $('f-nazwa').value = p?.nazwa || '';
+  $('f-kategoria').value = p?.kategoria || 'Bęben szamański';
+  $('f-status').value = p?.status || 'dostepny';
+  $('f-cena').value = p?.cena ?? '';
+  $('f-cena-przed').value = p?.cena_przed ?? '';
+  $('f-cena-30').value = p?.cena_najnizsza_30 ?? '';
+  $('f-cechy').value = p?.cechy || '';
+  $('f-opis').value = p?.opis || '';
+  $('f-film').value = p?.film || '';
+  $('f-widoczny').checked = p ? p.widoczny : true;
+  $('usun').hidden = !p;
+  $('usun').classList.remove('armed'); $('usun').textContent = 'Usuń bęben';
+  omnibus(); podgladYt('f-film', 'f-film-podglad'); rysujZdjecia();
+  $('tab-lista').hidden = true; $('edycja').hidden = false;
+  scrollTo(0, 0);
+}
+
+function zamknijEdycje() {
+  $('edycja').hidden = true; $('tab-lista').hidden = false;
+  edytowany = null;
+}
+
+function omnibus() {
+  const promo = $('f-cena-przed').value !== '';
+  $('omnibus-pole').style.visibility = promo ? 'visible' : 'hidden';
+  $('omnibus-hint').hidden = !promo;
+}
+$('f-cena-przed').addEventListener('input', omnibus);
+
+function youtubeId(url) {
+  const m = String(url || '').match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+function podgladYt(poleId, podgladId) {
+  const v = $(poleId).value.trim(), id = youtubeId(v), el = $(podgladId);
+  if (!v) { el.innerHTML = ''; return; }
+  el.innerHTML = id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="Podgląd filmu">'
+                    : '<p class="error">To nie wygląda na link do YouTube.</p>';
+}
+$('f-film').addEventListener('input', () => podgladYt('f-film', 'f-film-podglad'));
+$('film-strojenie').addEventListener('input', () => podgladYt('film-strojenie', 'film-strojenie-podglad'));
+
+// ---------- zdjęcia ----------
+function rysujZdjecia() {
+  const box = $('zdjecia'), add = $('dodaj-zdjecie');
+  box.querySelectorAll('.ph').forEach((x) => x.remove());
+  zdjecia.forEach((url, i) => {
+    const d = document.createElement('div');
+    d.className = 'ph';
+    d.innerHTML = '<img src="' + esc(url) + '" alt="Zdjęcie ' + (i + 1) + '">' + (i === 0 ? '<span class="main-tag">Główne</span>' : '') +
+      '<div class="ph-actions">' + (i === 0 ? '<span></span>' : '<button type="button" data-glowne="' + i + '" aria-label="Ustaw jako główne">★</button>') +
+      '<button type="button" data-usun="' + i + '" aria-label="Usuń zdjęcie">✕</button></div>';
+    box.insertBefore(d, add);
+  });
+}
+
+$('zdjecia').addEventListener('click', (e) => {
+  const g = e.target.closest('[data-glowne]'), u = e.target.closest('[data-usun]');
+  if (g) { const [x] = zdjecia.splice(+g.dataset.glowne, 1); zdjecia.unshift(x); rysujZdjecia(); }
+  if (u) { const [x] = zdjecia.splice(+u.dataset.usun, 1); doUsuniecia.push(x); rysujZdjecia(); }
+});
+
+// Zmniejsza zdjęcie z telefonu do 1600 px, żeby strona ładowała się szybko.
+function zmniejsz(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1600, s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      c.toBlob((b) => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', 0.84);
+    };
+    img.onerror = () => reject(new Error('Tego pliku nie da się odczytać jako zdjęcia'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+$('f-pliki').addEventListener('change', async (e) => {
+  const pliki = [...e.target.files]; e.target.value = '';
+  for (const f of pliki) {
+    const ph = document.createElement('div'); ph.className = 'ph loading';
+    $('zdjecia').insertBefore(ph, $('dodaj-zdjecie'));
+    wysylane++;
+    try {
+      const blob = await zmniejsz(f);
+      const sciezka = new Date().toISOString().slice(0, 10) + '/' + crypto.randomUUID() + '.jpg';
+      const { error } = await sb.storage.from(BUCKET).upload(sciezka, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+      if (error) throw error;
+      zdjecia.push(sb.storage.from(BUCKET).getPublicUrl(sciezka).data.publicUrl);
+    } catch (err) {
+      toast('Nie udało się dodać zdjęcia „' + f.name + '”: ' + (err.message || err), true);
+    } finally {
+      wysylane--; ph.remove(); rysujZdjecia();
+    }
+  }
+});
+
+function sciezkaWBazie(url) {
+  const znak = '/storage/v1/object/public/' + BUCKET + '/';
+  const i = url.indexOf(znak);
+  return i >= 0 && url.startsWith(cfg.supabaseUrl) ? url.slice(i + znak.length) : null;
+}
+
+// ---------- zapis ----------
+const liczba = (id) => $(id).value === '' ? null : Math.round(+$(id).value);
+
+$('edycja').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (wysylane) return toast('Poczekaj, aż zdjęcia się wyślą');
+  const dane = {
+    nazwa: $('f-nazwa').value.trim(),
+    kategoria: $('f-kategoria').value,
+    status: $('f-status').value,
+    cena: liczba('f-cena'),
+    cena_przed: liczba('f-cena-przed'),
+    cena_najnizsza_30: $('f-cena-przed').value === '' ? null : liczba('f-cena-30'),
+    cechy: $('f-cechy').value.trim(),
+    opis: $('f-opis').value.trim(),
+    film: $('f-film').value.trim(),
+    zdjecia,
+    widoczny: $('f-widoczny').checked
+  };
+  if (dane.film && !youtubeId(dane.film)) return toast('Link do filmu nie wygląda na link z YouTube', true);
+  if (dane.cena_przed != null && dane.cena != null && dane.cena_przed <= dane.cena) return toast('Cena przed promocją musi być wyższa od ceny', true);
+  const btn = $('zapisz'); btn.disabled = true;
+  let res;
+  if (edytowany) res = await sb.from('produkty').update(dane).eq('id', edytowany.id);
+  else res = await sb.from('produkty').insert({ ...dane, kolejnosc: 0 });
+  btn.disabled = false;
+  if (res.error) return toast('Nie udało się zapisać: ' + res.error.message, true);
+  const pliki = doUsuniecia.map(sciezkaWBazie).filter(Boolean);
+  if (pliki.length) sb.storage.from(BUCKET).remove(pliki);
+  toast('Zapisane – bęben jest już na stronie' + (dane.widoczny ? '' : ' (ukryty)'));
+  zamknijEdycje(); wczytaj();
+});
+
+$('usun').addEventListener('click', async () => {
+  const b = $('usun');
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = 'Kliknij jeszcze raz, aby usunąć';
+    setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń bęben'; }, 4000);
+    return;
+  }
+  const { error } = await sb.from('produkty').delete().eq('id', edytowany.id);
+  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+  const pliki = edytowany.zdjecia.concat(zdjecia).map(sciezkaWBazie).filter(Boolean);
+  if (pliki.length) sb.storage.from(BUCKET).remove([...new Set(pliki)]);
+  toast('Bęben usunięty'); zamknijEdycje(); wczytaj();
+});
+
+// ---------- filmy na stronie ----------
+async function wczytajFilmy() {
+  const { data } = await sb.from('ustawienia').select('*').eq('klucz', 'film_strojenie').maybeSingle();
+  $('film-strojenie').value = data?.wartosc || '';
+  podgladYt('film-strojenie', 'film-strojenie-podglad');
+}
+
+$('filmy-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const v = $('film-strojenie').value.trim();
+  if (v && !youtubeId(v)) return toast('To nie wygląda na link z YouTube', true);
+  const { error } = await sb.from('ustawienia').upsert({ klucz: 'film_strojenie', wartosc: v });
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  toast(v ? 'Film zapisany – jest już na stronie' : 'Film usunięty ze strony');
+});
+</script>
+</body>
+</html>

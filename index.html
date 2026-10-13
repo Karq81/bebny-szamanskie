@@ -199,6 +199,50 @@ textarea{min-height:120px;resize:vertical}
 footer{background:#0f0b08;color:#8f806d;font-size:14px;padding:36px 0}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
+
+/* produkty z bazy */
+button.card-img{border:0;padding:0;width:100%;cursor:pointer;font:inherit;display:block;text-align:left}
+.card-sold .card-img img{filter:grayscale(.7) brightness(.85)}
+.badge.sold{background:#5d4f42}
+.photo-count{position:absolute;right:12px;bottom:12px;background:rgba(22,17,13,.75);color:#f6efe4;font-size:12px;padding:5px 10px;border-radius:999px}
+.photo-count.video-tag{right:auto;left:12px}
+.card-body > .btn{border:0;font-family:inherit}
+.omnibus{font-size:13px;color:var(--ink-soft);margin-top:-4px}
+.pm{position:fixed;inset:0;z-index:120;background:rgba(10,8,6,.82);display:flex;align-items:center;justify-content:center;padding:20px}
+.pm[hidden]{display:none}
+.pm-box{position:relative;background:var(--bg);border-radius:var(--radius);max-width:1060px;width:100%;max-height:92vh;overflow:auto}
+.pm-close{position:absolute;top:10px;right:12px;z-index:2;width:42px;height:42px;border-radius:50%;border:0;background:var(--dark);color:#f6efe4;font-size:26px;line-height:1;cursor:pointer}
+.pm-body{display:grid;grid-template-columns:1.1fr 1fr;gap:34px;padding:28px}
+.pm-media{display:grid;gap:12px;align-content:start;min-width:0}
+.pm-main{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;background:#d8cbb6}
+.pm-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.pm-thumbs button{border:2px solid transparent;padding:0;border-radius:8px;overflow:hidden;width:68px;height:68px;cursor:pointer;background:none}
+.pm-thumbs button.on{border-color:var(--ochre)}
+.pm-thumbs img{width:100%;height:100%;object-fit:cover}
+.pm-info{display:flex;flex-direction:column;gap:14px;min-width:0}
+.pm-info .badge{position:static;align-self:flex-start}
+.pm-info h3{font-size:34px}
+.pm-info .price{border:0;padding:0;margin:0}
+.pm-opis{display:grid;gap:12px;color:var(--ink-soft);font-size:16px}
+.pm-note{background:var(--bg-2);padding:12px 16px;border-radius:10px;font-size:15px}
+.pm-cta{align-self:flex-start;margin-top:6px}
+.film{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:10px;overflow:hidden;background:#000;cursor:pointer}
+.film img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:.3s}
+.film:hover img{opacity:1}
+.film-play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:var(--ochre);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.film-play::after{content:"";position:absolute;left:31px;top:24px;border-style:solid;border-width:14px 0 14px 22px;border-color:transparent transparent transparent #fff}
+iframe.film{cursor:auto}
+.film-strojenie{margin-top:70px}
+.film-strojenie[hidden]{display:none}
+.film-head{margin-bottom:18px}
+.film-head h3{font-size:34px}
+.film-slot{max-width:900px}
+@media (max-width:820px){
+  .pm{padding:0;align-items:stretch}
+  .pm-box{max-height:none;height:100%;border-radius:0}
+  .pm-body{grid-template-columns:1fr;padding:16px;padding-top:62px;gap:20px}
+}
+
 /* responsywność */
 @media (max-width:1000px){
   .cards{grid-template-columns:repeat(2,1fr)}
@@ -294,7 +338,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         <p class="lead">Każdy bęben to pojedynczy egzemplarz. Kiedy znajdzie właściciela, znika z listy.</p>
       </div>
     </div>
-    <div class="cards">
+    <div class="cards" id="lista-produktow">
       <article class="card">
         <div class="card-img"><span class="badge">Promocja</span><img src="img/beben-55.jpg" alt="Zdobiony bęben szamański 55 cm"></div>
         <div class="card-body">
@@ -393,6 +437,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       </svg>
     </div>
   </div>
+  <div class="wrap film-strojenie" id="film-strojenie" hidden>
+    <div class="film-head"><span class="eyebrow">Film</span><h3>Zobacz, jak stroję bęben</h3></div>
+    <div class="film-slot"></div>
+  </div>
 </section>
 
 <section class="reno">
@@ -468,6 +516,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <div class="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
 
+<div class="pm" id="produkt-modal" hidden role="dialog" aria-modal="true" aria-label="Szczegóły bębna">
+  <div class="pm-box">
+    <button class="pm-close" type="button" aria-label="Zamknij">×</button>
+    <div class="pm-body"></div>
+  </div>
+</div>
+
 <script>
 // galeria – powiększanie zdjęć
 const lb=document.querySelector('.lightbox');
@@ -484,5 +539,7 @@ document.querySelectorAll('.skin').forEach(s=>s.addEventListener('click',()=>{
 }));
 document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.nav ul').classList.remove('open')));
 </script>
+<script src="config.js"></script>
+<script src="produkty.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /panel/
 
 Sitemap: https://karq81.github.io/bebny-szamanskie/sitemap.xml
