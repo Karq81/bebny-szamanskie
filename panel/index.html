@@ -73,6 +73,10 @@ textarea{resize:vertical;min-height:110px}
 .chip.na_zamowienie{background:#f3e0c4;color:#8a5317}
 .chip.ukryty{background:#f6dcd2;color:var(--rust)}
 .item-actions{display:flex;gap:6px;align-items:center}
+.icon.del{color:var(--rust);border-color:rgba(140,63,34,.35)}
+.icon.del.armed{width:auto;padding:0 12px;border-radius:999px;background:var(--rust);color:#fff;font-size:13px;font-weight:600}
+.film-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.film-row .yt-preview{flex:1 1 260px}
 .icon{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .empty{text-align:center;padding:40px 20px;color:var(--ink-soft)}
 
@@ -173,7 +177,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <span class="hint">Wrzuć film na YouTube (może być „niepubliczny”), skopiuj link i wklej tutaj. Film pojawi się na stronie w części o strojeniu dętkowym. Puste pole = brak filmu.</span>
         </label>
         <div class="yt-preview" id="film-strojenie-podglad"></div>
-        <div><button class="btn btn-primary" type="submit">Zapisz</button></div>
+        <div class="film-row"><button class="btn btn-primary" type="submit">Zapisz</button><button class="btn btn-danger" type="button" id="film-strojenie-usun" hidden>Usuń film ze strony</button></div>
       </form>
     </section>
 
@@ -230,7 +234,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <label>Film o tym bębnie (link z YouTube, opcjonalnie)
           <input type="url" id="f-film" placeholder="https://youtu.be/…">
         </label>
-        <div class="yt-preview" id="f-film-podglad"></div>
+        <div class="film-row"><div class="yt-preview" id="f-film-podglad"></div><button class="btn btn-danger" type="button" id="f-film-usun" hidden>Usuń film</button></div>
         <label class="check"><input type="checkbox" id="f-widoczny" checked> Pokazuj na stronie</label>
       </div>
 
@@ -353,6 +357,7 @@ function rysujListe() {
         '<button class="icon" type="button" data-akcja="gora" data-i="' + i + '" aria-label="Przesuń wyżej"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
         '<button class="icon" type="button" data-akcja="dol" data-i="' + i + '" aria-label="Przesuń niżej"' + (i === produkty.length - 1 ? ' disabled' : '') + '>↓</button>' +
         '<button class="btn btn-dark" type="button" data-akcja="edytuj" data-i="' + i + '">Edytuj</button>' +
+        '<button class="icon del" type="button" data-akcja="usun" data-i="' + i + '" aria-label="Usuń bęben">🗑</button>' +
       '</div></div>').join('');
 }
 
@@ -360,6 +365,14 @@ $('lista').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-akcja]'); if (!b) return;
   const i = +b.dataset.i;
   if (b.dataset.akcja === 'edytuj') return otworzEdycje(produkty[i]);
+  if (b.dataset.akcja === 'usun') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = '🗑'; }, 4000);
+      return;
+    }
+    return usunProdukt(produkty[i], []);
+  }
   const j = b.dataset.akcja === 'gora' ? i - 1 : i + 1;
   if (j < 0 || j >= produkty.length) return;
   [produkty[i], produkty[j]] = [produkty[j], produkty[i]];
@@ -416,10 +429,13 @@ function youtubeId(url) {
 }
 function podgladYt(poleId, podgladId) {
   const v = $(poleId).value.trim(), id = youtubeId(v), el = $(podgladId);
+  const usun = $(poleId === 'f-film' ? 'f-film-usun' : 'film-strojenie-usun');
+  if (usun) usun.hidden = !v;
   if (!v) { el.innerHTML = ''; return; }
   el.innerHTML = id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="Podgląd filmu">'
                     : '<p class="error">To nie wygląda na link do YouTube.</p>';
 }
+$('f-film-usun').addEventListener('click', () => { $('f-film').value = ''; podgladYt('f-film', 'f-film-podglad'); toast('Film usunięty – kliknij „Zapisz”, żeby zatwierdzić'); });
 $('f-film').addEventListener('input', () => podgladYt('f-film', 'f-film-podglad'));
 $('film-strojenie').addEventListener('input', () => podgladYt('film-strojenie', 'film-strojenie-podglad'));
 
@@ -526,12 +542,16 @@ $('usun').addEventListener('click', async () => {
     setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń bęben'; }, 4000);
     return;
   }
-  const { error } = await sb.from('produkty').delete().eq('id', edytowany.id);
-  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
-  const pliki = edytowany.zdjecia.concat(zdjecia).map(sciezkaWBazie).filter(Boolean);
-  if (pliki.length) sb.storage.from(BUCKET).remove([...new Set(pliki)]);
-  toast('Bęben usunięty'); zamknijEdycje(); wczytaj();
+  usunProdukt(edytowany, zdjecia);
 });
+
+async function usunProdukt(p, dodatkoweZdjecia) {
+  const { error } = await sb.from('produkty').delete().eq('id', p.id);
+  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+  const pliki = p.zdjecia.concat(dodatkoweZdjecia).map(sciezkaWBazie).filter(Boolean);
+  if (pliki.length) sb.storage.from(BUCKET).remove([...new Set(pliki)]);
+  toast('Usunięto: ' + p.nazwa); zamknijEdycje(); wczytaj();
+}
 
 // ---------- filmy na stronie ----------
 async function wczytajFilmy() {
@@ -539,6 +559,11 @@ async function wczytajFilmy() {
   $('film-strojenie').value = data?.wartosc || '';
   podgladYt('film-strojenie', 'film-strojenie-podglad');
 }
+
+$('film-strojenie-usun').addEventListener('click', () => {
+  $('film-strojenie').value = ''; podgladYt('film-strojenie', 'film-strojenie-podglad');
+  $('filmy-form').requestSubmit();
+});
 
 $('filmy-form').addEventListener('submit', async (e) => {
   e.preventDefault();
