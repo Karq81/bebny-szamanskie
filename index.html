@@ -233,7 +233,10 @@ button.card-img{border:0;padding:0;width:100%;cursor:pointer;font:inherit;displa
 .film-play::after{content:"";position:absolute;left:31px;top:24px;border-style:solid;border-width:14px 0 14px 22px;border-color:transparent transparent transparent #fff}
 iframe.film{cursor:auto}
 .film-strojenie{margin-top:70px}
-.film-strojenie[hidden]{display:none}
+.film-placeholder{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:20px;color:#f6efe4;
+  background:linear-gradient(rgba(22,17,13,.78),rgba(22,17,13,.88)),url(img/tekstura-skora.jpg) center/cover}
+.film-placeholder .film-play{position:relative;left:auto;top:auto;margin:0;opacity:.55}
+.film-placeholder p{font-family:var(--serif);font-size:clamp(22px,3vw,32px);font-style:italic}
 .film-head{margin-bottom:18px}
 .film-head h3{font-size:34px}
 .film-slot{max-width:900px}
@@ -286,6 +289,7 @@ iframe.film{cursor:auto}
       <li><a href="#pracownia">Pracownia</a></li>
       <li><a href="#oferta">Bębny</a></li>
       <li><a href="#skory">Na zamówienie</a></li>
+      <li><a href="#strojenie">Strojenie</a></li>
       <li><a href="#galeria">Galeria</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
@@ -437,9 +441,14 @@ iframe.film{cursor:auto}
       </svg>
     </div>
   </div>
-  <div class="wrap film-strojenie" id="film-strojenie" hidden>
-    <div class="film-head"><span class="eyebrow">Film</span><h3>Zobacz, jak stroję bęben</h3></div>
-    <div class="film-slot"></div>
+  <div class="wrap film-strojenie" id="film-strojenie">
+    <div class="film-head"><span class="eyebrow">Film instruktażowy</span><h3>Jak nastroić bęben – krok po kroku</h3></div>
+    <div class="film-slot">
+      <div class="film-placeholder" role="img" aria-label="Miejsce na film z instrukcją strojenia">
+        <span class="film-play" aria-hidden="true"></span>
+        <p>Tu będzie film z instrukcją strojenia</p>
+      </div>
+    </div>
   </div>
 </section>
 

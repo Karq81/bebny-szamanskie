@@ -143,8 +143,6 @@
     const film = (rows.find((r) => r.klucz === 'film_strojenie') || {}).wartosc;
     const html = filmHtml(film, 'Jak stroję bęben');
     if (!html) return;
-    const box = document.getElementById('film-strojenie');
-    box.querySelector('.film-slot').innerHTML = html;
-    box.hidden = false;
+    document.querySelector('#film-strojenie .film-slot').innerHTML = html;
   }).catch(() => {});
 })();
