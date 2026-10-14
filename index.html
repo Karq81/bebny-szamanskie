@@ -141,11 +141,18 @@ section{padding:110px 0}
 .skins::before{content:"";position:absolute;inset:0;background:url(img/tekstura-skora.jpg) center/cover;opacity:.18}
 .skins .wrap{position:relative}
 .skins .lead{color:#d6c7b1}
-.skin-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:16px;margin-top:50px}
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:20px 16px;margin-top:50px}
 .skin{text-align:center;cursor:pointer}
 .skin img{aspect-ratio:1/1;object-fit:cover;border-radius:50%;width:100%;border:3px solid transparent;transition:.25s}
 .skin:hover img,.skin.on img{border-color:var(--ochre-light);transform:scale(1.04)}
 .skin span{display:block;font-size:13px;color:#cbbba4;margin-top:10px}
+button.skin{background:none;border:0;padding:0;font:inherit;color:inherit}
+button.skin:disabled{cursor:default}
+.skin-foto{position:relative;display:block;margin:0!important}
+.skin-foto .rez-stamp{font-size:11px;letter-spacing:1.5px;padding:5px 9px;border-width:2px;outline:0}
+.skin:disabled img{filter:brightness(.6) saturate(.7);transform:none!important;border-color:transparent!important}
+.skin small{display:block;font-size:12px;color:var(--ochre-light);margin-top:2px}
+.skin:focus-visible{outline:2px solid var(--ochre-light);outline-offset:4px;border-radius:12px}
 .skin-info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
 .skin-info div{border:1px solid rgba(246,239,228,.18);border-radius:var(--radius);padding:24px}
 .skin-info strong{font-family:var(--serif);font-size:26px;display:block;color:var(--ochre-light);margin-bottom:4px}
@@ -241,6 +248,8 @@ button.card-img{border:0;padding:0;width:100%;cursor:pointer;font:inherit;displa
 .zq-box form{background:none;padding:30px 28px 28px}
 .zq-box h3{font-size:32px;padding-right:44px}
 .zq-produkt{color:var(--ochre-light);font-weight:600;margin-top:-8px}
+.zq-foto{width:100%;max-height:220px;object-fit:cover;border-radius:10px}
+.zq-opis{font-size:15px;color:#d6c7b1;margin-top:-6px}
 .zq-wybor{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .zq-wybor label{display:block;cursor:pointer}
 .zq-wybor input{position:absolute;opacity:0;pointer-events:none}
@@ -282,7 +291,6 @@ iframe.film{cursor:auto}
 /* responsywność */
 @media (max-width:1000px){
   .cards{grid-template-columns:repeat(2,1fr)}
-  .skin-grid{grid-template-columns:repeat(4,1fr)}
   .gallery{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:820px){
@@ -299,7 +307,7 @@ iframe.film{cursor:auto}
 }
 @media (max-width:540px){
   .cards{grid-template-columns:1fr}
-  .skin-grid{grid-template-columns:repeat(3,1fr);gap:12px}
+  .skin-grid{grid-template-columns:repeat(3,1fr);gap:16px 12px}
   .gallery{grid-auto-rows:170px}
   .gallery .wide{grid-column:span 1}
   .btn{width:100%;justify-content:center}
@@ -320,7 +328,7 @@ iframe.film{cursor:auto}
     <button class="menu-btn" onclick="document.querySelector('.nav ul').classList.toggle('open')">Menu</button>
     <ul>
       <li><a href="#pracownia">Pracownia</a></li>
-      <li><a href="#oferta">Bębny</a></li>
+      <li><a href="#oferta">Gotowe bębny</a></li>
       <li><a href="#skory">Na zamówienie</a></li>
       <li><a href="#strojenie">Strojenie</a></li>
       <li><a href="#galeria">Galeria</a></li>
@@ -370,9 +378,9 @@ iframe.film{cursor:auto}
   <div class="wrap">
     <div class="shop-head">
       <div>
-        <span class="eyebrow">Dostępne teraz</span>
-        <h2>Bębny i instrumenty</h2>
-        <p class="lead">Każdy bęben to pojedynczy egzemplarz. Kiedy znajdzie właściciela, znika z listy.</p>
+        <span class="eyebrow">Dostępne od ręki</span>
+        <h2>Gotowe bębny</h2>
+        <p class="lead">Każdy bęben to pojedynczy egzemplarz, gotowy do gry. Wolisz bęben z wybranej przez siebie skóry? <a href="#skory">Zobacz bębny na zamówienie</a>.</p>
       </div>
     </div>
     <div class="cards" id="lista-produktow">
@@ -421,7 +429,7 @@ iframe.film{cursor:auto}
     <span class="eyebrow">Bęben na zamówienie</span>
     <h2>Wybierz skórę, a ja zrobię z niej bęben</h2>
     <p class="lead">Każda skóra ma inny wzór – ciapki, plamki, łaty. Po dogoleniu włosia do ok. 1 mm wzór i kolory zostają. Kliknij skórę, która Ci się podoba.</p>
-    <div class="skin-grid">
+    <div class="skin-grid" id="lista-skor">
       <div class="skin"><img src="img/skora-1.jpg" alt="Skóra nr 1"><span>Skóra nr 1</span></div>
       <div class="skin"><img src="img/skora-2.jpg" alt="Skóra nr 2"><span>Skóra nr 2</span></div>
       <div class="skin"><img src="img/skora-3.jpg" alt="Skóra nr 3"><span>Skóra nr 3</span></div>
@@ -431,7 +439,7 @@ iframe.film{cursor:auto}
       <div class="skin"><img src="img/skora-7.jpg" alt="Skóra nr 7"><span>Skóra nr 7</span></div>
     </div>
     <div class="skin-info">
-      <div><strong>1. Wybierasz skórę</strong><p>Wskazujesz numer skóry i średnicę: 50 albo 55 cm.</p></div>
+      <div><strong>1. Wybierasz skórę</strong><p>Klikasz skórę, która Ci się podoba, i wybierasz średnicę: 50 albo 55 cm.</p></div>
       <div><strong>2. Robię bęben</strong><p>Przygotowuję korpus, naciągam skórę i stroję – od A do Z.</p></div>
       <div><strong>3. Bęben jedzie do Ciebie</strong><p>Z dwiema pałkami filcowymi, gotowy do gry.</p></div>
     </div>
@@ -579,11 +587,17 @@ iframe.film{cursor:auto}
     <form id="zapytanie-form" novalidate>
       <h3 id="zq-tytul">Chcę kupić ten bęben</h3>
       <p class="zq-produkt" id="zq-produkt"></p>
+      <img class="zq-foto" id="zq-foto" alt="" hidden>
+      <p class="zq-opis" id="zq-opis" hidden></p>
       <div class="zq-wybor" id="zq-wybor" role="radiogroup" aria-label="Rodzaj zgłoszenia">
         <label><input type="radio" name="rodzaj" value="kupno" checked><span>Chcę kupić</span></label>
         <label><input type="radio" name="rodzaj" value="pytanie"><span>Mam pytanie</span></label>
       </div>
       <p class="zq-info" id="zq-info-kupno">To jeszcze nie zakup ani płatność. Odezwę się, porozmawiamy o bębnie, wysyłce i płatności, a gdy się zdecydujesz – zarezerwuję go dla Ciebie.</p>
+      <p class="zq-info" id="zq-info-zam" hidden>To jeszcze nie zamówienie ani płatność. Odezwę się, ustalimy szczegóły, cenę i termin, a potem zarezerwuję skórę dla Ciebie.</p>
+      <label id="zq-srednica" hidden>Średnica bębna
+        <select name="srednica"><option>55 cm</option><option>50 cm</option><option value="jeszcze nie wiem">Jeszcze nie wiem – doradź</option></select>
+      </label>
       <label>Imię<input type="text" name="imie" maxlength="80" autocomplete="given-name" placeholder="Jak masz na imię?"></label>
       <div class="row2">
         <label>Telefon<input type="tel" name="telefon" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="np. 600 123 456"></label>
@@ -626,5 +640,6 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
 <script src="config.js"></script>
 <script src="produkty.js"></script>
 <script src="zapytania.js"></script>
+<script src="skory.js"></script>
 </body>
 </html>

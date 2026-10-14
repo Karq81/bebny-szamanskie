@@ -78,6 +78,11 @@ textarea{resize:vertical;min-height:110px}
 .chip.zarezerwowane{background:#dde6f3;color:#2f4f7a}
 .chip.zamkniete{background:#e5ddd3;color:#6a5b4d}
 .chip.kupno{background:var(--rust);color:#fff}
+.chip.dostepna{background:#dfe9d8;color:var(--ok)}
+.chip.zarezerwowana{background:#dde6f3;color:#2f4f7a}
+.chip.wykorzystana{background:#e5ddd3;color:#6a5b4d}
+.skora-foto{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.skora-foto .ph{width:140px}
 .tabs .licznik{display:inline-block;min-width:22px;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--rust);color:#fff;font-size:12px;line-height:20px;text-align:center}
 .btn-sm{min-height:38px;padding:8px 14px;font-size:14px}
 .btn-ok{background:#2f4f7a;color:#fff}
@@ -185,7 +190,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <!-- Panel -->
   <div id="panel" hidden>
     <div class="tabs" role="tablist">
-      <button type="button" class="on" data-tab="lista">Moje bębny</button>
+      <button type="button" class="on" data-tab="lista">Gotowe bębny</button>
+      <button type="button" data-tab="skory">Skóry na zamówienie</button>
       <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
       <button type="button" data-tab="filmy">Filmy na stronie</button>
       <button type="button" data-tab="powiadomienia">Powiadomienia</button>
@@ -193,10 +199,51 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 
     <section id="tab-lista">
       <div class="list-head">
-        <h2>Moje bębny</h2>
+        <h2>Gotowe bębny</h2>
         <button class="btn btn-primary" type="button" id="dodaj">+ Dodaj bęben</button>
       </div>
       <div class="items" id="lista"></div>
+    </section>
+
+    <section id="tab-skory" hidden>
+      <div id="skory-lista-box">
+        <div class="list-head">
+          <h2>Skóry na zamówienie</h2>
+          <button class="btn btn-primary" type="button" id="dodaj-skore">+ Dodaj skórę</button>
+        </div>
+        <p class="hint" style="margin:-6px 0 14px">Skóry, z których klient może zamówić bęben. Na stronie są w części „Bęben na zamówienie”. Wykorzystane i ukryte skóry nie są pokazywane klientom.</p>
+        <div class="items" id="lista-skor"></div>
+      </div>
+
+      <form id="skora-edycja" class="form" hidden>
+        <h2 id="skora-tytul">Nowa skóra</h2>
+        <div class="card form">
+          <fieldset>
+            <legend>Zdjęcie skóry</legend>
+            <div class="skora-foto" id="skora-foto"></div>
+          </fieldset>
+          <label>Nazwa *<input type="text" id="s-nazwa" required placeholder="np. Skóra łaciata, biało-ruda"></label>
+          <label>Krótki opis (opcjonalnie)<textarea id="s-opis" rows="3" placeholder="np. gruba skóra krowia, mocny bas, wzór w ciapki"></textarea></label>
+          <div class="row2">
+            <label>Cena bębna z tej skóry „od” (zł)<input type="number" id="s-cena" min="0" step="1" inputmode="numeric" placeholder="puste = cena do ustalenia"></label>
+            <label>Status
+              <select id="s-status">
+                <option value="dostepna">Dostępna</option>
+                <option value="zarezerwowana">Zarezerwowana dla klienta</option>
+                <option value="wykorzystana">Wykorzystana (znika ze strony)</option>
+              </select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" id="s-widoczna" checked> Pokazuj na stronie</label>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-danger" type="button" id="s-usun">Usuń skórę</button>
+          <div>
+            <button class="btn btn-light" type="button" id="s-anuluj">Anuluj</button>
+            <button class="btn btn-primary" type="submit" id="s-zapisz">Zapisz</button>
+          </div>
+        </div>
+      </form>
     </section>
 
     <section id="tab-zapytania" hidden>
@@ -398,19 +445,20 @@ $('nowe-haslo').addEventListener('submit', async (e) => {
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
 
 // ---------- zakładki ----------
-const ZAKLADKI = ['lista', 'zapytania', 'filmy', 'powiadomienia'];
+const ZAKLADKI = ['lista', 'skory', 'zapytania', 'filmy', 'powiadomienia'];
 function zakladka(nazwa) {
   document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
   ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
   $('edycja').hidden = true;
   if (nazwa === 'zapytania') wczytajZapytania();
+  if (nazwa === 'skory') zamknijSkore();
 }
 document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => zakladka(b.dataset.tab)));
 
 async function start() {
   pokaz('panel');
   // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
-  await Promise.all([wczytaj().then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia()]);
+  await Promise.all([Promise.all([wczytaj(), wczytajSkory()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia()]);
   if (zapytania.some((z) => z.status === 'nowe')) zakladka('zapytania');
 }
 
@@ -680,7 +728,7 @@ async function zmienStatus(p, status, zapytanie) {
 // ---------- zapytania ----------
 let zapytania = [];
 let filtrZapytan = 'otwarte';
-const RODZAJ = { kupno: 'Chce kupić', pytanie: 'Pytanie', kontakt: 'Wiadomość' };
+const RODZAJ = { kupno: 'Chce kupić', zamowienie: 'Zamówienie', pytanie: 'Pytanie', kontakt: 'Wiadomość' };
 const STATUS_ZAP = { nowe: 'Nowe', w_toku: 'W rozmowie', zarezerwowane: 'Zarezerwowane', zamkniete: 'Załatwione' };
 
 async function wczytajZapytania() {
@@ -712,13 +760,16 @@ function rysujZapytania() {
   }
   $('zapytania').innerHTML = lista.map((z) => {
     const p = produkty.find((x) => x.id === z.produkt_id);
+    const sk = skory.find((x) => x.id === z.skora_id);
     const data = new Date(z.created_at).toLocaleString('pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     const woli = (k) => z.kontakt === k ? ' ★' : '';
-    const powitanie = 'Dzień dobry ' + z.imie + ', tu Paweł od bębnów' + (z.produkt_nazwa ? ' – piszę w sprawie: ' + z.produkt_nazwa : '') + '.';
+    const powitanie = 'Dzień dobry ' + z.imie + ', tu Paweł od bębnów' + (z.produkt_nazwa || z.skora_nazwa ? ' – piszę w sprawie: ' + (z.produkt_nazwa || 'bębna ze skóry „' + z.skora_nazwa + '”') : '') + '.';
     const akcje = [];
     if (z.status === 'nowe') akcje.push('<button class="btn btn-dark btn-sm" data-zap="w_toku">Odezwałem się</button>');
     if (p && p.status === 'dostepny' && z.status !== 'zamkniete') akcje.push('<button class="btn btn-ok btn-sm" data-zap="rezerwuj">Zarezerwuj bęben dla tego klienta</button>');
+    if (sk && sk.status === 'dostepna' && z.status !== 'zamkniete') akcje.push('<button class="btn btn-ok btn-sm" data-zap="rez-skore">Zarezerwuj skórę dla tego klienta</button>');
     if (z.status === 'zarezerwowane') {
+      if (sk && sk.status === 'zarezerwowana') akcje.push('<button class="btn btn-primary btn-sm" data-zap="skora-wykorzystana">Zamówienie przyjęte ✓</button>');
       if (p && p.status !== 'sprzedany') akcje.push('<button class="btn btn-primary btn-sm" data-zap="sprzedany">Sprzedany ✓</button>');
       akcje.push('<button class="btn btn-light btn-sm" data-zap="anuluj">Anuluj rezerwację</button>');
     }
@@ -727,10 +778,13 @@ function rysujZapytania() {
     akcje.push('<button class="btn btn-danger btn-sm" data-zap="usun">Usuń</button>');
     return '<div class="card zap ' + z.status + '" data-id="' + z.id + '">' +
       '<div class="zap-head"><strong>' + esc(z.imie) + '</strong>' +
-        '<div class="zap-meta"><span class="chip ' + (z.rodzaj === 'kupno' ? 'kupno' : '') + '">' + RODZAJ[z.rodzaj] + '</span>' +
+        '<div class="zap-meta"><span class="chip ' + (z.rodzaj === 'kupno' || z.rodzaj === 'zamowienie' ? 'kupno' : '') + '">' + RODZAJ[z.rodzaj] + '</span>' +
         '<span class="chip ' + z.status + '">' + STATUS_ZAP[z.status] + '</span><span>' + data + '</span></div></div>' +
       (z.produkt_nazwa ? '<div class="zap-meta"><span class="zap-produkt">🥁 ' + esc(z.produkt_nazwa) + '</span>' +
         (p ? '<span class="chip ' + p.status + '">' + STATUS[p.status] + '</span>' : '<span>(bęben usunięty z listy)</span>') + '</div>' : '') +
+      (z.rodzaj === 'zamowienie' ? '<div class="zap-meta"><span class="zap-produkt">🥁 Bęben na zamówienie – ' + (z.skora_nazwa ? 'skóra: ' + esc(z.skora_nazwa) : 'skóra do dobrania') + '</span>' +
+        (z.srednica ? '<span>· ' + esc(z.srednica) + '</span>' : '') +
+        (sk ? '<span class="chip ' + sk.status + '">' + STATUS_SKORY[sk.status] + '</span>' : z.skora_nazwa ? '<span>(skóra usunięta)</span>' : '') + '</div>' : '') +
       (z.wiadomosc ? '<div class="zap-msg">' + esc(z.wiadomosc) + '</div>' : '') +
       '<div class="zap-kontakt">' +
         (z.telefon ? '<a class="wa" href="https://wa.me/' + waNumer(z.telefon) + '?text=' + encodeURIComponent(powitanie) + '" target="_blank" rel="noopener">WhatsApp' + woli('whatsapp') + '</a>' +
@@ -754,11 +808,15 @@ $('zapytania').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-zap]'); if (!b) return;
   const z = zapytania.find((x) => x.id === b.closest('[data-id]').dataset.id);
   const p = produkty.find((x) => x.id === z.produkt_id);
+  const sk = skory.find((x) => x.id === z.skora_id);
   const akcja = b.dataset.zap;
   if (akcja === 'rezerwuj') return zmienStatus(p, 'zarezerwowany', z);
+  if (akcja === 'rez-skore') return zmienStatusSkory(sk, 'zarezerwowana', z);
+  if (akcja === 'skora-wykorzystana') return zmienStatusSkory(sk, 'wykorzystana', z);
   if (akcja === 'sprzedany') return zmienStatus(p, 'sprzedany', z);
   if (akcja === 'anuluj') {
     if (p && p.status === 'zarezerwowany') return zmienStatus(p, 'dostepny', z);
+    if (sk && sk.status === 'zarezerwowana') return zmienStatusSkory(sk, 'dostepna', z);
     await sb.from('zapytania').update({ status: 'w_toku' }).eq('id', z.id);
     return wczytajZapytania();
   }
@@ -810,6 +868,163 @@ $('pw-test').addEventListener('click', async () => {
   if (!data) return toast('Najpierw wpisz i zapisz numer z kluczem CallMeBot albo e-mail z kluczem Resend', true);
   toast('Zlecone (' + data.replace(' ', ' + ') + '). Jeśli w ciągu 2 minut nic nie przyjdzie, sprawdź numer i klucz.');
 });
+// ---------- skóry ----------
+let skory = [];
+let skoraEdytowana = null;
+let skoraZdjecie = '';
+let skoraStareZdjecie = '';
+const STATUS_SKORY = { dostepna: 'Dostępna', zarezerwowana: 'Zarezerwowana', wykorzystana: 'Wykorzystana' };
+
+async function wczytajSkory() {
+  const { data, error } = await sb.from('skory').select('*').order('kolejnosc').order('created_at');
+  if (error) {
+    $('lista-skor').innerHTML = '<div class="card empty">Nie udało się wczytać skór.<br><small>' + esc(error.message) + '</small></div>';
+    return;
+  }
+  skory = data;
+  rysujSkory();
+}
+
+function rysujSkory() {
+  const el = $('lista-skor');
+  if (!skory.length) {
+    el.innerHTML = '<div class="card empty">Nie ma jeszcze żadnej skóry.<br>Kliknij „+ Dodaj skórę”.</div>';
+    return;
+  }
+  el.innerHTML = skory.map((s, i) =>
+    '<div class="item">' +
+      (s.zdjecie ? '<img src="' + esc(s.zdjecie) + '" alt="">' : '<div class="noimg"></div>') +
+      '<div class="item-main"><strong>' + esc(s.nazwa) + '</strong>' +
+        '<div class="item-meta"><span class="chip ' + s.status + '">' + STATUS_SKORY[s.status] + '</span>' +
+        (s.widoczna ? '' : '<span class="chip ukryty">Ukryta</span>') +
+        (s.cena_od != null ? '<span>od ' + s.cena_od.toLocaleString('pl-PL') + ' zł</span>' : '') + '</div></div>' +
+      '<div class="item-actions">' +
+        (s.status === 'dostepna' ? '<button class="btn btn-ok btn-sm" type="button" data-skora="rezerwuj" data-i="' + i + '">Zarezerwuj</button>' : '') +
+        (s.status === 'zarezerwowana' ? '<button class="btn btn-light btn-sm" type="button" data-skora="zwolnij" data-i="' + i + '">Zdejmij rezerwację</button>' : '') +
+        '<button class="btn btn-dark" type="button" data-skora="edytuj" data-i="' + i + '">Edytuj</button>' +
+        '<button class="btn btn-danger btn-sm" type="button" data-skora="usun" data-i="' + i + '">Usuń</button>' +
+      '</div></div>').join('');
+}
+
+async function zmienStatusSkory(s, status, zapytanie) {
+  const { error } = await sb.from('skory').update({ status }).eq('id', s.id);
+  if (error) return toast('Nie udało się zmienić statusu skóry: ' + error.message, true);
+  let res = {};
+  const statusZap = status === 'zarezerwowana' ? 'zarezerwowane' : status === 'wykorzystana' ? 'zamkniete' : 'w_toku';
+  if (zapytanie) res = await sb.from('zapytania').update({ status: statusZap }).eq('id', zapytanie.id);
+  else if (status !== 'zarezerwowana') res = await sb.from('zapytania').update({ status: statusZap }).eq('skora_id', s.id).eq('status', 'zarezerwowane');
+  if (res.error) toast('Status skóry zmieniony, ale zapytania nie udało się zaktualizować: ' + res.error.message, true);
+  else toast({ zarezerwowana: 'Skóra zarezerwowana – na stronie widać „Zarezerwowana”', dostepna: 'Rezerwacja zdjęta – skóra znów jest do wyboru', wykorzystana: 'Zamówienie przyjęte – skóra zniknęła ze strony' }[status]);
+  await wczytajSkory(); await wczytajZapytania();
+}
+
+$('lista-skor').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-skora]'); if (!b) return;
+  const s = skory[+b.dataset.i];
+  if (b.dataset.skora === 'edytuj') return otworzSkore(s);
+  if (b.dataset.skora === 'rezerwuj') return zmienStatusSkory(s, 'zarezerwowana');
+  if (b.dataset.skora === 'zwolnij') return zmienStatusSkory(s, 'dostepna');
+  if (b.dataset.skora === 'usun') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń'; }, 4000);
+      return;
+    }
+    usunSkore(s);
+  }
+});
+
+function rysujZdjecieSkory() {
+  $('skora-foto').innerHTML = (skoraZdjecie
+    ? '<div class="ph"><img src="' + esc(skoraZdjecie) + '" alt="Zdjęcie skóry"></div>' : '') +
+    '<label class="add-photo" style="width:140px"><span>+</span>' + (skoraZdjecie ? 'Zmień zdjęcie' : 'Dodaj zdjęcie') +
+    '<input type="file" id="s-plik" accept="image/*"></label>';
+}
+
+function otworzSkore(s) {
+  skoraEdytowana = s;
+  skoraZdjecie = s ? s.zdjecie : '';
+  skoraStareZdjecie = skoraZdjecie;
+  $('skora-tytul').textContent = s ? 'Edytuj skórę' : 'Nowa skóra';
+  $('s-nazwa').value = s?.nazwa || '';
+  $('s-opis').value = s?.opis || '';
+  $('s-cena').value = s?.cena_od ?? '';
+  $('s-status').value = s?.status || 'dostepna';
+  $('s-widoczna').checked = s ? s.widoczna : true;
+  $('s-usun').hidden = !s;
+  $('s-usun').classList.remove('armed'); $('s-usun').textContent = 'Usuń skórę';
+  rysujZdjecieSkory();
+  $('skory-lista-box').hidden = true; $('skora-edycja').hidden = false;
+  scrollTo(0, 0);
+}
+
+function zamknijSkore() {
+  $('skora-edycja').hidden = true; $('skory-lista-box').hidden = false;
+  skoraEdytowana = null;
+}
+
+$('dodaj-skore').addEventListener('click', () => otworzSkore(null));
+$('s-anuluj').addEventListener('click', zamknijSkore);
+
+$('skora-foto').addEventListener('change', async (e) => {
+  if (e.target.id !== 's-plik') return;
+  const f = e.target.files[0]; if (!f) return;
+  $('skora-foto').innerHTML = '<div class="ph loading" style="width:140px"></div>';
+  wysylane++;
+  try {
+    const blob = await zmniejsz(f);
+    const sciezka = 'skory/' + crypto.randomUUID() + '.jpg';
+    const { error } = await sb.storage.from(BUCKET).upload(sciezka, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+    if (error) throw error;
+    // zdjęcie wgrane w tej edycji, ale zastąpione kolejnym – od razu sprzątamy
+    if (skoraZdjecie && skoraZdjecie !== skoraStareZdjecie) { const x = sciezkaWBazie(skoraZdjecie); if (x) sb.storage.from(BUCKET).remove([x]); }
+    skoraZdjecie = sb.storage.from(BUCKET).getPublicUrl(sciezka).data.publicUrl;
+  } catch (err) {
+    toast('Nie udało się dodać zdjęcia: ' + (err.message || err), true);
+  } finally {
+    wysylane--; rysujZdjecieSkory();
+  }
+});
+
+$('skora-edycja').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (wysylane) return toast('Poczekaj, aż zdjęcie się wyśle');
+  if (!skoraZdjecie) return toast('Dodaj zdjęcie skóry – klient wybiera po wyglądzie', true);
+  const dane = {
+    nazwa: $('s-nazwa').value.trim(),
+    opis: $('s-opis').value.trim(),
+    cena_od: liczba('s-cena'),
+    status: $('s-status').value,
+    widoczna: $('s-widoczna').checked,
+    zdjecie: skoraZdjecie
+  };
+  const btn = $('s-zapisz'); btn.disabled = true;
+  const res = skoraEdytowana
+    ? await sb.from('skory').update(dane).eq('id', skoraEdytowana.id)
+    : await sb.from('skory').insert({ ...dane, kolejnosc: skory.reduce((m, x) => Math.max(m, x.kolejnosc), 0) + 1 });
+  btn.disabled = false;
+  if (res.error) return toast('Nie udało się zapisać: ' + res.error.message, true);
+  if (skoraStareZdjecie && skoraStareZdjecie !== skoraZdjecie) { const x = sciezkaWBazie(skoraStareZdjecie); if (x) sb.storage.from(BUCKET).remove([x]); }
+  toast('Zapisane – skóra jest na stronie' + (dane.widoczna && dane.status !== 'wykorzystana' ? '' : ' (ukryta)'));
+  zamknijSkore(); wczytajSkory();
+});
+
+$('s-usun').addEventListener('click', () => {
+  const b = $('s-usun');
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = 'Kliknij jeszcze raz, aby usunąć';
+    setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń skórę'; }, 4000);
+    return;
+  }
+  usunSkore(skoraEdytowana);
+});
+
+async function usunSkore(s) {
+  const { error } = await sb.from('skory').delete().eq('id', s.id);
+  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+  const x = sciezkaWBazie(s.zdjecie); if (x) sb.storage.from(BUCKET).remove([x]);
+  toast('Usunięto: ' + s.nazwa); zamknijSkore(); wczytajSkory();
+}
 </script>
 </body>
 </html>
