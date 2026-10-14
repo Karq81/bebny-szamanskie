@@ -136,6 +136,7 @@ section{padding:110px 0}
 .listen .lead{color:#d6c7b1}
 .listen-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:24px;margin-top:40px;align-items:start}
 .listen-main{min-width:0}
+.listen-grid.jeden{grid-template-columns:1fr;max-width:860px}
 .listen-main .film{border-radius:var(--radius);box-shadow:0 30px 60px -25px rgba(0,0,0,.7)}
 .listen-teraz{margin-top:14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .listen-teraz strong{font-family:var(--serif);font-size:28px;font-weight:600}
@@ -150,6 +151,12 @@ section{padding:110px 0}
 .listen-lista button.on .mini::after{content:"♪";color:var(--ochre-light)}
 .listen-lista b{display:block;font-weight:600;font-size:15px;line-height:1.3}
 .listen-lista small{display:block;color:#a8977f;font-size:13px;margin-top:2px}
+.listen-linki{margin-top:44px;padding-top:30px;border-top:1px solid rgba(246,239,228,.14)}
+.listen-linki h3{font-size:26px;margin-bottom:16px}
+.listen-linki ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px}
+.listen-linki a{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border:1px solid rgba(246,239,228,.2);border-radius:999px;text-decoration:none;font-weight:500;font-size:15px;transition:.2s}
+.listen-linki a::after{content:"↗";color:var(--ochre-light)}
+.listen-linki a:hover{border-color:var(--ochre-light);background:rgba(246,239,228,.05)}
 
 /* oferta */
 .shop{background:var(--bg-2)}
@@ -479,11 +486,12 @@ iframe.film{cursor:auto}
   <div class="wrap">
     <span class="eyebrow">Posłuchaj, jak brzmią</span>
     <h2>Moje bębny w rękach muzyków</h2>
-    <p class="lead">Koncerty, nagrania i ceremonie – kliknij film na liście, odtworzy się tutaj, na stronie.</p>
+    <p class="lead">Kliknij film – odtworzy się tutaj, na stronie. Pod spodem znajdziesz strony muzyków, którzy grają na moich bębnach.</p>
     <div class="listen-grid">
       <div class="listen-main" id="listen-main"></div>
       <ol class="listen-lista" id="listen-lista"></ol>
     </div>
+    <div class="listen-linki" id="listen-linki"></div>
   </div>
 </section>
 

@@ -358,7 +358,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 
       <form class="card form" id="muzycy-form" style="margin-top:22px">
         <h2>Posłuchaj, jak brzmią</h2>
-        <p class="hint" style="font-size:15px">Filmy z YouTube, na których muzycy grają na Twoich bębnach. Na stronie pokażą się w sekcji „Posłuchaj, jak brzmią” – pierwszy jako duży odtwarzacz, reszta na liście obok. Gdy lista jest pusta, sekcji nie ma.</p>
+        <p class="hint" style="font-size:15px">Filmy z YouTube, na których muzycy grają na Twoich bębnach. Na stronie pokażą się w sekcji „Posłuchaj, jak brzmią” – pierwszy jako duży odtwarzacz, reszta na liście obok. Pod filmami strona pokazuje linki z listy „Grają na moich bębnach” (zakładka O mnie).</p>
         <div class="items" id="muzycy-lista"></div>
         <div class="film-row">
           <button class="btn btn-light" type="button" id="muzycy-dodaj">+ Dodaj film</button>
@@ -1258,7 +1258,9 @@ function ytMini(url) {
 
 async function wczytajMuzykow() {
   const { data } = await sb.from('ustawienia').select('wartosc').eq('klucz', 'filmy_muzycy').maybeSingle();
-  try { muzycy = JSON.parse(data?.wartosc || '[]'); } catch (e) { muzycy = []; }
+  // dopóki nic nie zapisano, na stronie gra kanał WADADA (FILMY_START w posluchaj.js) – pokazujemy go też tutaj
+  if (!data) muzycy = [{ url: 'https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA', tytul: 'Zespół WADADA', kto: 'kanał zespołu na YouTube' }];
+  else { try { muzycy = JSON.parse(data.wartosc || '[]'); } catch (e) { muzycy = []; } }
   rysujMuzykow();
 }
 
