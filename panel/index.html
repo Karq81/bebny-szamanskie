@@ -1245,6 +1245,16 @@ $('omnie-form').addEventListener('submit', async (e) => {
 });
 // ---------- filmy muzyków („Posłuchaj, jak brzmią”) ----------
 let muzycy = [];
+// film, playlista albo kanał w formie youtube.com/channel/UC… (tak samo jak w posluchaj.js na stronie)
+const ytSeria = (url) => /[?&]list=[\w-]+/.test(url) || /\/channel\/UC[\w-]{22}/.test(url);
+const ytOk = (url) => !!youtubeId(url) || ytSeria(url);
+function ytMini(url) {
+  const id = youtubeId(url);
+  if (id) return '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">';
+  if (ytSeria(url)) return '▶ Kanał / playlista – filmy będą grać po kolei';
+  if (/youtube\.com\/(@|c\/|user\/)/.test(url)) return 'Ten adres kanału nie zadziała – otwórz kanał, kliknij dowolny film i wklej jego link';
+  return url ? 'To nie jest link z YouTube' : 'Wklej link';
+}
 
 async function wczytajMuzykow() {
   const { data } = await sb.from('ustawienia').select('wartosc').eq('klucz', 'filmy_muzycy').maybeSingle();
@@ -1256,11 +1266,10 @@ function rysujMuzykow() {
   const el = $('muzycy-lista');
   if (!muzycy.length) { el.innerHTML = '<div class="empty" style="padding:16px">Nie ma jeszcze filmów. Kliknij „+ Dodaj film”.</div>'; return; }
   el.innerHTML = muzycy.map((f, i) => {
-    const id = youtubeId(f.url);
     return '<div class="muzyk" data-i="' + i + '">' +
-      '<div class="mini">' + (id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">' : (f.url ? 'To nie jest link z YouTube' : 'Wklej link')) + '</div>' +
+      '<div class="mini">' + ytMini(f.url) + '</div>' +
       '<div class="muzyk-pola">' +
-        '<input type="url" data-pole="url" value="' + esc(f.url) + '" placeholder="Link z YouTube">' +
+        '<input type="url" data-pole="url" value="' + esc(f.url) + '" placeholder="Link do filmu, playlisty lub kanału z YouTube">' +
         '<input type="text" data-pole="tytul" value="' + esc(f.tytul) + '" placeholder="Tytuł, np. Koncert w Warszawie">' +
         '<input type="text" data-pole="kto" value="' + esc(f.kto) + '" placeholder="Kto gra, np. Zespół Żniwa">' +
         '<div class="muzyk-akcje">' +
@@ -1276,8 +1285,7 @@ $('muzycy-lista').addEventListener('input', (e) => {
   const i = +e.target.closest('[data-i]').dataset.i;
   muzycy[i][pole] = e.target.value;
   if (pole === 'url') {
-    const id = youtubeId(e.target.value);
-    e.target.closest('.muzyk').querySelector('.mini').innerHTML = id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">' : (e.target.value ? 'To nie jest link z YouTube' : 'Wklej link');
+    e.target.closest('.muzyk').querySelector('.mini').innerHTML = ytMini(e.target.value.trim());
   }
 });
 
@@ -1308,8 +1316,8 @@ $('muzycy-dodaj').addEventListener('click', () => {
 $('muzycy-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const lista = muzycy.map((f) => ({ url: f.url.trim(), tytul: f.tytul.trim(), kto: f.kto.trim() })).filter((f) => f.url);
-  const zly = lista.find((f) => !youtubeId(f.url));
-  if (zly) return toast('Ten link nie wygląda na YouTube: ' + zly.url, true);
+  const zly = lista.find((f) => !ytOk(f.url));
+  if (zly) return toast('Tego linku nie da się odtworzyć: ' + zly.url + ' – wklej link do filmu, playlisty albo kanału (youtube.com/channel/UC…)', true);
   const bezTytulu = lista.find((f) => !f.tytul);
   if (bezTytulu) return toast('Wpisz tytuł przy każdym filmie', true);
   const { error } = await sb.from('ustawienia').upsert({ klucz: 'filmy_muzycy', wartosc: JSON.stringify(lista) });
