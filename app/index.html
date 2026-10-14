@@ -407,10 +407,13 @@ html{scroll-padding-top:72px}
 .app section.om-start{padding:56px 0 64px;color:var(--ink)}
 /* jasne sekcje na tle z jasnych skór bębnów (całą szerokość, bez „pudełek”) */
 .app section.om-start,.app #oferta,.app #strojenie,.app #renowacja,.app #galeria,.app #posluchaj-tlo{
-  background:linear-gradient(rgba(243,236,225,.88),rgba(243,236,225,.92)),url(../img/tapeta-jasna.jpg) center/cover}
+  background:linear-gradient(rgba(243,236,225,.86),rgba(243,236,225,.86)),url(../img/tapeta-jasna.jpg) center/cover}
 .om-foto{border:6px solid rgba(255,255,255,.7)}
+/* ciemne sekcje – ta sama mozaika, tylko pod ciemną warstwą */
+.app .skins,.app .contact,.app .listen{background:linear-gradient(rgba(22,17,13,.9),rgba(22,17,13,.93)),url(../img/tapeta-jasna.jpg) center/cover}
+.app .skins::before{display:none}
 @media (min-width:1100px){
-  .app section.om-start,.app #oferta,.app #strojenie,.app #renowacja,.app #galeria{background-attachment:fixed}
+  .app section.om-start,.app #oferta,.app #strojenie,.app #renowacja,.app #galeria,.app .skins,.app .contact,.app .listen{background-attachment:fixed}
   .app .wrap{max-width:none;padding-left:5vw;padding-right:5vw}
   .app body,body.app{font-size:19px}
   .app h2{font-size:clamp(46px,4vw,66px)}
@@ -931,7 +934,7 @@ html{scroll-padding-top:72px}
       </label>
       <label>Wiadomość<textarea id="msg" name="wiadomosc" maxlength="1900" placeholder="Np. interesuje mnie skóra nr 3, średnica 55 cm"></textarea></label>
       <div class="hp" aria-hidden="true"><input type="text" name="www_adres" tabindex="-1" autocomplete="off" aria-label="Zostaw puste"></div>
-      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na wiadomość. Powiadomienie o niej dostaję przez WhatsApp / e-mail. Szczegóły: <a href="../polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</label>
+      <label class="check"><input type="checkbox" name="zgoda"> <span>Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na wiadomość. Powiadomienie o niej dostaję przez WhatsApp / e-mail. Szczegóły: <a href="../polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</span></label>
       <div class="form-blad" id="kf-blad" role="alert" hidden></div>
       <button class="btn btn-primary" type="submit">Wyślij wiadomość</button>
     </form>
@@ -981,7 +984,7 @@ html{scroll-padding-top:72px}
       </label>
       <label>Wiadomość (opcjonalnie)<textarea name="wiadomosc" maxlength="1900"></textarea></label>
       <div class="hp" aria-hidden="true"><input type="text" name="www_adres" tabindex="-1" autocomplete="off" aria-label="Zostaw puste"></div>
-      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na zgłoszenie. Powiadomienie o nim dostaję przez WhatsApp / e-mail. Szczegóły: <a href="../polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</label>
+      <label class="check"><input type="checkbox" name="zgoda"> <span>Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na zgłoszenie. Powiadomienie o nim dostaję przez WhatsApp / e-mail. Szczegóły: <a href="../polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</span></label>
       <div class="form-blad" id="zq-blad" role="alert" hidden></div>
       <button class="btn btn-primary" type="submit">Wyślij – chcę kupić</button>
     </form>
