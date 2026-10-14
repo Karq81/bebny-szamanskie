@@ -408,13 +408,23 @@ html{scroll-padding-top:72px}
 .app section.kafle{padding:28px 0 40px;background:var(--bg)}
 .kafle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .kafel{position:relative;min-height:170px;border-radius:var(--radius);overflow:hidden;display:flex;align-items:flex-end;text-decoration:none;color:#f6efe4;
-  background:linear-gradient(180deg,rgba(18,13,9,.05) 30%,rgba(18,13,9,.85)),var(--img) center/cover;box-shadow:0 14px 30px -18px rgba(42,33,25,.6);transition:.2s}
+  background:linear-gradient(180deg,rgba(18,13,9,.1) 20%,rgba(18,13,9,.92) 85%),var(--img) center/cover;box-shadow:0 14px 30px -18px rgba(42,33,25,.6);transition:.2s}
 .kafel:active{transform:scale(.98)}
 .kafel span{padding:16px}
 .kafel b{display:block;font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1}
 .kafel small{display:block;font-size:13px;color:#e6dac7;margin-top:2px}
 .kafel-duzy{grid-column:span 2;min-height:220px}
-.kafel-kontakt{grid-column:1/-1;min-height:0;background:var(--ochre)}
+.kafel-kontakt{grid-column:span 2;background:var(--ochre)}
+.app .nav ul a.on{color:var(--ochre-light);box-shadow:0 2px 0 var(--ochre-light)}
+.app .nav ul{gap:26px}
+@media (min-width:821px){
+  .app .hero .wrap{padding-top:56px;padding-bottom:40px}
+  .app .hero h1{font-size:clamp(46px,5.5vw,76px);margin-bottom:12px}
+  .app .hero p{margin-bottom:0}
+  .app .hero .btns,.app .hero-meta{display:none}
+  .kafel{min-height:190px}
+  .kafel-duzy{min-height:190px}
+}
 .kafel-kontakt small{color:#fff}
 .dolny-pasek{display:none}
 @media (max-width:820px){
@@ -445,7 +455,7 @@ html{scroll-padding-top:72px}
   .app section.kafle{padding:14px 0 24px}
   .kafel{min-height:120px}
   .kafel-duzy{min-height:150px}
-  .kafel-kontakt{min-height:0}
+  .kafel-kontakt{grid-column:auto}
   .kafel-kontakt span{padding:14px 16px}
   /* konfigurator – rozmiary w jednym rzędzie, podsumowanie zawsze pod ręką */
   .app .konf-krok{margin-top:26px}
@@ -498,12 +508,12 @@ html{scroll-padding-top:72px}
     </a>
     <button class="menu-btn" onclick="document.querySelector('.nav ul').classList.toggle('open')">Menu</button>
     <ul>
-      <li><a href="#pracownia">Pracownia</a></li>
-      <li><a href="#o-mnie">O mnie</a></li>
-      <li id="nav-posluchaj" hidden><a href="#posluchaj">Posłuchaj</a></li>
+      <li><a href="#start">Start</a></li>
       <li><a href="#oferta">Gotowe bębny</a></li>
       <li><a href="#skory">Skonfiguruj bęben</a></li>
-      <li><a href="#strojenie">Strojenie</a></li>
+      <li id="nav-posluchaj" hidden><a href="#posluchaj">Posłuchaj</a></li>
+      <li><a href="#o-mnie">O mnie</a></li>
+      <li><a href="#pracownia">Pracownia</a></li>
       <li><a href="#galeria">Galeria</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
@@ -533,8 +543,9 @@ html{scroll-padding-top:72px}
       <a href="#oferta" class="kafel kafel-duzy" style="--img:url(../img/beben-55.jpg)"><span><b>Gotowe bębny</b><small>do kupienia od ręki</small></span></a>
       <a href="#skory" class="kafel" style="--img:url(../img/skora-3.jpg)"><span><b>Skonfiguruj bęben</b><small>rozmiar, korpus, skóra</small></span></a>
       <a href="#posluchaj" class="kafel" style="--img:url(../img/galeria-3.jpg)"><span><b>Posłuchaj</b><small>jak brzmią u muzyków</small></span></a>
-      <a href="#pracownia" class="kafel" style="--img:url(../img/od-a-do-z.jpg)"><span><b>O pracowni</b><small>od 1997 roku, od A do Z</small></span></a>
-      <a href="#strojenie" class="kafel" style="--img:url(../img/tekstura-skora.jpg)"><span><b>Strojenie</b><small>dętka – dopompuj i grasz</small></span></a>
+      <a href="#o-mnie" class="kafel" style="--img:url(../img/o-mnie.jpg)"><span><b>O mnie</b><small>od 1997 roku, kto gra na moich bębnach</small></span></a>
+      <a href="#galeria" class="kafel" style="--img:url(../img/galeria-33.jpg)"><span><b>Galeria</b><small>ponad 60 zdjęć z pracowni</small></span></a>
+      <a href="#pracownia" class="kafel" style="--img:url(../img/od-a-do-z.jpg)"><span><b>Pracownia</b><small>od A do Z, strojenie, renowacja</small></span></a>
       <a href="#kontakt" class="kafel kafel-kontakt"><span><b>Napisz albo zadzwoń</b><small>601 556 119 · WhatsApp · Messenger</small></span></a>
     </div>
   </div>
@@ -561,7 +572,7 @@ html{scroll-padding-top:72px}
   </div>
 </section>
 
-<section id="o-mnie" data-widok="pracownia" class="about">
+<section id="o-mnie" data-widok="omnie" class="about">
   <div class="wrap about-grid">
     <div>
       <span class="eyebrow">O mnie</span>
@@ -774,7 +785,7 @@ html{scroll-padding-top:72px}
   </div>
 </section>
 
-<section id="galeria" data-widok="pracownia">
+<section id="galeria" data-widok="galeria">
   <div class="wrap">
     <span class="eyebrow">Z pracowni</span>
     <h2>Galeria</h2>
@@ -982,6 +993,7 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
     if (!widok) { el = null; widok = 'start'; }
     document.querySelectorAll('[data-widok]').forEach((x) => x.classList.toggle('on', x.dataset.widok === widok));
     document.querySelectorAll('.dolny-pasek a').forEach((a) => a.classList.toggle('on', a.dataset.zakladka === widok));
+    document.querySelectorAll('.nav ul a').forEach((a) => a.classList.toggle('on', widokZ(document.getElementById(a.getAttribute('href').slice(1))) === widok));
     const pierwszy = document.querySelector('[data-widok="' + widok + '"]');
     requestAnimationFrame(() => {
       if (!el || el === pierwszy || el.id === 'start') window.scrollTo({ top: 0, behavior: plynnie ? 'smooth' : 'auto' });
