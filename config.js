@@ -5,5 +5,5 @@ window.SKLEP_CONFIG = {
   supabaseKey: 'sb_publishable_GBLjlB4Z-dojmnocxFxtyw_i3zQDrjl',
   // Publiczny numer WhatsApp Pawła (np. '48600123456') – po wysłaniu zgłoszenia klient zobaczy
   // przycisk „Napisz też na WhatsAppie”. Puste = przycisku nie ma.
-  whatsapp: ''
+  whatsapp: '48601556119'
 };
