@@ -309,6 +309,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <button type="button" data-filtr="wszystkie">Wszystkie</button>
       </div>
       <div class="items" id="zapytania"></div>
+      <p class="hint" style="margin-top:22px">Zgodnie z polityką prywatności zapytania trzymamy najwyżej 12 miesięcy.
+        <button class="linkbtn" type="button" id="usun-stare" hidden></button></p>
     </section>
 
     <section id="tab-powiadomienia" hidden>
@@ -800,6 +802,10 @@ async function wczytajZapytania() {
     return;
   }
   zapytania = data;
+  const rokTemu = Date.now() - 365 * 864e5;
+  const stare = zapytania.filter((z) => new Date(z.created_at) < rokTemu).length;
+  $('usun-stare').hidden = !stare;
+  $('usun-stare').textContent = 'Usuń zapytania starsze niż rok (' + stare + ')';
   const nowe = zapytania.filter((z) => z.status === 'nowe').length;
   $('licznik-zapytan').hidden = !nowe; $('licznik-zapytan').textContent = nowe;
   rysujZapytania();
@@ -858,6 +864,18 @@ function rysujZapytania() {
       '<div class="zap-akcje">' + akcje.join('') + '</div></div>';
   }).join('');
 }
+
+$('usun-stare').addEventListener('click', async () => {
+  const b = $('usun-stare');
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); const t = b.textContent; b.textContent = 'Kliknij jeszcze raz, aby usunąć';
+    setTimeout(() => { b.classList.remove('armed'); b.textContent = t; }, 4000);
+    return;
+  }
+  const { error } = await sb.from('zapytania').delete().lt('created_at', new Date(Date.now() - 365 * 864e5).toISOString());
+  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+  toast('Stare zapytania usunięte'); wczytajZapytania();
+});
 
 $('zap-filtry').addEventListener('click', (e) => {
   const b = e.target.closest('[data-filtr]'); if (!b) return;

@@ -280,6 +280,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ochre);border-co
 textarea{min-height:120px;resize:vertical}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#a8977f}
 .check input{margin-top:4px}
+.check a{color:var(--ochre-light)}
+footer a{color:inherit}
 
 footer{background:#0f0b08;color:#8f806d;font-size:14px;padding:36px 0}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -790,7 +792,7 @@ iframe.film{cursor:auto}
       </label>
       <label>Wiadomość<textarea id="msg" name="wiadomosc" maxlength="1900" placeholder="Np. interesuje mnie skóra nr 3, średnica 55 cm"></textarea></label>
       <div class="hp" aria-hidden="true"><input type="text" name="www_adres" tabindex="-1" autocomplete="off" aria-label="Zostaw puste"></div>
-      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na wiadomość. Powiadomienie o niej dostaję przez WhatsApp / e-mail.</label>
+      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na wiadomość. Powiadomienie o niej dostaję przez WhatsApp / e-mail. Szczegóły: <a href="polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</label>
       <div class="form-blad" id="kf-blad" role="alert" hidden></div>
       <button class="btn btn-primary" type="submit">Wyślij wiadomość</button>
     </form>
@@ -800,7 +802,7 @@ iframe.film{cursor:auto}
 <footer>
   <div class="wrap">
     <span>© 2026 Paweł Małkowski · Bębny szamańskie · Bębny basowe · Renowacja instrumentów</span>
-    <span>Regulamin · Polityka prywatności · Dostawa i zwroty</span>
+    <span><a href="polityka-prywatnosci/">Polityka prywatności</a></span>
   </div>
 </footer>
 
@@ -840,7 +842,7 @@ iframe.film{cursor:auto}
       </label>
       <label>Wiadomość (opcjonalnie)<textarea name="wiadomosc" maxlength="1900"></textarea></label>
       <div class="hp" aria-hidden="true"><input type="text" name="www_adres" tabindex="-1" autocomplete="off" aria-label="Zostaw puste"></div>
-      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na zgłoszenie. Powiadomienie o nim dostaję przez WhatsApp / e-mail.</label>
+      <label class="check"><input type="checkbox" name="zgoda"> Zgadzam się na przetwarzanie moich danych przez Pawła Małkowskiego w celu odpowiedzi na zgłoszenie. Powiadomienie o nim dostaję przez WhatsApp / e-mail. Szczegóły: <a href="polityka-prywatnosci/" target="_blank" rel="noopener">polityka prywatności</a>.</label>
       <div class="form-blad" id="zq-blad" role="alert" hidden></div>
       <button class="btn btn-primary" type="submit">Wyślij – chcę kupić</button>
     </form>
