@@ -393,7 +393,6 @@ iframe.film{cursor:auto}
 
 /* ===== wersja „jak aplikacja” ===== */
 body.app [data-widok]:not(.on){display:none!important}
-body.app{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 html{scroll-padding-top:72px}
 .app .mock-bar a{color:#fff;font-weight:600}
 .app .nav{position:sticky;top:0;background:rgba(22,17,13,.96);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(246,239,228,.08)}
@@ -402,7 +401,12 @@ html{scroll-padding-top:72px}
 .app .hero .wrap{padding-top:70px;padding-bottom:56px}
 .app .hero-meta{margin-top:34px}
 .app section{padding:56px 0}
-.app section.kafle{padding:28px 0 40px;background:var(--bg)}
+.app section.om-start{padding:56px 0 64px;border-top:1px solid rgba(246,239,228,.08)}
+.om-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.om-foto{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 40%;border-radius:var(--radius);box-shadow:0 30px 60px -25px rgba(0,0,0,.6)}
+.om-tresc h2{margin-bottom:16px}
+.om-tresc .about-liczby{margin-top:26px;padding-top:20px}
+.om-btns{margin-top:30px}
 .kafle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .kafel{position:relative;min-height:170px;border-radius:var(--radius);overflow:hidden;display:flex;align-items:flex-end;text-decoration:none;color:#f6efe4;
   background:linear-gradient(180deg,rgba(18,13,9,.1) 20%,rgba(18,13,9,.92) 85%),var(--img) center/cover;box-shadow:0 14px 30px -18px rgba(42,33,25,.6);transition:.2s}
@@ -430,10 +434,15 @@ html{scroll-padding-top:72px}
   .app .hero p{font-size:17px;margin-bottom:24px}
   .app .hero-meta{display:none}
   .app section{padding:36px 0}
+  .om-grid{grid-template-columns:1fr;gap:24px}
+  .om-foto{aspect-ratio:4/3}
+  .app section.om-start{padding:28px 0 36px}
+  .om-btns .btn{width:100%;justify-content:center}
   .kafle-grid{grid-template-columns:1fr 1fr;gap:10px}
   .kafel{min-height:140px}
   .kafel b{font-size:22px}
   .kafel-duzy{min-height:180px}
+  .app footer{padding-bottom:calc(36px + 72px + env(safe-area-inset-bottom))}
   .dolny-pasek{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:90;background:rgba(22,17,13,.97);backdrop-filter:blur(10px);
     border-top:1px solid rgba(246,239,228,.1);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
   .dolny-pasek a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:#a8977f;text-decoration:none;font-size:11px;font-weight:500;border-radius:12px}
@@ -509,7 +518,6 @@ html{scroll-padding-top:72px}
       <li><a href="#oferta">Gotowe bębny</a></li>
       <li><a href="#skory">Skonfiguruj bęben</a></li>
       <li id="nav-posluchaj" hidden><a href="#posluchaj">Posłuchaj</a></li>
-      <li><a href="#o-mnie">O mnie</a></li>
       <li><a href="#pracownia">Pracownia</a></li>
       <li><a href="#galeria">Galeria</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
@@ -534,21 +542,6 @@ html{scroll-padding-top:72px}
   </div>
 </header>
 
-<section class="kafle" id="start" data-widok="start">
-  <div class="wrap">
-    <div class="kafle-grid">
-      <a href="#oferta" class="kafel kafel-duzy" style="--img:url(../img/beben-55.jpg)"><span><b>Gotowe bębny</b><small>do kupienia od ręki</small></span></a>
-      <a href="#skory" class="kafel" style="--img:url(../img/skora-3.jpg)"><span><b>Skonfiguruj bęben</b><small>rozmiar, korpus, skóra</small></span></a>
-      <a href="#posluchaj" class="kafel" style="--img:url(../img/galeria-3.jpg)"><span><b>Posłuchaj</b><small>jak brzmią u muzyków</small></span></a>
-      <a href="#o-mnie" class="kafel" style="--img:url(../img/o-mnie.jpg)"><span><b>O mnie</b><small>od 1997 roku, kto gra na moich bębnach</small></span></a>
-      <a href="#galeria" class="kafel" style="--img:url(../img/galeria-33.jpg)"><span><b>Galeria</b><small>ponad 60 zdjęć z pracowni</small></span></a>
-      <a href="#pracownia" class="kafel" style="--img:url(../img/od-a-do-z.jpg)"><span><b>Pracownia</b><small>od A do Z, strojenie, renowacja</small></span></a>
-      <a href="#kontakt" class="kafel kafel-kontakt"><span><b>Napisz albo zadzwoń</b><small>601 556 119 · WhatsApp · Messenger</small></span></a>
-    </div>
-  </div>
-</section>
-
-
 <section id="pracownia" data-widok="pracownia">
   <div class="wrap craft">
     <div class="craft-img">
@@ -569,25 +562,27 @@ html{scroll-padding-top:72px}
   </div>
 </section>
 
-<section id="o-mnie" data-widok="omnie" class="about">
-  <div class="wrap about-grid">
-    <div>
-      <span class="eyebrow">O mnie</span>
-      <h2>Lepsza Strona Djembe – bębny od 1997 roku</h2>
+<section id="o-mnie" data-widok="start" class="about om-start">
+  <div class="wrap om-grid">
+    <img class="om-foto" src="../img/o-mnie.jpg" alt="Paweł Małkowski przy swoich bębnach">
+    <div class="om-tresc">
+      <span class="eyebrow">O mnie · Lepsza Strona Djembe</span>
+      <h2>Robię bębny od 1997 roku</h2>
       <div class="about-tekst" id="o-mnie-tekst">
         <p>Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.</p>
         <p>Pasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.</p>
       </div>
-      <img class="about-foto" src="../img/o-mnie.jpg" alt="Paweł Małkowski przy swoich bębnach" loading="lazy">
       <div class="about-liczby">
         <div><strong>1997</strong>rok założenia pracowni</div>
         <div><strong>tysiące</strong>zrobionych bębnów</div>
       </div>
+      <div class="btns om-btns">
+        <a href="#oferta" class="btn btn-primary">Zobacz gotowe bębny →</a>
+        <a href="#skory" class="btn btn-ghost">Skonfiguruj swój bęben</a>
+      </div>
     </div>
-    <div class="grali">
-      <h3>Grają na moich bębnach</h3>
-      <p>Moje instrumenty docenili i grają na nich m.in.:</p>
-      <ul id="grali-lista">
+  </div>
+  <div hidden><ul id="grali-lista">
         <li><a href="https://etno.pl/team/dominik-muszynski/" target="_blank" rel="noopener">Dominik Muszyński</a></li>
         <li><a href="https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA" target="_blank" rel="noopener">Zespół WADADA</a></li>
         <li><a href="http://folktronika.pl/agencja-artystyczna/nasz-zespol/" target="_blank" rel="noopener">Adam Mościcki</a></li>
@@ -597,11 +592,7 @@ html{scroll-padding-top:72px}
         <li><a href="https://www.zniwa.com/" target="_blank" rel="noopener">Zespół Żniwa</a></li>
         <li><a href="https://www.budkasuflera.pl/ania/" target="_blank" rel="noopener">Anna Patynek (Budka Suflera)</a></li>
         <li><a href="https://annasierpowska.com/o-mnie-kontakt/" target="_blank" rel="noopener">Anna Sierpowska</a></li>
-      </ul>
-      <p class="inni">…oraz wielu innych.</p>
-      <a href="#posluchaj" class="btn btn-primary grali-posluchaj" id="grali-posluchaj" hidden>▶ Posłuchaj, jak grają</a>
-    </div>
-  </div>
+      </ul><a id="grali-posluchaj" hidden></a></div>
 </section>
 
 <section id="posluchaj" data-widok="posluchaj" class="listen" hidden>
@@ -988,7 +979,7 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
     if (!widok) { el = null; widok = 'start'; }
     document.querySelectorAll('[data-widok]').forEach((x) => x.classList.toggle('on', x.dataset.widok === widok));
     document.querySelectorAll('.dolny-pasek a').forEach((a) => a.classList.toggle('on', a.dataset.zakladka === widok));
-    document.querySelectorAll('.nav ul a').forEach((a) => a.classList.toggle('on', widokZ(document.getElementById(a.getAttribute('href').slice(1))) === widok));
+    document.querySelectorAll('.nav ul a').forEach((a) => a.classList.toggle('on', (widokZ(document.getElementById(a.getAttribute('href').slice(1))) || 'start') === widok));
     const pierwszy = document.querySelector('[data-widok="' + widok + '"]');
     requestAnimationFrame(() => {
       if (!el || el === pierwszy || el.id === 'start') window.scrollTo({ top: 0, behavior: plynnie ? 'smooth' : 'auto' });
