@@ -3,6 +3,8 @@
 // Linki: ta sama lista co „Grają na moich bębnach” w sekcji O mnie (klucz grali albo treść z HTML).
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
+  // zdjęcia względem miejsca skryptu – działa też w wersji /app/
+  const IMG = new URL('img/', document.currentScript.src).href;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const FILMY_START = [
     { url: 'https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA', tytul: 'Zespół WADADA', kto: 'kanał zespołu na YouTube' }
@@ -17,7 +19,7 @@
     const lista = url.match(/[?&]list=([\w-]+)/);
     const kanal = url.match(/\/channel\/UC([\w-]{22})/);
     const l = lista ? lista[1] : kanal ? 'UU' + kanal[1] : null;
-    return l ? { embed: 'videoseries?list=' + l + '&', mini: 'img/galeria-3.jpg', seria: true } : null;
+    return l ? { embed: 'videoseries?list=' + l + '&', mini: IMG + 'galeria-3.jpg', seria: true } : null;
   }
 
   // linki z HTML sekcji O mnie (gdy w bazie nie ma listy)
