@@ -408,12 +408,7 @@ html{scroll-padding-top:72px}
 .om-foto{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 40%;border-radius:var(--radius);box-shadow:0 30px 60px -25px rgba(0,0,0,.6)}
 .om-tresc h2{margin-bottom:16px}
 .om-tresc .about-liczby{margin-top:26px;padding-top:20px}
-.app section.pasek-zdjec{padding:0 0 10px;background:var(--dark)}
-.pasek-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.pasek-grid a{display:block;border-radius:10px;overflow:hidden;aspect-ratio:1/1}
-.pasek-grid img{width:100%;height:100%;object-fit:cover;transition:.4s}
-.pasek-grid a:hover img{transform:scale(1.05)}
-.pasek-link{display:inline-block;margin:16px 0 34px;color:var(--ochre-light);text-decoration:none;font-weight:600}
+.om-btns{margin-top:30px}
 .kafle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .kafel{position:relative;min-height:170px;border-radius:var(--radius);overflow:hidden;display:flex;align-items:flex-end;text-decoration:none;color:#f6efe4;
   background:linear-gradient(180deg,rgba(18,13,9,.1) 20%,rgba(18,13,9,.92) 85%),var(--img) center/cover;box-shadow:0 14px 30px -18px rgba(42,33,25,.6);transition:.2s}
@@ -444,8 +439,7 @@ html{scroll-padding-top:72px}
   .om-grid{grid-template-columns:1fr;gap:24px}
   .om-foto{aspect-ratio:4/3}
   .app section.om-start{padding:28px 0 36px}
-  .pasek-grid{grid-template-columns:1fr 1fr;gap:8px}
-  .pasek-link{margin:12px 0 22px}
+  .om-btns .btn{width:100%;justify-content:center}
   .kafle-grid{grid-template-columns:1fr 1fr;gap:10px}
   .kafel{min-height:140px}
   .kafel b{font-size:22px}
@@ -526,7 +520,7 @@ html{scroll-padding-top:72px}
       <li><a href="#oferta">Gotowe bębny</a></li>
       <li><a href="#skory">Skonfiguruj bęben</a></li>
       <li id="nav-posluchaj" hidden><a href="#posluchaj">Posłuchaj</a></li>
-      <li><a href="#strojenie">Strojenie i renowacja</a></li>
+      <li><a href="#pracownia">Pracownia</a></li>
       <li><a href="#galeria">Galeria</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
@@ -550,46 +544,7 @@ html{scroll-padding-top:72px}
   </div>
 </header>
 
-<section id="o-mnie" data-widok="start" class="about om-start">
-  <div class="wrap om-grid">
-    <img class="om-foto" src="../img/o-mnie.jpg" alt="Paweł Małkowski przy swoich bębnach">
-    <div class="om-tresc">
-      <span class="eyebrow">O mnie · Lepsza Strona Djembe</span>
-      <h2>Robię bębny od 1997 roku</h2>
-      <div class="about-tekst" id="o-mnie-tekst">
-        <p>Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.</p>
-        <p>Pasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.</p>
-      </div>
-      <div class="about-liczby">
-        <div><strong>1997</strong>rok założenia pracowni</div>
-        <div><strong>tysiące</strong>zrobionych bębnów</div>
-      </div>
-    </div>
-  </div>
-  <div hidden><ul id="grali-lista">
-        <li><a href="https://etno.pl/team/dominik-muszynski/" target="_blank" rel="noopener">Dominik Muszyński</a></li>
-        <li><a href="https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA" target="_blank" rel="noopener">Zespół WADADA</a></li>
-        <li><a href="http://folktronika.pl/agencja-artystyczna/nasz-zespol/" target="_blank" rel="noopener">Adam Mościcki</a></li>
-        <li><span>Zespół Maleo Reggae Rockers</span></li>
-        <li><a href="https://kzww.pl/" target="_blank" rel="noopener">Kapela ze Wsi Warszawa</a></li>
-        <li><a href="https://agencjaperspektywy.pl/artysci/maruna" target="_blank" rel="noopener">Zespół Maruna</a></li>
-        <li><a href="https://www.zniwa.com/" target="_blank" rel="noopener">Zespół Żniwa</a></li>
-        <li><a href="https://www.budkasuflera.pl/ania/" target="_blank" rel="noopener">Anna Patynek (Budka Suflera)</a></li>
-        <li><a href="https://annasierpowska.com/o-mnie-kontakt/" target="_blank" rel="noopener">Anna Sierpowska</a></li>
-      </ul><a id="grali-posluchaj" hidden></a></div>
-</section>
-<section class="pasek-zdjec" data-widok="start" aria-label="Zdjęcia z pracowni">
-  <div class="wrap">
-    <div class="pasek-grid">
-      <a href="#galeria"><img src="../img/galeria-33.jpg" alt="Bębny szamańskie i djembe w lesie" loading="lazy"></a>
-      <a href="#galeria"><img src="../img/galeria-28.jpg" alt="Bębny ceremonialne w opalanych ramach" loading="lazy"></a>
-      <a href="#galeria"><img src="../img/galeria-19.jpg" alt="Korpusy bębnów z wypalanymi krzyżakami" loading="lazy"></a>
-      <a href="#galeria"><img src="../img/galeria-30.jpg" alt="Bęben szamański z mandalą" loading="lazy"></a>
-    </div>
-    <a href="#galeria" class="pasek-link">Zobacz całą galerię →</a>
-  </div>
-</section>
-<section id="pracownia" data-widok="start">
+<section id="pracownia" data-widok="pracownia">
   <div class="wrap craft">
     <div class="craft-img">
       <img src="../img/od-a-do-z.jpg" alt="Wnętrze ręcznie robionego bębna szamańskiego z krzyżakiem">
@@ -609,6 +564,38 @@ html{scroll-padding-top:72px}
   </div>
 </section>
 
+<section id="o-mnie" data-widok="start" class="about om-start">
+  <div class="wrap om-grid">
+    <img class="om-foto" src="../img/o-mnie.jpg" alt="Paweł Małkowski przy swoich bębnach">
+    <div class="om-tresc">
+      <span class="eyebrow">O mnie · Lepsza Strona Djembe</span>
+      <h2>Robię bębny od 1997 roku</h2>
+      <div class="about-tekst" id="o-mnie-tekst">
+        <p>Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.</p>
+        <p>Pasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.</p>
+      </div>
+      <div class="about-liczby">
+        <div><strong>1997</strong>rok założenia pracowni</div>
+        <div><strong>tysiące</strong>zrobionych bębnów</div>
+      </div>
+      <div class="btns om-btns">
+        <a href="#pracownia" class="btn btn-primary">Moja pracownia →</a>
+        <a href="#galeria" class="btn btn-ghost">Galeria</a>
+      </div>
+    </div>
+  </div>
+  <div hidden><ul id="grali-lista">
+        <li><a href="https://etno.pl/team/dominik-muszynski/" target="_blank" rel="noopener">Dominik Muszyński</a></li>
+        <li><a href="https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA" target="_blank" rel="noopener">Zespół WADADA</a></li>
+        <li><a href="http://folktronika.pl/agencja-artystyczna/nasz-zespol/" target="_blank" rel="noopener">Adam Mościcki</a></li>
+        <li><span>Zespół Maleo Reggae Rockers</span></li>
+        <li><a href="https://kzww.pl/" target="_blank" rel="noopener">Kapela ze Wsi Warszawa</a></li>
+        <li><a href="https://agencjaperspektywy.pl/artysci/maruna" target="_blank" rel="noopener">Zespół Maruna</a></li>
+        <li><a href="https://www.zniwa.com/" target="_blank" rel="noopener">Zespół Żniwa</a></li>
+        <li><a href="https://www.budkasuflera.pl/ania/" target="_blank" rel="noopener">Anna Patynek (Budka Suflera)</a></li>
+        <li><a href="https://annasierpowska.com/o-mnie-kontakt/" target="_blank" rel="noopener">Anna Sierpowska</a></li>
+      </ul><a id="grali-posluchaj" hidden></a></div>
+</section>
 
 <section id="posluchaj" data-widok="posluchaj" class="listen" hidden>
   <div class="wrap">
