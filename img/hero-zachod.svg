@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 720" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="niebo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a1630"/>
+      <stop offset=".32" stop-color="#7a2d3a"/>
+      <stop offset=".58" stop-color="#d0603a"/>
+      <stop offset=".78" stop-color="#f2a050"/>
+      <stop offset="1" stop-color="#ffd38a"/>
+    </linearGradient>
+    <radialGradient id="poswiata" cx="1380" cy="470" r="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe2a0" stop-opacity=".95"/>
+      <stop offset=".25" stop-color="#ffb860" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ff8040" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="slonce" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff2c4"/>
+      <stop offset="1" stop-color="#ffbf5e"/>
+    </linearGradient>
+    <linearGradient id="ognisko" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe08a"/>
+      <stop offset="1" stop-color="#ff7a2a"/>
+    </linearGradient>
+    <radialGradient id="blask" cx="0" cy="0" r="1">
+      <stop offset="0" stop-color="#ffb050" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ffb050" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1920" height="720" fill="url(#niebo)"/>
+  <rect width="1920" height="720" fill="url(#poswiata)"/>
+
+  <!-- gwiazdy u góry -->
+  <g fill="#fff4dc" opacity=".7">
+    <circle cx="120" cy="60" r="1.6"/><circle cx="260" cy="110" r="1.2"/><circle cx="410" cy="40" r="1.8"/>
+    <circle cx="560" cy="95" r="1.1"/><circle cx="720" cy="55" r="1.5"/><circle cx="880" cy="120" r="1.2"/>
+    <circle cx="1010" cy="35" r="1.7"/><circle cx="1180" cy="80" r="1.2"/><circle cx="1560" cy="50" r="1.5"/>
+    <circle cx="1700" cy="105" r="1.1"/><circle cx="1840" cy="45" r="1.6"/><circle cx="1460" cy="130" r="1"/>
+  </g>
+
+  <!-- słońce -->
+  <circle cx="1380" cy="470" r="118" fill="url(#slonce)"/>
+
+  <!-- ptaki -->
+  <g fill="none" stroke="#3a1a22" stroke-width="3" stroke-linecap="round" opacity=".75">
+    <path d="M1130 250q12-12 24 0q12-12 24 0"/>
+    <path d="M1190 215q9-9 18 0q9-9 18 0"/>
+    <path d="M1240 268q8-8 16 0q8-8 16 0"/>
+  </g>
+
+  <!-- dalekie góry -->
+  <path fill="#b8584a" opacity=".85" d="M0 470 L130 400 L240 445 L380 350 L520 430 L640 380 L760 450 L900 360 L1040 440 L1160 395 L1290 455 L1430 375 L1560 440 L1700 380 L1820 430 L1920 400 V720 H0Z"/>
+  <!-- środkowe góry -->
+  <path fill="#7e3638" d="M0 540 L170 455 L300 510 L450 420 L610 520 L760 465 L900 530 L1060 445 L1220 525 L1360 480 L1500 540 L1660 460 L1800 515 L1920 470 V720 H0Z"/>
+  <!-- bliskie wzgórza -->
+  <path fill="#4a1e26" d="M0 610 C220 560 380 590 560 575 C760 558 900 600 1080 590 C1280 578 1440 545 1620 570 C1760 590 1860 575 1920 565 V720 H0Z"/>
+
+  <!-- ziemia -->
+  <path fill="#26100f" d="M0 655 C300 630 600 650 960 640 C1300 630 1600 650 1920 635 V720 H0Z"/>
+
+  <!-- tipi -->
+  <g fill="#1a0b0a">
+    <!-- duże tipi -->
+    <path d="M1560 660 L1640 470 L1720 660Z"/>
+    <path d="M1628 470 L1610 430 M1652 470 L1672 432" stroke="#1a0b0a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M1625 660 L1640 600 L1655 660Z" fill="#b8584a" opacity=".55"/>
+    <!-- średnie tipi -->
+    <path d="M1730 662 L1790 515 L1850 662Z"/>
+    <path d="M1781 515 L1768 485 M1799 515 L1813 487" stroke="#1a0b0a" stroke-width="4" stroke-linecap="round"/>
+    <!-- małe tipi po lewej stronie słońca -->
+    <path d="M1180 655 L1222 555 L1264 655Z"/>
+    <path d="M1216 555 L1207 533 M1228 555 L1238 534" stroke="#1a0b0a" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- wzory na tipi -->
+  <g stroke="#c86a3c" stroke-width="3" fill="none" opacity=".7">
+    <path d="M1590 600 L1690 600"/><path d="M1600 585 l12 -10 l12 10 l12 -10 l12 10 l12 -10 l12 10"/>
+    <path d="M1755 610 L1825 610"/>
+  </g>
+
+  <!-- ognisko i blask -->
+  <ellipse cx="1470" cy="640" rx="140" ry="70" fill="url(#blask)"/>
+  <path d="M1470 650 C1452 630 1462 612 1470 595 C1478 612 1490 628 1470 650Z" fill="url(#ognisko)"/>
+  <path d="M1470 650 C1462 640 1466 628 1470 620 C1474 628 1480 640 1470 650Z" fill="#fff2c4"/>
+  <path d="M1440 658 L1500 646 M1440 646 L1500 658" stroke="#1a0b0a" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- postać z bębnem przy ognisku -->
+  <g fill="#1a0b0a">
+    <circle cx="1395" cy="588" r="11"/>
+    <path d="M1380 600 Q1395 594 1410 600 L1416 650 L1374 650Z"/>
+    <ellipse cx="1420" cy="615" rx="9" ry="20" transform="rotate(-15 1420 615)"/>
+    <path d="M1384 606 L1360 622" stroke="#1a0b0a" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="1358" cy="623" r="4"/>
+  </g>
+</svg>
