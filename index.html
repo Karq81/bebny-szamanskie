@@ -117,6 +117,7 @@ section{padding:110px 0}
 /* o mnie */
 .about{background:var(--dark);color:#f6efe4}
 .about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:70px;align-items:start}
+.about-foto{width:100%;max-height:420px;object-fit:cover;object-position:center 45%;border-radius:var(--radius);margin-top:28px}
 .about-tekst{display:grid;gap:16px;font-size:17px}
 .about-tekst p{color:#d6c7b1}
 .about-liczby{display:flex;gap:40px;flex-wrap:wrap;margin-top:34px;padding-top:26px;border-top:1px solid rgba(246,239,228,.18)}
@@ -249,6 +250,9 @@ button.skin:disabled{cursor:default}
 .gallery a:hover img{transform:scale(1.06)}
 .gallery .tall{grid-row:span 2}
 .gallery .wide{grid-column:span 2}
+.gallery{grid-auto-flow:dense}
+.galeria-wiecej{justify-content:center;margin-top:28px}
+.galeria-wiecej .btn{border:0;font-family:inherit}
 .lightbox{position:fixed;inset:0;background:rgba(10,8,6,.94);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;cursor:zoom-out}
 .lightbox.open{display:flex}
 .lightbox img{max-height:92vh;max-width:92vw;border-radius:8px}
@@ -459,6 +463,7 @@ iframe.film{cursor:auto}
         <p>Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.</p>
         <p>Pasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.</p>
       </div>
+      <img class="about-foto" src="img/o-mnie.jpg" alt="Paweł Małkowski przy swoich bębnach" loading="lazy">
       <div class="about-liczby">
         <div><strong>1997</strong>rok założenia pracowni</div>
         <div><strong>tysiące</strong>zrobionych bębnów</div>
@@ -667,15 +672,75 @@ iframe.film{cursor:auto}
     <span class="eyebrow">Z pracowni</span>
     <h2>Galeria</h2>
     <div class="gallery">
-      <a href="img/galeria-1.jpg" class="tall"><img src="img/galeria-1.jpg" alt="Bęben szamański z krzyżakiem" loading="lazy"></a>
-      <a href="img/galeria-3.jpg" class="wide"><img src="img/galeria-3.jpg" alt="Kilka bębnów na trawie" loading="lazy"></a>
-      <a href="img/galeria-2.jpg"><img src="img/galeria-2.jpg" alt="Bęben z ciemnej skóry z włosiem" loading="lazy"></a>
-      <a href="img/galeria-4.jpg"><img src="img/galeria-4.jpg" alt="Bęben z krzyżakiem w ogrodzie" loading="lazy"></a>
-      <a href="img/galeria-5.jpg" class="tall"><img src="img/galeria-5.jpg" alt="Bęben z ciemną skórą z boku" loading="lazy"></a>
-      <a href="img/galeria-6.jpg"><img src="img/galeria-6.jpg" alt="Wnętrze bębna" loading="lazy"></a>
-      <a href="img/galeria-8.jpg" class="wide"><img src="img/galeria-8.jpg" alt="Bębny ze skór łaciatych" loading="lazy"></a>
-      <a href="img/galeria-7.jpg"><img src="img/galeria-7.jpg" alt="Bęben z boku" loading="lazy"></a>
+      <a href="img/galeria-33.jpg" class="wide"><img src="img/galeria-33.jpg" alt="Kilkanaście bębnów szamańskich i djembe w lesie" loading="lazy"></a>
+      <a href="img/galeria-28.jpg" class="wide"><img src="img/galeria-28.jpg" alt="Dwa duże bębny ceremonialne zawieszone w opalanych ramach" loading="lazy"></a>
+      <a href="img/galeria-10.jpg"><img src="img/galeria-10.jpg" alt="Sześć bębnów szamańskich ze skór łaciatych na mchu" loading="lazy"></a>
+      <a href="img/galeria-44.jpg" class="wide"><img src="img/galeria-44.jpg" alt="Bębny szamańskie, basowe na stojakach i drobne instrumenty w ogrodzie" loading="lazy"></a>
+      <a href="img/galeria-30.jpg"><img src="img/galeria-30.jpg" alt="Bęben szamański z mandalą na skórze" loading="lazy"></a>
+      <a href="img/galeria-34.jpg"><img src="img/galeria-34.jpg" alt="Komplet trzech bębnów basowych dundun" loading="lazy"></a>
+      <a href="img/galeria-29.jpg"><img src="img/galeria-29.jpg" alt="Tył bębna ceremonialnego – krzyżak z gałęzi wiązany sznurem" loading="lazy"></a>
+      <a href="img/galeria-19.jpg"><img src="img/galeria-19.jpg" alt="Korpusy bębnów z wypalanymi krzyżakami przed naciągnięciem skóry" loading="lazy"></a>
+      <a href="img/galeria-51.jpg"><img src="img/galeria-51.jpg" alt="Dwustronny bęben basowy z bukowym korpusem i pasem do noszenia" loading="lazy"></a>
+      <a href="img/galeria-54.jpg"><img src="img/galeria-54.jpg" alt="Bęben szamański z ciemnobrązowej skóry z włosiem" loading="lazy"></a>
+      <a href="img/galeria-59.jpg"><img src="img/galeria-59.jpg" alt="Tył bębna z rzeźbionym krzyżakiem i wentylem do strojenia" loading="lazy"></a>
+      <a href="img/galeria-63.jpg"><img src="img/galeria-63.jpg" alt="Bęben ze skóry białej w czarne łaty" loading="lazy"></a>
+      <a href="img/galeria-11.jpg" data-wiecej hidden><img src="img/galeria-11.jpg" alt="Ceremonialny bęben basowy na drewnianym stojaku" loading="lazy"></a>
+      <a href="img/galeria-12.jpg" data-wiecej hidden><img src="img/galeria-12.jpg" alt="Wnętrze bębna ceremonialnego z krzyżakiem, zawieszonego na stojaku w lesie" loading="lazy"></a>
+      <a href="img/galeria-13.jpg" data-wiecej hidden><img src="img/galeria-13.jpg" alt="Trzy bębny basowe dundun z żółtym sznurem" loading="lazy"></a>
+      <a href="img/galeria-14.jpg" data-wiecej hidden><img src="img/galeria-14.jpg" alt="Bębny ramowe, ceremonialne i basowe z pałkami" loading="lazy"></a>
+      <a href="img/galeria-15.jpg" class="wide" data-wiecej hidden><img src="img/galeria-15.jpg" alt="Kolekcja bębnów z pracowni – szamańskie, ceremonialne, cajony" loading="lazy"></a>
+      <a href="img/galeria-16.jpg" data-wiecej hidden><img src="img/galeria-16.jpg" alt="Bęben dundun na opalanym stojaku w lesie" loading="lazy"></a>
+      <a href="img/galeria-17.jpg" class="wide" data-wiecej hidden><img src="img/galeria-17.jpg" alt="Bęben dundun z pałkami i rozłożonym stojakiem" loading="lazy"></a>
+      <a href="img/galeria-18.jpg" data-wiecej hidden><img src="img/galeria-18.jpg" alt="Bęben szamański z barwioną skórą" loading="lazy"></a>
+      <a href="img/galeria-20.jpg" data-wiecej hidden><img src="img/galeria-20.jpg" alt="Bęben ze skóry łaciatej na opalanym stojaku – z boku" loading="lazy"></a>
+      <a href="img/galeria-21.jpg" data-wiecej hidden><img src="img/galeria-21.jpg" alt="Bęben ze skóry łaciatej na opalanym stojaku" loading="lazy"></a>
+      <a href="img/galeria-22.jpg" data-wiecej hidden><img src="img/galeria-22.jpg" alt="Tył bębna szamańskiego – krzyżak z rzeźbieniem i opalany korpus" loading="lazy"></a>
+      <a href="img/galeria-23.jpg" data-wiecej hidden><img src="img/galeria-23.jpg" alt="Bęben szamański z ciemnej, przypalanej skóry" loading="lazy"></a>
+      <a href="img/galeria-24.jpg" data-wiecej hidden><img src="img/galeria-24.jpg" alt="Bęben z kłody z dzwonkiem, obity skórą z ćwiekami" loading="lazy"></a>
+      <a href="img/galeria-25.jpg" data-wiecej hidden><img src="img/galeria-25.jpg" alt="Bęben z kłody z dzwonkiem – druga strona" loading="lazy"></a>
+      <a href="img/galeria-26.jpg" data-wiecej hidden><img src="img/galeria-26.jpg" alt="Duży bęben basowy z białym sznurem i stojakiem" loading="lazy"></a>
+      <a href="img/galeria-27.jpg" class="wide" data-wiecej hidden><img src="img/galeria-27.jpg" alt="Bęben ze skóry łaciatej na opalanym stojaku, z pałkami" loading="lazy"></a>
+      <a href="img/galeria-31.jpg" data-wiecej hidden><img src="img/galeria-31.jpg" alt="Bęben ceremonialny z barwioną skórą w czarnej ramie" loading="lazy"></a>
+      <a href="img/galeria-32.jpg" data-wiecej hidden><img src="img/galeria-32.jpg" alt="Bęben ceremonialny w czarnej ramie – widok od tyłu" loading="lazy"></a>
+      <a href="img/galeria-35.jpg" data-wiecej hidden><img src="img/galeria-35.jpg" alt="Siedem bębnów szamańskich z różnych skór na mchu" loading="lazy"></a>
+      <a href="img/galeria-36.jpg" class="wide" data-wiecej hidden><img src="img/galeria-36.jpg" alt="Djembe z czerwonym sznurem" loading="lazy"></a>
+      <a href="img/galeria-37.jpg" class="wide" data-wiecej hidden><img src="img/galeria-37.jpg" alt="Djembe z żółtym sznurem" loading="lazy"></a>
+      <a href="img/galeria-38.jpg" class="wide" data-wiecej hidden><img src="img/galeria-38.jpg" alt="Djembe z różowym sznurem w lesie" loading="lazy"></a>
+      <a href="img/galeria-39.jpg" class="wide" data-wiecej hidden><img src="img/galeria-39.jpg" alt="Bębny szamańskie w różnych rozmiarach pod drzewem" loading="lazy"></a>
+      <a href="img/galeria-40.jpg" data-wiecej hidden><img src="img/galeria-40.jpg" alt="Bęben szamański ze strojeniem dętkowym – widać wentyle" loading="lazy"></a>
+      <a href="img/galeria-41.jpg" data-wiecej hidden><img src="img/galeria-41.jpg" alt="Bęben ze skóry w cętki" loading="lazy"></a>
+      <a href="img/galeria-42.jpg" data-wiecej hidden><img src="img/galeria-42.jpg" alt="Bęben szamański z czerwonym sznurem na śniegu" loading="lazy"></a>
+      <a href="img/galeria-43.jpg" class="wide" data-wiecej hidden><img src="img/galeria-43.jpg" alt="Bęben ze skóry łaciatej na ciemnym stojaku" loading="lazy"></a>
+      <a href="img/galeria-45.jpg" data-wiecej hidden><img src="img/galeria-45.jpg" alt="Bęben basowy z barwioną skórą oparty o drzewo" loading="lazy"></a>
+      <a href="img/galeria-46.jpg" data-wiecej hidden><img src="img/galeria-46.jpg" alt="Bęben basowy z ciemną skórą i białym sznurem" loading="lazy"></a>
+      <a href="img/galeria-47.jpg" data-wiecej hidden><img src="img/galeria-47.jpg" alt="Djembe z różowym sznurem – widok od podstawy" loading="lazy"></a>
+      <a href="img/galeria-48.jpg" data-wiecej hidden><img src="img/galeria-48.jpg" alt="Ceremonialny bęben basowy owinięty sznurem, na stojaku w lesie" loading="lazy"></a>
+      <a href="img/galeria-49.jpg" data-wiecej hidden><img src="img/galeria-49.jpg" alt="Bęben szamański z jasnobrązowej skóry z włosiem" loading="lazy"></a>
+      <a href="img/galeria-50.jpg" data-wiecej hidden><img src="img/galeria-50.jpg" alt="Bęben szamański z barwionej, przecieranej skóry" loading="lazy"></a>
+      <a href="img/galeria-52.jpg" data-wiecej hidden><img src="img/galeria-52.jpg" alt="Bęben ze skóry białej z czarnymi plamkami" loading="lazy"></a>
+      <a href="img/galeria-53.jpg" data-wiecej hidden><img src="img/galeria-53.jpg" alt="Tył bębna ze skórą z włosiem i rzeźbionym, opalanym krzyżakiem" loading="lazy"></a>
+      <a href="img/galeria-55.jpg" data-wiecej hidden><img src="img/galeria-55.jpg" alt="Tył bębna ze skórą łaciatą i rzeźbionym krzyżakiem" loading="lazy"></a>
+      <a href="img/galeria-56.jpg" data-wiecej hidden><img src="img/galeria-56.jpg" alt="Bęben ze skóry w brązowe łaty" loading="lazy"></a>
+      <a href="img/galeria-57.jpg" data-wiecej hidden><img src="img/galeria-57.jpg" alt="Tył bębna – opalany korpus i rzeźbiony krzyżak, widoczny wentyl strojenia" loading="lazy"></a>
+      <a href="img/galeria-58.jpg" data-wiecej hidden><img src="img/galeria-58.jpg" alt="Bęben ze skóry brązowej z ciemnym wzorem" loading="lazy"></a>
+      <a href="img/galeria-60.jpg" data-wiecej hidden><img src="img/galeria-60.jpg" alt="Bęben szamański z jasnej, golonej skóry" loading="lazy"></a>
+      <a href="img/galeria-61.jpg" data-wiecej hidden><img src="img/galeria-61.jpg" alt="Bęben ze skóry czarno-białej" loading="lazy"></a>
+      <a href="img/galeria-62.jpg" class="wide" data-wiecej hidden><img src="img/galeria-62.jpg" alt="Tył bębna czarno-białego z krzyżakiem" loading="lazy"></a>
+      <a href="img/galeria-64.jpg" data-wiecej hidden><img src="img/galeria-64.jpg" alt="Tył bębna – opalany korpus, rzeźbiony krzyżak i wentyl" loading="lazy"></a>
+      <a href="img/galeria-65.jpg" data-wiecej hidden><img src="img/galeria-65.jpg" alt="Bęben szamański – widok od tyłu, korpus w ogniste pasy" loading="lazy"></a>
+      <a href="img/galeria-66.jpg" data-wiecej hidden><img src="img/galeria-66.jpg" alt="Bęben ze skóry czarnej z włosiem" loading="lazy"></a>
+      <a href="img/galeria-67.jpg" data-wiecej hidden><img src="img/galeria-67.jpg" alt="Dwustronny bęben basowy z pasem do noszenia" loading="lazy"></a>
+      <a href="img/galeria-68.jpg" data-wiecej hidden><img src="img/galeria-68.jpg" alt="Bęben ze skóry w drobne plamki" loading="lazy"></a>
+      <a href="img/galeria-1.jpg" data-wiecej hidden><img src="img/galeria-1.jpg" alt="Bęben szamański z krzyżakiem" loading="lazy"></a>
+      <a href="img/galeria-3.jpg" class="wide" data-wiecej hidden><img src="img/galeria-3.jpg" alt="Kilka bębnów na trawie" loading="lazy"></a>
+      <a href="img/galeria-2.jpg" data-wiecej hidden><img src="img/galeria-2.jpg" alt="Bęben z ciemnej skóry z włosiem" loading="lazy"></a>
+      <a href="img/galeria-4.jpg" data-wiecej hidden><img src="img/galeria-4.jpg" alt="Bęben z krzyżakiem w ogrodzie" loading="lazy"></a>
+      <a href="img/galeria-5.jpg" data-wiecej hidden><img src="img/galeria-5.jpg" alt="Bęben z ciemną skórą z boku" loading="lazy"></a>
+      <a href="img/galeria-6.jpg" data-wiecej hidden><img src="img/galeria-6.jpg" alt="Wnętrze bębna" loading="lazy"></a>
+      <a href="img/galeria-8.jpg" class="wide" data-wiecej hidden><img src="img/galeria-8.jpg" alt="Bębny ze skór łaciatych" loading="lazy"></a>
+      <a href="img/galeria-7.jpg" data-wiecej hidden><img src="img/galeria-7.jpg" alt="Bęben z boku" loading="lazy"></a>
     </div>
+    <div class="btns galeria-wiecej"><button type="button" class="btn btn-dark" id="galeria-wiecej">Pokaż wszystkie zdjęcia (67)</button></div>
   </div>
 </section>
 
@@ -788,6 +853,7 @@ iframe.film{cursor:auto}
 <script>
 // galeria – powiększanie zdjęć
 const lb=document.querySelector('.lightbox');
+document.getElementById('galeria-wiecej').addEventListener('click',e=>{document.querySelectorAll('.gallery [data-wiecej]').forEach(a=>a.hidden=false);e.target.closest('.galeria-wiecej').remove();});
 document.querySelectorAll('.gallery a').forEach(a=>a.addEventListener('click',e=>{
   e.preventDefault(); lb.querySelector('img').src=a.querySelector('img').src; lb.classList.add('open');
 }));
