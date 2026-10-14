@@ -13,6 +13,7 @@
 
   const STATUS = {
     dostepny: null,
+    zarezerwowany: { tekst: 'Zarezerwowany', klasa: 'reserved' },
     na_zamowienie: { tekst: 'Na zamówienie', klasa: 'custom' },
     wkrotce: { tekst: 'Wkrótce', klasa: 'soon' },
     sprzedany: { tekst: 'Sprzedany', klasa: 'sold' }
@@ -58,7 +59,11 @@
       ? '<p class="omnibus">Najniższa cena z 30 dni przed obniżką: ' + zl(p.cena_najnizsza_30) + '</p>' : '';
   }
 
+  // Napis „Zarezerwowany” na samym zdjęciu (karta i okienko szczegółów).
+  const napisRez = (p) => p.status === 'zarezerwowany' ? '<span class="rez-stamp" aria-hidden="true">Zarezerwowany</span>' : '';
+
   function badge(p) {
+    if (p.status === 'zarezerwowany') return '';
     if (p.status === 'dostepny' && p.cena_przed && p.cena && p.cena_przed > p.cena) return '<span class="badge">Promocja</span>';
     const s = STATUS[p.status];
     return s ? '<span class="badge ' + s.klasa + '">' + s.tekst + '</span>' : '';
@@ -67,16 +72,36 @@
   function karta(p, i) {
     const cechy = p.cechy.split('\n').map((c) => c.trim()).filter(Boolean).slice(0, 4);
     const foto = p.zdjecia[0];
-    return '<article class="card' + (p.status === 'sprzedany' ? ' card-sold' : '') + '">' +
-      '<button class="card-img" type="button" data-produkt="' + i + '" aria-label="Szczegóły: ' + esc(p.nazwa) + '">' + badge(p) +
+    return '<article class="card' + (p.status === 'sprzedany' ? ' card-sold' : p.status === 'zarezerwowany' ? ' card-reserved' : '') + '">' +
+      '<button class="card-img" type="button" data-produkt="' + i + '" aria-label="Szczegóły: ' + esc(p.nazwa) + '">' + badge(p) + napisRez(p) +
       (foto ? '<img src="' + esc(foto) + '" alt="' + esc(p.nazwa) + '" loading="lazy">' : '') +
       (p.zdjecia.length > 1 ? '<span class="photo-count">' + p.zdjecia.length + ' zdjęć</span>' : '') +
       (p.film ? '<span class="photo-count video-tag">▶ film</span>' : '') + '</button>' +
       '<div class="card-body"><h3>' + esc(p.nazwa) + '</h3>' +
       (cechy.length ? '<ul class="specs">' + cechy.map((c) => '<li>' + esc(c) + '</li>').join('') + '</ul>' : '') +
       '<div class="price">' + cena(p) + '</div>' +
-      '<button class="btn btn-dark" type="button" data-produkt="' + i + '">' + (p.status === 'sprzedany' ? 'Zobacz szczegóły' : 'Zobacz i zapytaj') + '</button>' +
+      '<button class="btn btn-dark" type="button" data-produkt="' + i + '">' + (p.status === 'sprzedany' || p.status === 'zarezerwowany' ? 'Zobacz szczegóły' : 'Zobacz i zapytaj') + '</button>' +
       '</div></article>';
+  }
+
+  // Każdy bęben jest jedyny – zamiast „Kup teraz” klient najpierw pisze, a Paweł po rozmowie rezerwuje.
+  function przyciski(p) {
+    const btn = (rodzaj, klasa, tekst) => '<button type="button" class="btn ' + klasa + '" data-zapytaj="' + rodzaj + '">' + tekst + '</button>';
+    if (p.status === 'dostepny' || p.status === 'na_zamowienie') {
+      return '<p class="pm-note">Każdy bęben jest jedyny w swoim rodzaju, dlatego przed zakupem zawsze rozmawiamy. ' +
+        'Wyślij zgłoszenie – odezwę się, odpowiem na pytania, a gdy się zdecydujesz, zarezerwuję bęben dla Ciebie.</p>' +
+        '<div class="pm-ctas">' + btn('kupno', 'btn-primary', p.status === 'na_zamowienie' ? 'Chcę zamówić' : 'Chcę kupić ten bęben') +
+        btn('pytanie', 'btn-outline', 'Mam pytanie') + '</div>';
+    }
+    if (p.status === 'zarezerwowany') {
+      return '<p class="pm-note">Ten bęben jest zarezerwowany dla innej osoby. Zostaw kontakt – dam znać, jeśli rezerwacja się zwolni, albo zrobię dla Ciebie podobny.</p>' +
+        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Zapytaj o ten lub podobny') + '</div>';
+    }
+    if (p.status === 'sprzedany') {
+      return '<p class="pm-note">Ten bęben ma już właściciela. Napisz, jeśli chcesz podobny.</p>' +
+        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Chcę podobny bęben') + '</div>';
+    }
+    return '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Daj mi znać, gdy będzie') + '</div>';
   }
 
   let produkty = [];
@@ -87,7 +112,7 @@
     const zdj = p.zdjecia;
     modal.querySelector('.pm-body').innerHTML =
       '<div class="pm-media">' +
-        (zdj[0] ? '<img class="pm-main" src="' + esc(zdj[0]) + '" alt="' + esc(p.nazwa) + '">' : '') +
+        (zdj[0] ? '<div class="pm-foto"><img class="pm-main" src="' + esc(zdj[0]) + '" alt="' + esc(p.nazwa) + (p.status === 'zarezerwowany' ? ' – zarezerwowany' : '') + '">' + napisRez(p) + '</div>' : '') +
         (zdj.length > 1 ? '<div class="pm-thumbs">' + zdj.map((z, k) => '<button type="button" data-src="' + esc(z) + '"' + (k === 0 ? ' class="on"' : '') + '><img src="' + esc(z) + '" alt="Zdjęcie ' + (k + 1) + '" loading="lazy"></button>').join('') + '</div>' : '') +
         (p.film ? filmHtml(p.film, p.nazwa) : '') +
       '</div>' +
@@ -96,16 +121,12 @@
         '<div class="price">' + cena(p) + '</div>' + omnibus(p) +
         (cechy.length ? '<ul class="specs">' + cechy.map((c) => '<li>' + esc(c) + '</li>').join('') + '</ul>' : '') +
         (p.opis ? '<div class="pm-opis">' + p.opis.split(/\n{2,}/).map((a) => '<p>' + esc(a).replace(/\n/g, '<br>') + '</p>').join('') + '</div>' : '') +
-        (p.status === 'sprzedany' ? '<p class="pm-note">Ten bęben ma już właściciela. Napisz, jeśli chcesz podobny.</p>' : '') +
-        '<a href="#kontakt" class="btn btn-primary pm-cta">' + (p.status === 'sprzedany' ? 'Chcę podobny bęben' : 'Zapytaj o ten bęben') + '</a>' +
+        przyciski(p) +
       '</div>';
-    modal.querySelector('.pm-cta').addEventListener('click', () => {
-      const msg = document.getElementById('msg');
-      const topic = document.getElementById('topic');
-      if (msg) msg.value = 'Dzień dobry, interesuje mnie: ' + p.nazwa + '.';
-      if (topic) topic.value = 'Bęben z oferty';
+    modal.querySelectorAll('[data-zapytaj]').forEach((b) => b.addEventListener('click', () => {
       zamknij();
-    });
+      window.otworzZapytanie(p, b.dataset.zapytaj);
+    }));
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
     modal.querySelector('.pm-close').focus();

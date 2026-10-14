@@ -72,6 +72,34 @@ textarea{resize:vertical;min-height:110px}
 .chip.wkrotce{background:#ddd5f0;color:#4b3f75}
 .chip.na_zamowienie{background:#f3e0c4;color:#8a5317}
 .chip.ukryty{background:#f6dcd2;color:var(--rust)}
+.chip.zarezerwowany{background:#dde6f3;color:#2f4f7a}
+.chip.nowe{background:var(--ochre);color:#fff}
+.chip.w_toku{background:#f3e0c4;color:#8a5317}
+.chip.zarezerwowane{background:#dde6f3;color:#2f4f7a}
+.chip.zamkniete{background:#e5ddd3;color:#6a5b4d}
+.chip.kupno{background:var(--rust);color:#fff}
+.tabs .licznik{display:inline-block;min-width:22px;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--rust);color:#fff;font-size:12px;line-height:20px;text-align:center}
+.btn-sm{min-height:38px;padding:8px 14px;font-size:14px}
+.btn-ok{background:#2f4f7a;color:#fff}
+
+/* zapytania */
+.zap-filtry{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.zap-filtry button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:14px}
+.zap-filtry button.on{background:var(--ochre);border-color:var(--ochre);color:#fff}
+.zap{display:grid;gap:10px}
+.zap.nowe{box-shadow:inset 4px 0 0 var(--ochre),0 1px 0 var(--line)}
+.zap-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.zap-head strong{font-size:18px}
+.zap-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink-soft)}
+.zap-produkt{font-weight:600}
+.zap-msg{background:var(--bg);border-radius:10px;padding:10px 14px;white-space:pre-wrap;word-break:break-word}
+.zap-kontakt{display:flex;gap:8px;flex-wrap:wrap}
+.zap-kontakt a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--bg-2);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
+.zap-kontakt a.wa{background:#25d366;color:#0b2b16}
+.zap-akcje{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.info-box{background:var(--bg-2);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink-soft);display:grid;gap:6px}
+.info-box ol{padding-left:20px;display:grid;gap:4px}
+.info-box code{background:#fff;padding:1px 6px;border-radius:6px}
 .item-actions{display:flex;gap:6px;align-items:center}
 .icon.del{color:var(--rust);border-color:rgba(140,63,34,.35)}
 .icon.del.armed{width:auto;padding:0 12px;border-radius:999px;background:var(--rust);color:#fff;font-size:13px;font-weight:600}
@@ -158,7 +186,9 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <div id="panel" hidden>
     <div class="tabs" role="tablist">
       <button type="button" class="on" data-tab="lista">Moje bębny</button>
+      <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
       <button type="button" data-tab="filmy">Filmy na stronie</button>
+      <button type="button" data-tab="powiadomienia">Powiadomienia</button>
     </div>
 
     <section id="tab-lista">
@@ -167,6 +197,54 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <button class="btn btn-primary" type="button" id="dodaj">+ Dodaj bęben</button>
       </div>
       <div class="items" id="lista"></div>
+    </section>
+
+    <section id="tab-zapytania" hidden>
+      <div class="list-head">
+        <h2>Zapytania od klientów</h2>
+        <button class="btn btn-light btn-sm" type="button" id="odswiez-zapytania">↻ Odśwież</button>
+      </div>
+      <div class="zap-filtry" id="zap-filtry">
+        <button type="button" class="on" data-filtr="otwarte">Do załatwienia</button>
+        <button type="button" data-filtr="zarezerwowane">Zarezerwowane</button>
+        <button type="button" data-filtr="zamkniete">Załatwione</button>
+        <button type="button" data-filtr="wszystkie">Wszystkie</button>
+      </div>
+      <div class="items" id="zapytania"></div>
+    </section>
+
+    <section id="tab-powiadomienia" hidden>
+      <form class="card form" id="powiadomienia-form">
+        <h2>Powiadomienia o zapytaniach</h2>
+        <p class="hint" style="font-size:15px">Gdy klient wyśle zgłoszenie ze strony, dostaniesz wiadomość na WhatsAppa (i e-mail, jeśli go ustawisz). Wszystkie zgłoszenia zawsze są też w zakładce „Zapytania”.</p>
+
+        <div class="info-box">
+          <strong style="color:var(--ink)">WhatsApp – jak zdobyć klucz (raz, ok. 2 minut)</strong>
+          <ol>
+            <li>Na telefonie Pawła dodaj do kontaktów numer bota CallMeBot – aktualny numer jest na stronie <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">callmebot.com</a> (punkt 1 instrukcji).</li>
+            <li>Wyślij do niego na WhatsAppie wiadomość: <code>I allow callmebot to send me messages</code></li>
+            <li>Po chwili przyjdzie odpowiedź z kluczem <b>apikey</b> (kilka cyfr) – wpisz go poniżej.</li>
+          </ol>
+        </div>
+        <div class="row2">
+          <label>Numer WhatsApp Pawła<input type="tel" id="pw-telefon" placeholder="np. +48 600 123 456" autocomplete="off"></label>
+          <label>Klucz CallMeBot (apikey)<input type="text" id="pw-klucz" inputmode="numeric" autocomplete="off"></label>
+        </div>
+
+        <div class="info-box">
+          <strong style="color:var(--ink)">E-mail (opcjonalnie)</strong>
+          <span>Załóż darmowe konto na <a href="https://resend.com" target="_blank" rel="noopener">resend.com</a> <b>na ten sam adres e-mail</b>, który wpiszesz poniżej, potem API Keys → Create API Key i wklej klucz (zaczyna się od <code>re_</code>). Bez własnej domeny Resend wysyła tylko na adres, na który jest konto.</span>
+        </div>
+        <div class="row2">
+          <label>E-mail Pawła<input type="email" id="pw-email" autocomplete="off"></label>
+          <label>Klucz Resend<input type="text" id="pw-resend" placeholder="re_…" autocomplete="off"></label>
+        </div>
+
+        <div class="film-row">
+          <button class="btn btn-primary" type="submit">Zapisz</button>
+          <button class="btn btn-light" type="button" id="pw-test">Wyślij próbne powiadomienie</button>
+        </div>
+      </form>
     </section>
 
     <section id="tab-filmy" hidden>
@@ -201,6 +279,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <label>Status
             <select id="f-status">
               <option value="dostepny">Dostępny – do kupienia</option>
+              <option value="zarezerwowany">Zarezerwowany dla klienta</option>
               <option value="na_zamowienie">Na zamówienie</option>
               <option value="wkrotce">Wkrótce</option>
               <option value="sprzedany">Sprzedany</option>
@@ -257,7 +336,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 const cfg = window.SKLEP_CONFIG || {};
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const STATUS = { dostepny: 'Dostępny', na_zamowienie: 'Na zamówienie', wkrotce: 'Wkrótce', sprzedany: 'Sprzedany' };
+const STATUS = { dostepny: 'Dostępny', zarezerwowany: 'Zarezerwowany', na_zamowienie: 'Na zamówienie', wkrotce: 'Wkrótce', sprzedany: 'Sprzedany' };
 const BUCKET = 'zdjecia';
 // Login bez @ (np. „pawel”) zamieniamy na adres konta w Supabase: pawel@panel.bebny
 const LOGIN_DOMENA = '@panel.bebny';
@@ -319,16 +398,20 @@ $('nowe-haslo').addEventListener('submit', async (e) => {
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
 
 // ---------- zakładki ----------
-document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
-  document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b));
-  $('tab-lista').hidden = b.dataset.tab !== 'lista';
-  $('tab-filmy').hidden = b.dataset.tab !== 'filmy';
+const ZAKLADKI = ['lista', 'zapytania', 'filmy', 'powiadomienia'];
+function zakladka(nazwa) {
+  document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
+  ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
   $('edycja').hidden = true;
-}));
+  if (nazwa === 'zapytania') wczytajZapytania();
+}
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => zakladka(b.dataset.tab)));
 
 async function start() {
   pokaz('panel');
-  await Promise.all([wczytaj(), wczytajFilmy()]);
+  // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
+  await Promise.all([wczytaj().then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia()]);
+  if (zapytania.some((z) => z.status === 'nowe')) zakladka('zapytania');
 }
 
 // ---------- lista ----------
@@ -356,8 +439,10 @@ function rysujListe() {
       '<div class="item-actions">' +
         '<button class="icon" type="button" data-akcja="gora" data-i="' + i + '" aria-label="Przesuń wyżej"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
         '<button class="icon" type="button" data-akcja="dol" data-i="' + i + '" aria-label="Przesuń niżej"' + (i === produkty.length - 1 ? ' disabled' : '') + '>↓</button>' +
+        (p.status === 'dostepny' ? '<button class="btn btn-ok btn-sm" type="button" data-akcja="rezerwuj" data-i="' + i + '">Zarezerwuj</button>' : '') +
+        (p.status === 'zarezerwowany' ? '<button class="btn btn-light btn-sm" type="button" data-akcja="zwolnij" data-i="' + i + '">Zdejmij rezerwację</button>' : '') +
         '<button class="btn btn-dark" type="button" data-akcja="edytuj" data-i="' + i + '">Edytuj</button>' +
-        '<button class="icon del" type="button" data-akcja="usun" data-i="' + i + '" aria-label="Usuń bęben">🗑</button>' +
+        '<button class="btn btn-danger btn-sm" type="button" data-akcja="usun" data-i="' + i + '">Usuń</button>' +
       '</div></div>').join('');
 }
 
@@ -365,10 +450,12 @@ $('lista').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-akcja]'); if (!b) return;
   const i = +b.dataset.i;
   if (b.dataset.akcja === 'edytuj') return otworzEdycje(produkty[i]);
+  if (b.dataset.akcja === 'rezerwuj') return zmienStatus(produkty[i], 'zarezerwowany');
+  if (b.dataset.akcja === 'zwolnij') return zmienStatus(produkty[i], 'dostepny');
   if (b.dataset.akcja === 'usun') {
     if (!b.classList.contains('armed')) {
       b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
-      setTimeout(() => { b.classList.remove('armed'); b.textContent = '🗑'; }, 4000);
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń'; }, 4000);
       return;
     }
     return usunProdukt(produkty[i], []);
@@ -572,6 +659,156 @@ $('filmy-form').addEventListener('submit', async (e) => {
   const { error } = await sb.from('ustawienia').upsert({ klucz: 'film_strojenie', wartosc: v });
   if (error) return toast('Nie udało się zapisać: ' + error.message, true);
   toast(v ? 'Film zapisany – jest już na stronie' : 'Film usunięty ze strony');
+});
+// ---------- rezerwacje ----------
+async function zmienStatus(p, status, zapytanie) {
+  const { error } = await sb.from('produkty').update({ status }).eq('id', p.id);
+  if (error) return toast('Nie udało się zmienić statusu: ' + error.message, true);
+  let res = {};
+  if (zapytanie) {
+    res = await sb.from('zapytania').update({ status: status === 'zarezerwowany' ? 'zarezerwowane' : status === 'sprzedany' ? 'zamkniete' : 'w_toku' }).eq('id', zapytanie.id);
+  } else if (status !== 'zarezerwowany') {
+    // rezerwacja zdjęta z listy bębnów – powiązane zapytanie wraca do „w toku”
+    res = await sb.from('zapytania').update({ status: status === 'sprzedany' ? 'zamkniete' : 'w_toku' }).eq('produkt_id', p.id).eq('status', 'zarezerwowane');
+  }
+  if (res.error) toast('Status bębna zmieniony, ale zapytania nie udało się zaktualizować: ' + res.error.message, true);
+  else
+  toast({ zarezerwowany: 'Zarezerwowane – na stronie widać „Zarezerwowany”', dostepny: 'Rezerwacja zdjęta – bęben znów jest do kupienia', sprzedany: 'Oznaczone jako sprzedany' }[status] || 'Zapisane');
+  await Promise.all([wczytaj(), wczytajZapytania()]);
+}
+
+// ---------- zapytania ----------
+let zapytania = [];
+let filtrZapytan = 'otwarte';
+const RODZAJ = { kupno: 'Chce kupić', pytanie: 'Pytanie', kontakt: 'Wiadomość' };
+const STATUS_ZAP = { nowe: 'Nowe', w_toku: 'W rozmowie', zarezerwowane: 'Zarezerwowane', zamkniete: 'Załatwione' };
+
+async function wczytajZapytania() {
+  const { data, error } = await sb.from('zapytania').select('*').order('created_at', { ascending: false }).limit(300);
+  if (error) {
+    $('zapytania').innerHTML = '<div class="card empty">Nie udało się wczytać zapytań.<br><small>' + esc(error.message) + '</small></div>';
+    return;
+  }
+  zapytania = data;
+  const nowe = zapytania.filter((z) => z.status === 'nowe').length;
+  $('licznik-zapytan').hidden = !nowe; $('licznik-zapytan').textContent = nowe;
+  rysujZapytania();
+}
+
+function waNumer(tel) {
+  let d = String(tel).replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.length === 9) d = '48' + d;
+  return d;
+}
+
+function rysujZapytania() {
+  const lista = zapytania.filter((z) =>
+    filtrZapytan === 'wszystkie' ? true :
+    filtrZapytan === 'otwarte' ? (z.status === 'nowe' || z.status === 'w_toku') : z.status === filtrZapytan);
+  if (!lista.length) {
+    $('zapytania').innerHTML = '<div class="card empty">' + (filtrZapytan === 'otwarte' ? 'Nie ma zapytań do załatwienia.' : 'Pusto.') + '</div>';
+    return;
+  }
+  $('zapytania').innerHTML = lista.map((z) => {
+    const p = produkty.find((x) => x.id === z.produkt_id);
+    const data = new Date(z.created_at).toLocaleString('pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const woli = (k) => z.kontakt === k ? ' ★' : '';
+    const powitanie = 'Dzień dobry ' + z.imie + ', tu Paweł od bębnów' + (z.produkt_nazwa ? ' – piszę w sprawie: ' + z.produkt_nazwa : '') + '.';
+    const akcje = [];
+    if (z.status === 'nowe') akcje.push('<button class="btn btn-dark btn-sm" data-zap="w_toku">Odezwałem się</button>');
+    if (p && p.status === 'dostepny' && z.status !== 'zamkniete') akcje.push('<button class="btn btn-ok btn-sm" data-zap="rezerwuj">Zarezerwuj bęben dla tego klienta</button>');
+    if (z.status === 'zarezerwowane') {
+      if (p && p.status !== 'sprzedany') akcje.push('<button class="btn btn-primary btn-sm" data-zap="sprzedany">Sprzedany ✓</button>');
+      akcje.push('<button class="btn btn-light btn-sm" data-zap="anuluj">Anuluj rezerwację</button>');
+    }
+    if (z.status === 'nowe' || z.status === 'w_toku') akcje.push('<button class="btn btn-light btn-sm" data-zap="zamkniete">Załatwione</button>');
+    if (z.status === 'zamkniete') akcje.push('<button class="btn btn-light btn-sm" data-zap="w_toku">Przywróć</button>');
+    akcje.push('<button class="btn btn-danger btn-sm" data-zap="usun">Usuń</button>');
+    return '<div class="card zap ' + z.status + '" data-id="' + z.id + '">' +
+      '<div class="zap-head"><strong>' + esc(z.imie) + '</strong>' +
+        '<div class="zap-meta"><span class="chip ' + (z.rodzaj === 'kupno' ? 'kupno' : '') + '">' + RODZAJ[z.rodzaj] + '</span>' +
+        '<span class="chip ' + z.status + '">' + STATUS_ZAP[z.status] + '</span><span>' + data + '</span></div></div>' +
+      (z.produkt_nazwa ? '<div class="zap-meta"><span class="zap-produkt">🥁 ' + esc(z.produkt_nazwa) + '</span>' +
+        (p ? '<span class="chip ' + p.status + '">' + STATUS[p.status] + '</span>' : '<span>(bęben usunięty z listy)</span>') + '</div>' : '') +
+      (z.wiadomosc ? '<div class="zap-msg">' + esc(z.wiadomosc) + '</div>' : '') +
+      '<div class="zap-kontakt">' +
+        (z.telefon ? '<a class="wa" href="https://wa.me/' + waNumer(z.telefon) + '?text=' + encodeURIComponent(powitanie) + '" target="_blank" rel="noopener">WhatsApp' + woli('whatsapp') + '</a>' +
+                     '<a href="tel:' + esc(z.telefon.replace(/[^\d+]/g, '')) + '">📞 ' + esc(z.telefon) + woli('telefon') + '</a>' : '') +
+        (z.email ? '<a href="mailto:' + esc(z.email) + '?subject=' + encodeURIComponent(z.produkt_nazwa || 'Bębny') + '">✉ ' + esc(z.email) + woli('email') + '</a>' : '') +
+      '</div>' +
+      '<div class="zap-akcje">' + akcje.join('') + '</div></div>';
+  }).join('');
+}
+
+$('zap-filtry').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-filtr]'); if (!b) return;
+  filtrZapytan = b.dataset.filtr;
+  $('zap-filtry').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+  rysujZapytania();
+});
+$('odswiez-zapytania').addEventListener('click', () => Promise.all([wczytaj(), wczytajZapytania()]));
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('panel').hidden) wczytajZapytania(); });
+
+$('zapytania').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-zap]'); if (!b) return;
+  const z = zapytania.find((x) => x.id === b.closest('[data-id]').dataset.id);
+  const p = produkty.find((x) => x.id === z.produkt_id);
+  const akcja = b.dataset.zap;
+  if (akcja === 'rezerwuj') return zmienStatus(p, 'zarezerwowany', z);
+  if (akcja === 'sprzedany') return zmienStatus(p, 'sprzedany', z);
+  if (akcja === 'anuluj') {
+    if (p && p.status === 'zarezerwowany') return zmienStatus(p, 'dostepny', z);
+    await sb.from('zapytania').update({ status: 'w_toku' }).eq('id', z.id);
+    return wczytajZapytania();
+  }
+  if (akcja === 'usun') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń'; }, 4000);
+      return;
+    }
+    const { error } = await sb.from('zapytania').delete().eq('id', z.id);
+    if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+    toast('Zapytanie usunięte');
+    return wczytajZapytania();
+  }
+  const { error } = await sb.from('zapytania').update({ status: akcja }).eq('id', z.id);
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  wczytajZapytania();
+});
+
+// ---------- powiadomienia ----------
+async function wczytajPowiadomienia() {
+  const { data } = await sb.from('powiadomienia').select('*').eq('id', 1).maybeSingle();
+  $('pw-telefon').value = data?.whatsapp_telefon || '';
+  $('pw-klucz').value = data?.callmebot_klucz || '';
+  $('pw-email').value = data?.email || '';
+  $('pw-resend').value = data?.resend_klucz || '';
+}
+
+$('powiadomienia-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const tel = $('pw-telefon').value.trim();
+  const dane = {
+    id: 1,
+    whatsapp_telefon: tel ? '+' + waNumer(tel) : '',
+    callmebot_klucz: $('pw-klucz').value.trim(),
+    email: $('pw-email').value.trim(),
+    resend_klucz: $('pw-resend').value.trim()
+  };
+  if (dane.whatsapp_telefon && dane.whatsapp_telefon.length < 11) return toast('Sprawdź numer telefonu', true);
+  const { error } = await sb.from('powiadomienia').upsert(dane);
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  $('pw-telefon').value = dane.whatsapp_telefon;
+  toast('Zapisane');
+});
+
+$('pw-test').addEventListener('click', async () => {
+  const { data, error } = await sb.rpc('test_powiadomienia');
+  if (error) return toast('Nie udało się: ' + error.message, true);
+  if (!data) return toast('Najpierw wpisz i zapisz numer z kluczem CallMeBot albo e-mail z kluczem Resend', true);
+  toast('Zlecone (' + data.replace(' ', ' + ') + '). Jeśli w ciągu 2 minut nic nie przyjdzie, sprawdź numer i klucz.');
 });
 </script>
 </body>
