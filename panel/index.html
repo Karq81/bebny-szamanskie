@@ -134,6 +134,12 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 .check input{width:22px;height:22px;accent-color:var(--ochre)}
 .yt-preview{max-width:360px;border-radius:10px;overflow:hidden}
 .yt-preview img{width:100%;display:block}
+.muzyk{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start;background:var(--bg);border-radius:12px;padding:12px}
+.muzyk .mini{aspect-ratio:16/9;border-radius:8px;background:var(--bg-2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-soft);text-align:center;padding:4px}
+.muzyk .mini img{width:100%;height:100%;object-fit:cover}
+.muzyk-pola{display:grid;gap:8px;min-width:0}
+.muzyk-akcje{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+@media (max-width:640px){ .muzyk{grid-template-columns:1fr} .muzyk .mini{max-width:220px} }
 .form-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;position:sticky;bottom:0;background:var(--bg);padding-block:14px;border-top:1px solid var(--line)}
 .form-actions div{display:flex;gap:10px;flex-wrap:wrap}
 
@@ -349,6 +355,16 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <div class="yt-preview" id="film-strojenie-podglad"></div>
         <div class="film-row"><button class="btn btn-primary" type="submit">Zapisz</button><button class="btn btn-danger" type="button" id="film-strojenie-usun" hidden>Usuń film ze strony</button></div>
       </form>
+
+      <form class="card form" id="muzycy-form" style="margin-top:22px">
+        <h2>Posłuchaj, jak brzmią</h2>
+        <p class="hint" style="font-size:15px">Filmy z YouTube, na których muzycy grają na Twoich bębnach. Na stronie pokażą się w sekcji „Posłuchaj, jak brzmią” – pierwszy jako duży odtwarzacz, reszta na liście obok. Gdy lista jest pusta, sekcji nie ma.</p>
+        <div class="items" id="muzycy-lista"></div>
+        <div class="film-row">
+          <button class="btn btn-light" type="button" id="muzycy-dodaj">+ Dodaj film</button>
+          <button class="btn btn-primary" type="submit">Zapisz</button>
+        </div>
+      </form>
     </section>
 
     <!-- Edycja bębna -->
@@ -504,7 +520,7 @@ document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('cli
 async function start() {
   pokaz('panel');
   // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
-  await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia(), wczytajOMnie()]);
+  await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia(), wczytajOMnie(), wczytajMuzykow()]);
   if (zapytania.some((z) => z.status === 'nowe')) zakladka('zapytania');
 }
 
@@ -1226,6 +1242,80 @@ $('omnie-form').addEventListener('submit', async (e) => {
   ]);
   if (error) return toast('Nie udało się zapisać: ' + error.message, true);
   toast('Zapisane – zmiany są już na stronie');
+});
+// ---------- filmy muzyków („Posłuchaj, jak brzmią”) ----------
+let muzycy = [];
+
+async function wczytajMuzykow() {
+  const { data } = await sb.from('ustawienia').select('wartosc').eq('klucz', 'filmy_muzycy').maybeSingle();
+  try { muzycy = JSON.parse(data?.wartosc || '[]'); } catch (e) { muzycy = []; }
+  rysujMuzykow();
+}
+
+function rysujMuzykow() {
+  const el = $('muzycy-lista');
+  if (!muzycy.length) { el.innerHTML = '<div class="empty" style="padding:16px">Nie ma jeszcze filmów. Kliknij „+ Dodaj film”.</div>'; return; }
+  el.innerHTML = muzycy.map((f, i) => {
+    const id = youtubeId(f.url);
+    return '<div class="muzyk" data-i="' + i + '">' +
+      '<div class="mini">' + (id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">' : (f.url ? 'To nie jest link z YouTube' : 'Wklej link')) + '</div>' +
+      '<div class="muzyk-pola">' +
+        '<input type="url" data-pole="url" value="' + esc(f.url) + '" placeholder="Link z YouTube">' +
+        '<input type="text" data-pole="tytul" value="' + esc(f.tytul) + '" placeholder="Tytuł, np. Koncert w Warszawie">' +
+        '<input type="text" data-pole="kto" value="' + esc(f.kto) + '" placeholder="Kto gra, np. Zespół Żniwa">' +
+        '<div class="muzyk-akcje">' +
+          '<button class="icon" type="button" data-m="gora" aria-label="Wyżej"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+          '<button class="icon" type="button" data-m="dol" aria-label="Niżej"' + (i === muzycy.length - 1 ? ' disabled' : '') + '>↓</button>' +
+          '<button class="btn btn-danger btn-sm" type="button" data-m="usun">Usuń</button>' +
+        '</div></div></div>';
+  }).join('');
+}
+
+$('muzycy-lista').addEventListener('input', (e) => {
+  const pole = e.target.dataset.pole; if (!pole) return;
+  const i = +e.target.closest('[data-i]').dataset.i;
+  muzycy[i][pole] = e.target.value;
+  if (pole === 'url') {
+    const id = youtubeId(e.target.value);
+    e.target.closest('.muzyk').querySelector('.mini').innerHTML = id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">' : (e.target.value ? 'To nie jest link z YouTube' : 'Wklej link');
+  }
+});
+
+$('muzycy-lista').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-m]'); if (!b) return;
+  const i = +b.closest('[data-i]').dataset.i;
+  if (b.dataset.m === 'usun') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Na pewno?';
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń'; }, 4000);
+      return;
+    }
+    muzycy.splice(i, 1);
+  } else {
+    const j = b.dataset.m === 'gora' ? i - 1 : i + 1;
+    [muzycy[i], muzycy[j]] = [muzycy[j], muzycy[i]];
+  }
+  rysujMuzykow();
+  toast('Pamiętaj kliknąć „Zapisz”');
+});
+
+$('muzycy-dodaj').addEventListener('click', () => {
+  muzycy.push({ url: '', tytul: '', kto: '' });
+  rysujMuzykow();
+  $('muzycy-lista').lastElementChild.querySelector('input').focus();
+});
+
+$('muzycy-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const lista = muzycy.map((f) => ({ url: f.url.trim(), tytul: f.tytul.trim(), kto: f.kto.trim() })).filter((f) => f.url);
+  const zly = lista.find((f) => !youtubeId(f.url));
+  if (zly) return toast('Ten link nie wygląda na YouTube: ' + zly.url, true);
+  const bezTytulu = lista.find((f) => !f.tytul);
+  if (bezTytulu) return toast('Wpisz tytuł przy każdym filmie', true);
+  const { error } = await sb.from('ustawienia').upsert({ klucz: 'filmy_muzycy', wartosc: JSON.stringify(lista) });
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  muzycy = lista; rysujMuzykow();
+  toast(lista.length ? 'Zapisane – filmy są już na stronie' : 'Zapisane – sekcja z filmami jest ukryta');
 });
 </script>
 </body>

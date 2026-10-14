@@ -130,6 +130,27 @@ section{padding:110px 0}
 .grali li a::after{content:"↗";color:var(--ochre-light)}
 .grali .inni{color:#a8977f;font-style:italic;margin-top:14px}
 
+/* posłuchaj */
+.grali-posluchaj{margin-top:22px}
+.listen{background:var(--dark-2);color:#f6efe4;position:relative;overflow:hidden}
+.listen .lead{color:#d6c7b1}
+.listen-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:24px;margin-top:40px;align-items:start}
+.listen-main{min-width:0}
+.listen-main .film{border-radius:var(--radius);box-shadow:0 30px 60px -25px rgba(0,0,0,.7)}
+.listen-teraz{margin-top:14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.listen-teraz strong{font-family:var(--serif);font-size:28px;font-weight:600}
+.listen-teraz span{color:var(--ochre-light);font-size:15px}
+.listen-lista{list-style:none;display:grid;gap:10px;max-height:520px;overflow:auto;padding-right:4px;counter-reset:f}
+.listen-lista button{display:grid;grid-template-columns:132px 1fr;gap:12px;align-items:center;width:100%;text-align:left;font:inherit;color:inherit;background:rgba(246,239,228,.04);border:1px solid rgba(246,239,228,.12);border-radius:12px;padding:8px;cursor:pointer;transition:.2s}
+.listen-lista button:hover{border-color:rgba(217,162,94,.5)}
+.listen-lista button.on{border-color:var(--ochre-light);background:rgba(217,162,94,.12)}
+.listen-lista .mini{position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000}
+.listen-lista .mini img{width:100%;height:100%;object-fit:cover}
+.listen-lista .mini::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.listen-lista button.on .mini::after{content:"♪";color:var(--ochre-light)}
+.listen-lista b{display:block;font-weight:600;font-size:15px;line-height:1.3}
+.listen-lista small{display:block;color:#a8977f;font-size:13px;margin-top:2px}
+
 /* oferta */
 .shop{background:var(--bg-2)}
 .shop-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:50px;flex-wrap:wrap}
@@ -339,6 +360,10 @@ iframe.film{cursor:auto}
   .nav ul.open{display:flex;flex-direction:column;position:absolute;top:70px;right:16px;background:var(--dark);padding:20px 26px;border-radius:var(--radius);gap:16px}
   .menu-btn{display:block}
   .craft,.tuning,.reno-grid,.contact-grid,.about-grid{grid-template-columns:1fr;gap:44px}
+  .listen-grid{grid-template-columns:1fr}
+  .listen-lista{display:flex;overflow-x:auto;max-height:none;gap:10px;padding-bottom:8px;scroll-snap-type:x mandatory}
+  .listen-lista li{flex:0 0 72%;scroll-snap-align:start}
+  .listen-lista button{grid-template-columns:1fr;height:100%}
   .craft-img .stamp{right:12px;width:116px;height:116px;font-size:34px}
   .skin-info{grid-template-columns:1fr}
   .hero .wrap{padding-bottom:70px}
@@ -371,6 +396,7 @@ iframe.film{cursor:auto}
     <ul>
       <li><a href="#pracownia">Pracownia</a></li>
       <li><a href="#o-mnie">O mnie</a></li>
+      <li id="nav-posluchaj" hidden><a href="#posluchaj">Posłuchaj</a></li>
       <li><a href="#oferta">Gotowe bębny</a></li>
       <li><a href="#skory">Skonfiguruj bęben</a></li>
       <li><a href="#strojenie">Strojenie</a></li>
@@ -444,6 +470,19 @@ iframe.film{cursor:auto}
         <li><a href="https://www.zniwa.com/" target="_blank" rel="noopener">Zespół Żniwa</a></li>
       </ul>
       <p class="inni">…oraz wielu innych.</p>
+      <a href="#posluchaj" class="btn btn-primary grali-posluchaj" id="grali-posluchaj" hidden>▶ Posłuchaj, jak grają</a>
+    </div>
+  </div>
+</section>
+
+<section id="posluchaj" class="listen" hidden>
+  <div class="wrap">
+    <span class="eyebrow">Posłuchaj, jak brzmią</span>
+    <h2>Moje bębny w rękach muzyków</h2>
+    <p class="lead">Koncerty, nagrania i ceremonie – kliknij film na liście, odtworzy się tutaj, na stronie.</p>
+    <div class="listen-grid">
+      <div class="listen-main" id="listen-main"></div>
+      <ol class="listen-lista" id="listen-lista"></ol>
     </div>
   </div>
 </section>
@@ -749,5 +788,6 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
 <script src="zapytania.js"></script>
 <script src="skory.js"></script>
 <script src="o-mnie.js"></script>
+<script src="posluchaj.js"></script>
 </body>
 </html>
