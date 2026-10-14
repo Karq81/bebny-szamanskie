@@ -110,17 +110,20 @@
     pokazOkno();
   };
 
-  // s = skóra z bazy albo null („skórę dobierzemy razem”)
-  window.otworzZamowienie = function (s) {
-    produkt = null; skora = s;
+  // k = wybór z konfiguratora: { rozmiar, korpus, skora } – każde może być puste („do ustalenia”)
+  let konf = { rozmiar: '', korpus: null, skora: null };
+  window.otworzZamowienie = function (k) {
+    produkt = null; konf = k; skora = k.skora;
     document.getElementById('zq-wybor').hidden = true;
     ustawRodzaj('zamowienie');
-    if (!s) document.getElementById('zq-tytul').textContent = 'Bęben na zamówienie';
-    document.getElementById('zq-produkt').textContent = s ? s.nazwa + (s.cena_od ? ' · bęben od ' + s.cena_od.toLocaleString('pl-PL') + ' zł' : '') : 'Skórę dobierzemy razem';
-    const opis = document.getElementById('zq-opis');
-    opis.textContent = s && s.opis ? s.opis : ''; opis.hidden = !(s && s.opis);
+    document.getElementById('zq-tytul').textContent = 'Twój bęben na zamówienie';
+    const czesci = [k.korpus && 'korpus: ' + k.korpus.nazwa, k.skora && k.skora.nazwa].filter(Boolean);
+    document.getElementById('zq-produkt').textContent = czesci.length ? czesci.join(' · ') : 'Korpus i skórę dobierzemy razem';
+    form.elements.srednica.value = k.rozmiar || 'jeszcze nie wiem';
+    document.getElementById('zq-opis').hidden = true;
     const foto = document.getElementById('zq-foto');
-    foto.hidden = !(s && s.zdjecie); if (s && s.zdjecie) { foto.src = s.zdjecie; foto.alt = s.nazwa; }
+    const zdj = (k.skora && k.skora.zdjecie) || (k.korpus && k.korpus.zdjecie);
+    foto.hidden = !zdj; if (zdj) { foto.src = zdj; foto.alt = ''; }
     pokazOkno();
   };
 
@@ -143,12 +146,13 @@
     const btn = form.querySelector('button[type=submit]');
     const rodzaj = rodzajAkt;
     const srednica = rodzaj === 'zamowienie' ? form.elements.srednica.value : '';
-    const czego = produkt ? produkt.nazwa : 'bęben na zamówienie' + (skora ? ' – ' + skora.nazwa : '') + (srednica ? ', ' + srednica : '');
+    const czego = produkt ? produkt.nazwa : 'bęben na zamówienie' + (srednica ? ' ' + srednica : '') +
+      (konf.korpus ? ', korpus: ' + konf.korpus.nazwa : '') + (skora ? ', ' + skora.nazwa : '');
     const pokazOk = () => {
       form.reset(); form.hidden = true; ok.hidden = false;
       document.getElementById('zq-ok-tekst').textContent =
         rodzaj === 'kupno' ? 'Zgłoszenie dotarło. Odezwę się, odpowiem na pytania i jeśli się zdecydujesz, zarezerwuję bęben dla Ciebie.'
-        : rodzaj === 'zamowienie' ? 'Zgłoszenie dotarło. Odezwę się, ustalimy szczegóły i cenę' + (skora ? ', a potem zarezerwuję tę skórę dla Ciebie.' : '.')
+        : rodzaj === 'zamowienie' ? 'Zgłoszenie dotarło. Odezwę się, doradzę i podam cenę' + (skora ? ', a gdy się zdecydujesz – zarezerwuję tę skórę dla Ciebie.' : '.')
         : 'Pytanie dotarło. Odezwę się najszybciej, jak to możliwe.';
       const wa = waLink('Dzień dobry, piszę w sprawie: ' + czego + ' (' + location.origin + location.pathname + ')');
       const a = document.getElementById('zq-ok-wa');
@@ -157,7 +161,13 @@
     if (toBot(form, otwartoO)) return pokazOk();
     btn.disabled = true; btn.dataset.tekst = btn.textContent; btn.textContent = 'Wysyłam…';
     try {
-      const extra = produkt ? { produkt_id: produkt.id || null } : { skora_id: skora ? skora.id : null, srednica };
+      // skóry z HTML (gdy baza nie odpowiedziała) nie mają id – nazwę dopisujemy do wiadomości
+      const extra = produkt ? { produkt_id: produkt.id || null } : {
+        skora_id: skora && skora.id ? skora.id : null,
+        srednica
+      };
+      if (!produkt && konf.korpus) extra.korpus_id = konf.korpus.id;
+      if (!produkt && skora && !skora.id) dane.wiadomosc = '[' + skora.nazwa + '] ' + dane.wiadomosc;
       await wyslij({ ...dane, rodzaj, ...extra });
       pokazOk();
     } catch (err) {

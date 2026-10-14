@@ -191,8 +191,10 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <div id="panel" hidden>
     <div class="tabs" role="tablist">
       <button type="button" class="on" data-tab="lista">Gotowe bębny</button>
-      <button type="button" data-tab="skory">Skóry na zamówienie</button>
+      <button type="button" data-tab="skory">Skóry</button>
+      <button type="button" data-tab="korpusy">Korpusy</button>
       <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
+      <button type="button" data-tab="omnie">O mnie</button>
       <button type="button" data-tab="filmy">Filmy na stronie</button>
       <button type="button" data-tab="powiadomienia">Powiadomienia</button>
     </div>
@@ -208,10 +210,10 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
     <section id="tab-skory" hidden>
       <div id="skory-lista-box">
         <div class="list-head">
-          <h2>Skóry na zamówienie</h2>
+          <h2>Skóry</h2>
           <button class="btn btn-primary" type="button" id="dodaj-skore">+ Dodaj skórę</button>
         </div>
-        <p class="hint" style="margin:-6px 0 14px">Skóry, z których klient może zamówić bęben. Na stronie są w części „Bęben na zamówienie”. Wykorzystane i ukryte skóry nie są pokazywane klientom.</p>
+        <p class="hint" style="margin:-6px 0 14px">Skóry, z których klient może zamówić bęben. Na stronie są w konfiguratorze „Skonfiguruj swój bęben”. Wykorzystane i ukryte skóry nie są pokazywane klientom.</p>
         <div class="items" id="lista-skor"></div>
       </div>
 
@@ -225,7 +227,6 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <label>Nazwa *<input type="text" id="s-nazwa" required placeholder="np. Skóra łaciata, biało-ruda"></label>
           <label>Krótki opis (opcjonalnie)<textarea id="s-opis" rows="3" placeholder="np. gruba skóra krowia, mocny bas, wzór w ciapki"></textarea></label>
           <div class="row2">
-            <label>Cena bębna z tej skóry „od” (zł)<input type="number" id="s-cena" min="0" step="1" inputmode="numeric" placeholder="puste = cena do ustalenia"></label>
             <label>Status
               <select id="s-status">
                 <option value="dostepna">Dostępna</option>
@@ -243,6 +244,50 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
             <button class="btn btn-primary" type="submit" id="s-zapisz">Zapisz</button>
           </div>
         </div>
+      </form>
+    </section>
+
+    <section id="tab-korpusy" hidden>
+      <div id="korpusy-lista-box">
+        <div class="list-head">
+          <h2>Korpusy</h2>
+          <button class="btn btn-primary" type="button" id="dodaj-korpus">+ Dodaj korpus</button>
+        </div>
+        <p class="hint" style="margin:-6px 0 14px">Wykończenia ramy, z których klient wybiera w konfiguratorze (np. bejcowany, opalany ogniem). Korpus się nie rezerwuje – zawsze możesz go zrobić ponownie. Gdy nie ma żadnego korpusu, ten krok nie pokazuje się na stronie.</p>
+        <div class="items" id="lista-korpusow"></div>
+      </div>
+
+      <form id="korpus-edycja" class="form" hidden>
+        <h2 id="korpus-tytul">Nowy korpus</h2>
+        <div class="card form">
+          <fieldset>
+            <legend>Zdjęcie korpusu</legend>
+            <div class="skora-foto" id="korpus-foto"></div>
+          </fieldset>
+          <label>Nazwa *<input type="text" id="k-nazwa" required placeholder="np. Opalany ogniem"></label>
+          <label>Krótki opis (opcjonalnie)<textarea id="k-opis" rows="3" placeholder="np. każdy wychodzi trochę inaczej – efekt ognia jest niepowtarzalny"></textarea></label>
+          <label class="check"><input type="checkbox" id="k-widoczny" checked> Pokazuj na stronie</label>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-danger" type="button" id="k-usun">Usuń korpus</button>
+          <div>
+            <button class="btn btn-light" type="button" id="k-anuluj">Anuluj</button>
+            <button class="btn btn-primary" type="submit" id="k-zapisz">Zapisz</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section id="tab-omnie" hidden>
+      <form class="card form" id="omnie-form">
+        <h2>O mnie</h2>
+        <label>Opis pracowni (pustą linią oddzielasz akapity)
+          <textarea id="om-tekst" rows="9"></textarea>
+        </label>
+        <label>Grają na moich bębnach – każda osoba / zespół w nowej linii, link po kresce „|” (opcjonalnie)
+          <textarea id="om-grali" rows="9" placeholder="Zespół Żniwa | https://www.zniwa.com/"></textarea>
+        </label>
+        <div class="film-row"><button class="btn btn-primary" type="submit">Zapisz</button></div>
       </form>
     </section>
 
@@ -445,20 +490,21 @@ $('nowe-haslo').addEventListener('submit', async (e) => {
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
 
 // ---------- zakładki ----------
-const ZAKLADKI = ['lista', 'skory', 'zapytania', 'filmy', 'powiadomienia'];
+const ZAKLADKI = ['lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia'];
 function zakladka(nazwa) {
   document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
   ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
   $('edycja').hidden = true;
   if (nazwa === 'zapytania') wczytajZapytania();
   if (nazwa === 'skory') zamknijSkore();
+  if (nazwa === 'korpusy') zamknijKorpus();
 }
 document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => zakladka(b.dataset.tab)));
 
 async function start() {
   pokaz('panel');
   // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
-  await Promise.all([Promise.all([wczytaj(), wczytajSkory()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia()]);
+  await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia(), wczytajOMnie()]);
   if (zapytania.some((z) => z.status === 'nowe')) zakladka('zapytania');
 }
 
@@ -782,8 +828,10 @@ function rysujZapytania() {
         '<span class="chip ' + z.status + '">' + STATUS_ZAP[z.status] + '</span><span>' + data + '</span></div></div>' +
       (z.produkt_nazwa ? '<div class="zap-meta"><span class="zap-produkt">🥁 ' + esc(z.produkt_nazwa) + '</span>' +
         (p ? '<span class="chip ' + p.status + '">' + STATUS[p.status] + '</span>' : '<span>(bęben usunięty z listy)</span>') + '</div>' : '') +
-      (z.rodzaj === 'zamowienie' ? '<div class="zap-meta"><span class="zap-produkt">🥁 Bęben na zamówienie – ' + (z.skora_nazwa ? 'skóra: ' + esc(z.skora_nazwa) : 'skóra do dobrania') + '</span>' +
-        (z.srednica ? '<span>· ' + esc(z.srednica) + '</span>' : '') +
+      (z.rodzaj === 'zamowienie' ? '<div class="zap-meta"><span class="zap-produkt">🥁 Bęben na zamówienie</span>' +
+        '<span>rozmiar: <b>' + esc(z.srednica || 'do ustalenia') + '</b></span>' +
+        '<span>korpus: <b>' + esc(z.korpus_nazwa || 'do ustalenia') + '</b></span>' +
+        '<span>skóra: <b>' + esc(z.skora_nazwa || 'do ustalenia') + '</b></span>' +
         (sk ? '<span class="chip ' + sk.status + '">' + STATUS_SKORY[sk.status] + '</span>' : z.skora_nazwa ? '<span>(skóra usunięta)</span>' : '') + '</div>' : '') +
       (z.wiadomosc ? '<div class="zap-msg">' + esc(z.wiadomosc) + '</div>' : '') +
       '<div class="zap-kontakt">' +
@@ -897,7 +945,7 @@ function rysujSkory() {
       '<div class="item-main"><strong>' + esc(s.nazwa) + '</strong>' +
         '<div class="item-meta"><span class="chip ' + s.status + '">' + STATUS_SKORY[s.status] + '</span>' +
         (s.widoczna ? '' : '<span class="chip ukryty">Ukryta</span>') +
-        (s.cena_od != null ? '<span>od ' + s.cena_od.toLocaleString('pl-PL') + ' zł</span>' : '') + '</div></div>' +
+        '</div></div>' +
       '<div class="item-actions">' +
         (s.status === 'dostepna' ? '<button class="btn btn-ok btn-sm" type="button" data-skora="rezerwuj" data-i="' + i + '">Zarezerwuj</button>' : '') +
         (s.status === 'zarezerwowana' ? '<button class="btn btn-light btn-sm" type="button" data-skora="zwolnij" data-i="' + i + '">Zdejmij rezerwację</button>' : '') +
@@ -948,7 +996,6 @@ function otworzSkore(s) {
   $('skora-tytul').textContent = s ? 'Edytuj skórę' : 'Nowa skóra';
   $('s-nazwa').value = s?.nazwa || '';
   $('s-opis').value = s?.opis || '';
-  $('s-cena').value = s?.cena_od ?? '';
   $('s-status').value = s?.status || 'dostepna';
   $('s-widoczna').checked = s ? s.widoczna : true;
   $('s-usun').hidden = !s;
@@ -993,7 +1040,6 @@ $('skora-edycja').addEventListener('submit', async (e) => {
   const dane = {
     nazwa: $('s-nazwa').value.trim(),
     opis: $('s-opis').value.trim(),
-    cena_od: liczba('s-cena'),
     status: $('s-status').value,
     widoczna: $('s-widoczna').checked,
     zdjecie: skoraZdjecie
@@ -1025,6 +1071,162 @@ async function usunSkore(s) {
   const x = sciezkaWBazie(s.zdjecie); if (x) sb.storage.from(BUCKET).remove([x]);
   toast('Usunięto: ' + s.nazwa); zamknijSkore(); wczytajSkory();
 }
+// ---------- korpusy ----------
+let korpusy = [];
+let korpusEdytowany = null;
+let korpusZdjecie = '';
+let korpusStareZdjecie = '';
+
+async function wczytajKorpusy() {
+  const { data, error } = await sb.from('korpusy').select('*').order('kolejnosc').order('created_at');
+  if (error) {
+    $('lista-korpusow').innerHTML = '<div class="card empty">Nie udało się wczytać korpusów.<br><small>' + esc(error.message) + '</small></div>';
+    return;
+  }
+  korpusy = data;
+  rysujKorpusy();
+}
+
+function rysujKorpusy() {
+  const el = $('lista-korpusow');
+  if (!korpusy.length) {
+    el.innerHTML = '<div class="card empty">Nie ma jeszcze żadnego korpusu.<br>Kliknij „+ Dodaj korpus”.</div>';
+    return;
+  }
+  el.innerHTML = korpusy.map((k, i) =>
+    '<div class="item">' +
+      (k.zdjecie ? '<img src="' + esc(k.zdjecie) + '" alt="">' : '<div class="noimg"></div>') +
+      '<div class="item-main"><strong>' + esc(k.nazwa) + '</strong>' +
+        '<div class="item-meta">' + (k.widoczny ? '<span class="chip dostepna">Na stronie</span>' : '<span class="chip ukryty">Ukryty</span>') +
+        (k.opis ? '<span>' + esc(k.opis.slice(0, 60)) + (k.opis.length > 60 ? '…' : '') + '</span>' : '') + '</div></div>' +
+      '<div class="item-actions">' +
+        '<button class="btn btn-dark" type="button" data-korpus="edytuj" data-i="' + i + '">Edytuj</button>' +
+        '<button class="btn btn-danger btn-sm" type="button" data-korpus="usun" data-i="' + i + '">Usuń</button>' +
+      '</div></div>').join('');
+}
+
+$('lista-korpusow').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-korpus]'); if (!b) return;
+  const k = korpusy[+b.dataset.i];
+  if (b.dataset.korpus === 'edytuj') return otworzKorpus(k);
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
+    setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń'; }, 4000);
+    return;
+  }
+  usunKorpus(k);
+});
+
+function rysujZdjecieKorpusu() {
+  $('korpus-foto').innerHTML = (korpusZdjecie
+    ? '<div class="ph"><img src="' + esc(korpusZdjecie) + '" alt="Zdjęcie korpusu"></div>' : '') +
+    '<label class="add-photo" style="width:140px"><span>+</span>' + (korpusZdjecie ? 'Zmień zdjęcie' : 'Dodaj zdjęcie') +
+    '<input type="file" id="k-plik" accept="image/*"></label>';
+}
+
+function otworzKorpus(k) {
+  korpusEdytowany = k;
+  korpusZdjecie = korpusStareZdjecie = k ? k.zdjecie : '';
+  $('korpus-tytul').textContent = k ? 'Edytuj korpus' : 'Nowy korpus';
+  $('k-nazwa').value = k?.nazwa || '';
+  $('k-opis').value = k?.opis || '';
+  $('k-widoczny').checked = k ? k.widoczny : true;
+  $('k-usun').hidden = !k;
+  $('k-usun').classList.remove('armed'); $('k-usun').textContent = 'Usuń korpus';
+  rysujZdjecieKorpusu();
+  $('korpusy-lista-box').hidden = true; $('korpus-edycja').hidden = false;
+  scrollTo(0, 0);
+}
+
+function zamknijKorpus() {
+  $('korpus-edycja').hidden = true; $('korpusy-lista-box').hidden = false;
+  korpusEdytowany = null;
+}
+
+$('dodaj-korpus').addEventListener('click', () => otworzKorpus(null));
+$('k-anuluj').addEventListener('click', zamknijKorpus);
+
+$('korpus-foto').addEventListener('change', async (e) => {
+  if (e.target.id !== 'k-plik') return;
+  const f = e.target.files[0]; if (!f) return;
+  $('korpus-foto').innerHTML = '<div class="ph loading" style="width:140px"></div>';
+  wysylane++;
+  try {
+    const blob = await zmniejsz(f);
+    const sciezka = 'korpusy/' + crypto.randomUUID() + '.jpg';
+    const { error } = await sb.storage.from(BUCKET).upload(sciezka, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+    if (error) throw error;
+    if (korpusZdjecie && korpusZdjecie !== korpusStareZdjecie) { const x = sciezkaWBazie(korpusZdjecie); if (x) sb.storage.from(BUCKET).remove([x]); }
+    korpusZdjecie = sb.storage.from(BUCKET).getPublicUrl(sciezka).data.publicUrl;
+  } catch (err) {
+    toast('Nie udało się dodać zdjęcia: ' + (err.message || err), true);
+  } finally {
+    wysylane--; rysujZdjecieKorpusu();
+  }
+});
+
+$('korpus-edycja').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (wysylane) return toast('Poczekaj, aż zdjęcie się wyśle');
+  if (!korpusZdjecie) return toast('Dodaj zdjęcie korpusu – klient wybiera po wyglądzie', true);
+  const dane = { nazwa: $('k-nazwa').value.trim(), opis: $('k-opis').value.trim(), widoczny: $('k-widoczny').checked, zdjecie: korpusZdjecie };
+  const btn = $('k-zapisz'); btn.disabled = true;
+  const res = korpusEdytowany
+    ? await sb.from('korpusy').update(dane).eq('id', korpusEdytowany.id)
+    : await sb.from('korpusy').insert({ ...dane, kolejnosc: korpusy.reduce((m, x) => Math.max(m, x.kolejnosc), 0) + 1 });
+  btn.disabled = false;
+  if (res.error) return toast('Nie udało się zapisać: ' + res.error.message, true);
+  if (korpusStareZdjecie && korpusStareZdjecie !== korpusZdjecie) { const x = sciezkaWBazie(korpusStareZdjecie); if (x) sb.storage.from(BUCKET).remove([x]); }
+  toast('Zapisane' + (dane.widoczny ? ' – korpus jest na stronie' : ' (ukryty)'));
+  zamknijKorpus(); wczytajKorpusy();
+});
+
+$('k-usun').addEventListener('click', () => {
+  const b = $('k-usun');
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = 'Kliknij jeszcze raz, aby usunąć';
+    setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Usuń korpus'; }, 4000);
+    return;
+  }
+  usunKorpus(korpusEdytowany);
+});
+
+async function usunKorpus(k) {
+  const { error } = await sb.from('korpusy').delete().eq('id', k.id);
+  if (error) return toast('Nie udało się usunąć: ' + error.message, true);
+  const x = sciezkaWBazie(k.zdjecie); if (x) sb.storage.from(BUCKET).remove([x]);
+  toast('Usunięto: ' + k.nazwa); zamknijKorpus(); wczytajKorpusy();
+}
+
+// ---------- o mnie ----------
+// Gdy w bazie jeszcze nic nie ma, pokazujemy tekst, który teraz jest na stronie.
+const O_MNIE_START = 'Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.\n\nPasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.';
+const GRALI_START = [
+  'Dominik Muszyński | https://etno.pl/team/dominik-muszynski/',
+  'Zespół WADADA | https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA',
+  'Adam Mościcki | http://folktronika.pl/agencja-artystyczna/nasz-zespol/',
+  'Zespół Maleo Reggae Rockers',
+  'Kapela ze Wsi Warszawa | https://kzww.pl/',
+  'Zespół Maruna | https://agencjaperspektywy.pl/artysci/maruna',
+  'Zespół Żniwa | https://www.zniwa.com/'
+].join('\n');
+
+async function wczytajOMnie() {
+  const { data } = await sb.from('ustawienia').select('*').in('klucz', ['o_mnie', 'grali']);
+  const v = (k) => ((data || []).find((r) => r.klucz === k) || {}).wartosc || '';
+  $('om-tekst').value = v('o_mnie') || O_MNIE_START;
+  $('om-grali').value = v('grali') || GRALI_START;
+}
+
+$('omnie-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const { error } = await sb.from('ustawienia').upsert([
+    { klucz: 'o_mnie', wartosc: $('om-tekst').value.trim() },
+    { klucz: 'grali', wartosc: $('om-grali').value.trim() }
+  ]);
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  toast('Zapisane – zmiany są już na stronie');
+});
 </script>
 </body>
 </html>

@@ -112,6 +112,22 @@ section{padding:110px 0}
 .step p{color:var(--ink-soft);font-size:16px}
 .quote{margin-top:34px;padding:22px 26px;border-left:3px solid var(--ochre);background:var(--bg-2);border-radius:0 var(--radius) var(--radius) 0;font-family:var(--serif);font-size:22px;font-style:italic;color:var(--ink)}
 
+/* o mnie */
+.about{background:var(--dark);color:#f6efe4}
+.about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:70px;align-items:start}
+.about-tekst{display:grid;gap:16px;font-size:17px}
+.about-tekst p{color:#d6c7b1}
+.about-liczby{display:flex;gap:40px;flex-wrap:wrap;margin-top:34px;padding-top:26px;border-top:1px solid rgba(246,239,228,.18)}
+.about-liczby div{font-size:14px;color:#cbbba4}
+.about-liczby strong{display:block;font-family:var(--serif);font-size:36px;color:var(--ochre-light);font-weight:600}
+.grali h3{font-size:30px;margin-bottom:6px}
+.grali>p{color:#a8977f;font-size:15px;margin-bottom:18px}
+.grali ul{list-style:none;display:grid;gap:10px}
+.grali li a,.grali li span{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border:1px solid rgba(246,239,228,.16);border-radius:var(--radius);text-decoration:none;font-weight:500}
+.grali li a:hover{border-color:var(--ochre-light);background:rgba(246,239,228,.04)}
+.grali li a::after{content:"↗";color:var(--ochre-light)}
+.grali .inni{color:#a8977f;font-style:italic;margin-top:14px}
+
 /* oferta */
 .shop{background:var(--bg-2)}
 .shop-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:50px;flex-wrap:wrap}
@@ -141,11 +157,32 @@ section{padding:110px 0}
 .skins::before{content:"";position:absolute;inset:0;background:url(img/tekstura-skora.jpg) center/cover;opacity:.18}
 .skins .wrap{position:relative}
 .skins .lead{color:#d6c7b1}
-.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:20px 16px;margin-top:50px}
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:20px 16px;margin-top:20px}
+.konf-krok{margin-top:46px}
+.konf-krok h3{font-size:30px;display:flex;align-items:center;gap:14px}
+.konf-nr{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--ochre-light);color:var(--ochre-light);font-size:22px}
+.konf-hint{color:#a8977f;font-size:15px;margin-top:6px}
+.konf-rozmiary{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.konf-rozmiary button{font:inherit;font-weight:600;font-size:17px;padding:12px 24px;border-radius:999px;border:1px solid rgba(246,239,228,.3);background:transparent;color:#f6efe4;cursor:pointer;min-width:84px}
+.konf-rozmiary button.on{background:var(--ochre);border-color:var(--ochre)}
+.korpus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:20px}
+.korpus{background:rgba(246,239,228,.05);border:2px solid rgba(246,239,228,.14);border-radius:var(--radius);overflow:hidden;cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0;transition:.2s}
+.korpus img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.korpus span{display:block;padding:12px 14px 2px;font-weight:600}
+.korpus small{display:block;padding:0 14px 12px;color:#a8977f;font-size:13px}
+.korpus:hover{border-color:rgba(217,162,94,.6)}
+.korpus.on{border-color:var(--ochre-light);background:rgba(217,162,94,.12)}
+.konf-suma{margin-top:46px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:22px 26px;border:1px solid rgba(217,162,94,.5);border-radius:var(--radius);background:rgba(22,17,13,.6)}
+.konf-suma strong{font-family:var(--serif);font-size:26px;color:var(--ochre-light)}
+.konf-suma ul{list-style:none;color:#d6c7b1;font-size:15px;margin-top:4px}
+.konf-suma b{color:#f6efe4}
+.konf-suma .btn{border:0;font-family:inherit}
 .skin{text-align:center;cursor:pointer}
 .skin img{aspect-ratio:1/1;object-fit:cover;border-radius:50%;width:100%;border:3px solid transparent;transition:.25s}
 .skin:hover img,.skin.on img{border-color:var(--ochre-light);transform:scale(1.04)}
 .skin span{display:block;font-size:13px;color:#cbbba4;margin-top:10px}
+.skin.on span{color:#f6efe4;font-weight:600}
+.skin.on img{border-width:4px}
 button.skin{background:none;border:0;padding:0;font:inherit;color:inherit}
 button.skin:disabled{cursor:default}
 .skin-foto{position:relative;display:block;margin:0!important}
@@ -299,7 +336,7 @@ iframe.film{cursor:auto}
   .nav ul{display:none}
   .nav ul.open{display:flex;flex-direction:column;position:absolute;top:70px;right:16px;background:var(--dark);padding:20px 26px;border-radius:var(--radius);gap:16px}
   .menu-btn{display:block}
-  .craft,.tuning,.reno-grid,.contact-grid{grid-template-columns:1fr;gap:44px}
+  .craft,.tuning,.reno-grid,.contact-grid,.about-grid{grid-template-columns:1fr;gap:44px}
   .craft-img .stamp{right:12px;width:116px;height:116px;font-size:34px}
   .skin-info{grid-template-columns:1fr}
   .hero .wrap{padding-bottom:70px}
@@ -308,6 +345,9 @@ iframe.film{cursor:auto}
 @media (max-width:540px){
   .cards{grid-template-columns:1fr}
   .skin-grid{grid-template-columns:repeat(3,1fr);gap:16px 12px}
+  .korpus-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .korpus span{padding:10px 10px 2px;font-size:15px}
+  .korpus small{padding:0 10px 10px}
   .gallery{grid-auto-rows:170px}
   .gallery .wide{grid-column:span 1}
   .btn{width:100%;justify-content:center}
@@ -328,8 +368,9 @@ iframe.film{cursor:auto}
     <button class="menu-btn" onclick="document.querySelector('.nav ul').classList.toggle('open')">Menu</button>
     <ul>
       <li><a href="#pracownia">Pracownia</a></li>
+      <li><a href="#o-mnie">O mnie</a></li>
       <li><a href="#oferta">Gotowe bębny</a></li>
-      <li><a href="#skory">Na zamówienie</a></li>
+      <li><a href="#skory">Skonfiguruj bęben</a></li>
       <li><a href="#strojenie">Strojenie</a></li>
       <li><a href="#galeria">Galeria</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
@@ -348,7 +389,7 @@ iframe.film{cursor:auto}
     </div>
     <div class="hero-meta">
       <div><strong>100%</strong>ręcznej pracy</div>
-      <div><strong>50–55 cm</strong>średnice do gry bez stojaka</div>
+      <div><strong>40–55 cm</strong>średnice bębnów na zamówienie</div>
       <div><strong>1 z 1</strong>każda skóra jest inna</div>
     </div>
   </div>
@@ -370,6 +411,37 @@ iframe.film{cursor:auto}
         <div class="step"><div class="num">3</div><div><h3>Złożenie i strojenie</h3><p>Naciąg, krzyżak, dętka do strojenia i pałki filcowe – wszystko dopasowane do konkretnego bębna.</p></div></div>
       </div>
       <div class="quote">„100% mojej pracy włożone w powstanie każdego instrumentu.”</div>
+    </div>
+  </div>
+</section>
+
+<section id="o-mnie" class="about">
+  <div class="wrap about-grid">
+    <div>
+      <span class="eyebrow">O mnie</span>
+      <h2>Lepsza Strona Djembe – bębny od 1997 roku</h2>
+      <div class="about-tekst" id="o-mnie-tekst">
+        <p>Pracownia bębnów Lepsza Strona Djembe powstała w 1997 roku. Przez ten czas stworzyłem kilka tysięcy bębnów z różnych kultur świata: djembe, dundun, ashiko, kubańskie cajony, ceremonialne bębny basowe, gongi naciągane naturalną skórą i bębny szamańskie.</p>
+        <p>Pasja i wieloletnie doświadczenie przy budowie instrumentów zaowocowały profesjonalnymi bębnami o mocnym, uziemiającym brzmieniu.</p>
+      </div>
+      <div class="about-liczby">
+        <div><strong>1997</strong>rok założenia pracowni</div>
+        <div><strong>tysiące</strong>zrobionych bębnów</div>
+      </div>
+    </div>
+    <div class="grali">
+      <h3>Grają na moich bębnach</h3>
+      <p>Moje instrumenty docenili i grają na nich m.in.:</p>
+      <ul id="grali-lista">
+        <li><a href="https://etno.pl/team/dominik-muszynski/" target="_blank" rel="noopener">Dominik Muszyński</a></li>
+        <li><a href="https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA" target="_blank" rel="noopener">Zespół WADADA</a></li>
+        <li><a href="http://folktronika.pl/agencja-artystyczna/nasz-zespol/" target="_blank" rel="noopener">Adam Mościcki</a></li>
+        <li><span>Zespół Maleo Reggae Rockers</span></li>
+        <li><a href="https://kzww.pl/" target="_blank" rel="noopener">Kapela ze Wsi Warszawa</a></li>
+        <li><a href="https://agencjaperspektywy.pl/artysci/maruna" target="_blank" rel="noopener">Zespół Maruna</a></li>
+        <li><a href="https://www.zniwa.com/" target="_blank" rel="noopener">Zespół Żniwa</a></li>
+      </ul>
+      <p class="inni">…oraz wielu innych.</p>
     </div>
   </div>
 </section>
@@ -406,7 +478,7 @@ iframe.film{cursor:auto}
         <div class="card-img"><span class="badge custom">Na zamówienie</span><img src="img/beben-zamowienie.jpg" alt="Bębny szamańskie ze skór z naturalnym wzorem"></div>
         <div class="card-body">
           <h3>Bęben z wybranej skóry</h3>
-          <ul class="specs"><li>średnica 50 lub 55 cm</li><li>skóra z naturalnym wzorem</li><li>włosie dogolone do ok. 1 mm</li><li>mocne, głębokie brzmienie</li></ul>
+          <ul class="specs"><li>średnica 40, 45, 50 lub 55 cm</li><li>skóra z naturalnym wzorem</li><li>włosie dogolone do ok. 1 mm</li><li>mocne, głębokie brzmienie</li></ul>
           <div class="price"><span>cena po wyborze skóry</span></div>
           <a href="#skory" class="btn btn-dark">Wybierz skórę</a>
         </div>
@@ -427,23 +499,56 @@ iframe.film{cursor:auto}
 <section id="skory" class="skins">
   <div class="wrap">
     <span class="eyebrow">Bęben na zamówienie</span>
-    <h2>Wybierz skórę, a ja zrobię z niej bęben</h2>
-    <p class="lead">Każda skóra ma inny wzór – ciapki, plamki, łaty. Po dogoleniu włosia do ok. 1 mm wzór i kolory zostają. Kliknij skórę, która Ci się podoba.</p>
-    <div class="skin-grid" id="lista-skor">
-      <div class="skin"><img src="img/skora-1.jpg" alt="Skóra nr 1"><span>Skóra nr 1</span></div>
-      <div class="skin"><img src="img/skora-2.jpg" alt="Skóra nr 2"><span>Skóra nr 2</span></div>
-      <div class="skin"><img src="img/skora-3.jpg" alt="Skóra nr 3"><span>Skóra nr 3</span></div>
-      <div class="skin"><img src="img/skora-4.jpg" alt="Skóra nr 4"><span>Skóra nr 4</span></div>
-      <div class="skin"><img src="img/skora-5.jpg" alt="Skóra nr 5"><span>Skóra nr 5</span></div>
-      <div class="skin"><img src="img/skora-6.jpg" alt="Skóra nr 6"><span>Skóra nr 6</span></div>
-      <div class="skin"><img src="img/skora-7.jpg" alt="Skóra nr 7"><span>Skóra nr 7</span></div>
+    <h2>Skonfiguruj swój bęben</h2>
+    <p class="lead">Wybierz rozmiar, wykończenie korpusu i skórę – zrobię bęben pod Twój gust, od A do Z. Nie musisz wybierać wszystkiego: czego nie wiesz, doradzę w rozmowie. Cenę podam po rozmowie.</p>
+
+    <div class="konf-krok">
+      <h3><span class="konf-nr">1</span> Rozmiar</h3>
+      <div class="konf-rozmiary" id="konf-rozmiary" role="group" aria-label="Rozmiar bębna">
+        <button type="button" data-rozmiar="40 cm">40 cm</button>
+        <button type="button" data-rozmiar="45 cm">45 cm</button>
+        <button type="button" data-rozmiar="50 cm">50 cm</button>
+        <button type="button" data-rozmiar="55 cm">55 cm</button>
+      </div>
     </div>
+
+    <div class="konf-krok" id="konf-korpusy" hidden>
+      <h3><span class="konf-nr">2</span> Korpus</h3>
+      <p class="konf-hint">Wykończenie ramy bębna.</p>
+      <div class="korpus-grid" id="lista-korpusow"></div>
+    </div>
+
+    <div class="konf-krok">
+      <h3><span class="konf-nr" id="konf-nr-skora">2</span> Skóra</h3>
+      <p class="konf-hint">Każda skóra ma inny wzór – ciapki, plamki, łaty. Po dogoleniu włosia do ok. 1 mm wzór i kolory zostają.</p>
+      <div class="skin-grid" id="lista-skor">
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-1.jpg" alt="Skóra nr 1"><span>Skóra nr 1</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-2.jpg" alt="Skóra nr 2"><span>Skóra nr 2</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-3.jpg" alt="Skóra nr 3"><span>Skóra nr 3</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-4.jpg" alt="Skóra nr 4"><span>Skóra nr 4</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-5.jpg" alt="Skóra nr 5"><span>Skóra nr 5</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-6.jpg" alt="Skóra nr 6"><span>Skóra nr 6</span></div>
+      <div class="skin" tabindex="0" role="button"><img src="img/skora-7.jpg" alt="Skóra nr 7"><span>Skóra nr 7</span></div>
+    </div>
+    </div>
+
+    <div class="konf-suma" id="konf-suma">
+      <div>
+        <strong>Twój bęben</strong>
+        <ul>
+          <li>Rozmiar: <b id="suma-rozmiar">do ustalenia</b></li>
+          <li id="suma-korpus-li" hidden>Korpus: <b id="suma-korpus">do ustalenia</b></li>
+          <li>Skóra: <b id="suma-skora">do ustalenia</b></li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn-primary" id="skin-cta">Zapytaj o taki bęben →</button>
+    </div>
+
     <div class="skin-info">
-      <div><strong>1. Wybierasz skórę</strong><p>Klikasz skórę, która Ci się podoba, i wybierasz średnicę: 50 albo 55 cm.</p></div>
+      <div><strong>1. Konfigurujesz bęben</strong><p>Wybierasz rozmiar, korpus i skórę – albo tylko to, co już wiesz.</p></div>
       <div><strong>2. Robię bęben</strong><p>Przygotowuję korpus, naciągam skórę i stroję – od A do Z.</p></div>
       <div><strong>3. Bęben jedzie do Ciebie</strong><p>Z dwiema pałkami filcowymi, gotowy do gry.</p></div>
     </div>
-    <div class="btns" style="margin-top:40px"><a href="#kontakt" class="btn btn-primary" id="skin-cta">Zamów bęben z wybranej skóry →</a></div>
   </div>
 </section>
 
@@ -594,9 +699,9 @@ iframe.film{cursor:auto}
         <label><input type="radio" name="rodzaj" value="pytanie"><span>Mam pytanie</span></label>
       </div>
       <p class="zq-info" id="zq-info-kupno">To jeszcze nie zakup ani płatność. Odezwę się, porozmawiamy o bębnie, wysyłce i płatności, a gdy się zdecydujesz – zarezerwuję go dla Ciebie.</p>
-      <p class="zq-info" id="zq-info-zam" hidden>To jeszcze nie zamówienie ani płatność. Odezwę się, ustalimy szczegóły, cenę i termin, a potem zarezerwuję skórę dla Ciebie.</p>
+      <p class="zq-info" id="zq-info-zam" hidden>To jeszcze nie zamówienie ani płatność. Odezwę się, doradzę, podam cenę i termin, a gdy się zdecydujesz – zarezerwuję skórę dla Ciebie.</p>
       <label id="zq-srednica" hidden>Średnica bębna
-        <select name="srednica"><option>55 cm</option><option>50 cm</option><option value="jeszcze nie wiem">Jeszcze nie wiem – doradź</option></select>
+        <select name="srednica"><option>40 cm</option><option>45 cm</option><option>50 cm</option><option>55 cm</option><option value="jeszcze nie wiem">Jeszcze nie wiem – doradź</option></select>
       </label>
       <label>Imię<input type="text" name="imie" maxlength="80" autocomplete="given-name" placeholder="Jak masz na imię?"></label>
       <div class="row2">
@@ -627,19 +732,12 @@ const lb=document.querySelector('.lightbox');
 document.querySelectorAll('.gallery a').forEach(a=>a.addEventListener('click',e=>{
   e.preventDefault(); lb.querySelector('img').src=a.querySelector('img').src; lb.classList.add('open');
 }));
-// wybór skóry -> wypełnia formularz
-document.querySelectorAll('.skin').forEach(s=>s.addEventListener('click',()=>{
-  document.querySelectorAll('.skin').forEach(x=>x.classList.remove('on')); s.classList.add('on');
-  const n=s.querySelector('span').textContent;
-  document.getElementById('skin-cta').textContent='Zamów bęben – '+n+' →';
-  document.getElementById('topic').value='Bęben z wybranej skóry';
-  document.getElementById('msg').value='Interesuje mnie '+n.toLowerCase()+', średnica 50 / 55 cm.';
-}));
 document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.nav ul').classList.remove('open')));
 </script>
 <script src="config.js"></script>
 <script src="produkty.js"></script>
 <script src="zapytania.js"></script>
 <script src="skory.js"></script>
+<script src="o-mnie.js"></script>
 </body>
 </html>
