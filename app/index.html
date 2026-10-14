@@ -404,7 +404,31 @@ html{scroll-padding-top:72px}
 .app .hero-meta{margin-top:34px}
 .app section{padding:56px 0}
 .app .hero{background:linear-gradient(90deg,rgba(18,13,9,.78) 0%,rgba(18,13,9,.55) 45%,rgba(18,13,9,.2) 100%),url(../img/tapeta.jpg) center/cover no-repeat}
-.app section.om-start{padding:56px 0 64px;background:var(--bg);color:var(--ink)}
+.app section.om-start{padding:56px 0 64px;color:var(--ink)}
+/* jasne sekcje na tle z jasnych skór bębnów (całą szerokość, bez „pudełek”) */
+.app section.om-start,.app #oferta,.app #strojenie,.app #renowacja,.app #galeria,.app #posluchaj-tlo{
+  background:linear-gradient(rgba(243,236,225,.88),rgba(243,236,225,.92)),url(../img/tapeta-jasna.jpg) center/cover}
+.om-foto{border:6px solid rgba(255,255,255,.7)}
+@media (min-width:1100px){
+  .app section.om-start,.app #oferta,.app #strojenie,.app #renowacja,.app #galeria{background-attachment:fixed}
+  .app .wrap{max-width:none;padding-left:5vw;padding-right:5vw}
+  .app body,body.app{font-size:19px}
+  .app h2{font-size:clamp(46px,4vw,66px)}
+  .app h3{font-size:32px}
+  .app .lead{font-size:21px;max-width:780px}
+  .app .hero h1{font-size:clamp(60px,6vw,96px)}
+  .app .hero p{font-size:22px;max-width:720px}
+  .app .nav ul a{font-size:17px}
+  .app .logo{font-size:28px}
+  .app .about-tekst{font-size:19px}
+  .app .om-grid{grid-template-columns:1fr 1.1fr;gap:6vw}
+  .app .cards{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .app .om-grid{align-items:center}
+  .app .om-foto{aspect-ratio:4/3;max-height:72vh}
+  .app .card-body h3{font-size:28px}
+  .app .specs{font-size:16px}
+  .app .gallery{grid-template-columns:repeat(5,1fr);grid-auto-rows:280px}
+}
 .om-start .about-tekst p{color:var(--ink-soft)}
 .om-start .about-liczby{border-top-color:var(--line)}
 .om-start .about-liczby div{color:var(--ink-soft)}
