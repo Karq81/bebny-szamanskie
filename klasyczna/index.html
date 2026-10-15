@@ -275,6 +275,9 @@ textarea{min-height:120px;resize:vertical}
 .check input{margin-top:4px}
 .check a{color:var(--ochre-light)}
 footer a{color:inherit}
+.stopka-prawa{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.licznik{font-variant-numeric:tabular-nums;opacity:.85}
+.licznik::before{content:"👁 ";}
 
 footer{background:#0f0b08;color:#8f806d;font-size:14px;padding:36px 0}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -795,7 +798,7 @@ iframe.film{cursor:auto}
 <footer>
   <div class="wrap">
     <span>© 2026 Paweł Małkowski · Bębny szamańskie · Bębny basowe · Renowacja instrumentów</span>
-    <span><a href="../polityka-prywatnosci/">Polityka prywatności</a></span>
+    <span class="stopka-prawa"><span id="licznik" class="licznik" hidden></span><a href="../polityka-prywatnosci/">Polityka prywatności</a></span>
   </div>
 </footer>
 
@@ -862,5 +865,6 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
 <script src="../skory.js"></script>
 <script src="../o-mnie.js"></script>
 <script src="../posluchaj.js"></script>
+<script src="../licznik.js"></script>
 </body>
 </html>

@@ -102,6 +102,10 @@ textarea{resize:vertical;min-height:110px}
 .zap-kontakt a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--bg-2);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
 .zap-kontakt a.wa{background:#25d366;color:#0b2b16}
 .zap-akcje{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.staty{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.stat{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 1px 0 var(--line)}
+.stat b{display:block;font-family:var(--serif);font-size:38px;line-height:1.1;color:var(--ochre)}
+.stat span{font-size:14px;color:var(--ink-soft)}
 .info-box{background:var(--bg-2);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink-soft);display:grid;gap:6px}
 .info-box ol{padding-left:20px;display:grid;gap:4px}
 .info-box code{background:#fff;padding:1px 6px;border-radius:6px}
@@ -203,6 +207,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
       <button type="button" data-tab="omnie">O mnie</button>
       <button type="button" data-tab="filmy">Filmy na stronie</button>
       <button type="button" data-tab="powiadomienia">Powiadomienia</button>
+      <button type="button" data-tab="statystyki">Statystyki</button>
     </div>
 
     <section id="tab-lista">
@@ -295,6 +300,13 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         </label>
         <div class="film-row"><button class="btn btn-primary" type="submit">Zapisz</button></div>
       </form>
+    </section>
+
+    <section id="tab-statystyki" hidden>
+      <div class="list-head"><h2>Odwiedziny strony</h2>
+        <button class="btn btn-light btn-sm" type="button" id="odswiez-statystyki">↻ Odśwież</button></div>
+      <div class="staty" id="staty"></div>
+      <p class="hint" style="margin-top:14px">Jedna osoba liczy się raz na wizytę (odświeżanie strony nie nabija licznika). Licznik nie zapisuje żadnych danych osobowych.</p>
     </section>
 
     <section id="tab-zapytania" hidden>
@@ -508,7 +520,7 @@ $('nowe-haslo').addEventListener('submit', async (e) => {
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
 
 // ---------- zakładki ----------
-const ZAKLADKI = ['lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia'];
+const ZAKLADKI = ['lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia', 'statystyki'];
 function zakladka(nazwa) {
   document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
   ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
@@ -516,6 +528,7 @@ function zakladka(nazwa) {
   if (nazwa === 'zapytania') wczytajZapytania();
   if (nazwa === 'skory') zamknijSkore();
   if (nazwa === 'korpusy') zamknijKorpus();
+  if (nazwa === 'statystyki') wczytajStatystyki();
 }
 document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => zakladka(b.dataset.tab)));
 
@@ -1347,6 +1360,26 @@ $('muzycy-form').addEventListener('submit', async (e) => {
   muzycy = lista; rysujMuzykow();
   toast(lista.length ? 'Zapisane – filmy są już na stronie' : 'Zapisane – sekcja z filmami jest ukryta');
 });
+// ---------- statystyki odwiedzin ----------
+async function wczytajStatystyki() {
+  const el = $('staty');
+  el.innerHTML = '<div class="empty">Wczytuję…</div>';
+  const dzis = new Date(); dzis.setHours(0, 0, 0, 0);
+  const dni = (n) => new Date(Date.now() - n * 864e5).toISOString();
+  const ile = (f) => f(sb.from('odwiedziny').select('id', { count: 'exact', head: true })).then((r) => { if (r.error) throw r.error; return r.count; });
+  try {
+    const [d, t7, t30, wsz, pl, de, en] = await Promise.all([
+      ile((q) => q.gte('created_at', dzis.toISOString())), ile((q) => q.gte('created_at', dni(7))), ile((q) => q.gte('created_at', dni(30))),
+      ile((q) => q), ile((q) => q.eq('jezyk', 'pl')), ile((q) => q.eq('jezyk', 'de')), ile((q) => q.eq('jezyk', 'en'))
+    ]);
+    const kafel = (n, t) => '<div class="stat"><b>' + n.toLocaleString('pl-PL') + '</b><span>' + t + '</span></div>';
+    el.innerHTML = kafel(d, 'dzisiaj') + kafel(t7, 'ostatnie 7 dni') + kafel(t30, 'ostatnie 30 dni') + kafel(wsz, 'łącznie') +
+      kafel(pl, '🇵🇱 wersja polska') + kafel(de, '🇩🇪 wersja niemiecka') + kafel(en, '🇬🇧 wersja angielska');
+  } catch (err) {
+    el.innerHTML = '<div class="card empty">Licznik nie jest jeszcze włączony w bazie.<br><small>' + esc(err.message || '') + '</small></div>';
+  }
+}
+$('odswiez-statystyki').addEventListener('click', wczytajStatystyki);
 </script>
 </body>
 </html>
