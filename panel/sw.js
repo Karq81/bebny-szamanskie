@@ -1,8 +1,8 @@
 // Pracownik w tle aplikacji „Bębny – panel”:
 // – pozwala zainstalować panel jako aplikację i otworzyć go bez internetu (ostatnia zapisana wersja),
 // – pokazuje powiadomienia o nowych zapytaniach od klientów.
-const WERSJA = 'panel-v2';
-const PLIKI = ['./', './index.html', './manifest.webmanifest', './ikona-192.png', './ikona-512.png', './ikona-znaczek.png', '../config.js'];
+const WERSJA = 'panel-v3';
+const PLIKI = ['./', './index.html', './supabase.js', './manifest.webmanifest', './ikona-192.png', './ikona-512.png', './ikona-znaczek.png', '../config.js'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(WERSJA).then((c) => c.addAll(PLIKI)).then(() => self.skipWaiting()));
@@ -21,12 +21,11 @@ self.addEventListener('fetch', (e) => {
   if (r.method !== 'GET') return;
   const url = new URL(r.url);
   const swoj = url.origin === self.location.origin;
-  const biblioteka = url.hostname === 'cdn.jsdelivr.net';
-  if (!swoj && !biblioteka) return;
+  if (!swoj) return;
   e.respondWith(
     // no-cache: przy internecie zawsze najnowsza wersja panelu (bez 10-minutowej pamięci serwera)
-    fetch(r, swoj ? { cache: 'no-cache' } : {}).then((odp) => {
-      if (odp.ok && (swoj ? url.pathname.startsWith('/panel/') || url.pathname === '/config.js' : true)) {
+    fetch(r, { cache: 'no-cache' }).then((odp) => {
+      if (odp.ok && (url.pathname.startsWith('/panel/') || url.pathname === '/config.js')) {
         const kopia = odp.clone();
         caches.open(WERSJA).then((c) => c.put(r, kopia));
       }

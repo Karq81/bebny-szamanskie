@@ -256,9 +256,12 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 
   <!-- Nowe hasło (po kliknięciu linku z e-maila) -->
   <form id="nowe-haslo" class="card login" hidden>
-    <h2>Ustaw nowe hasło</h2>
+    <h2 id="nowe-haslo-tytul">Ustaw nowe hasło</h2>
+    <p id="nowe-haslo-opis" hidden>Witaj! To Twoje pierwsze logowanie. Wymyśl teraz własne hasło – od tej chwili będziesz logować się tylko nim.</p>
+    <div class="error" id="haslo-blad" hidden></div>
     <label>Nowe hasło<input type="password" id="nowe-haslo-pole" autocomplete="new-password" minlength="8" required></label>
-    <p class="hint">Co najmniej 8 znaków.</p>
+    <label>Powtórz nowe hasło<input type="password" id="nowe-haslo-pole2" autocomplete="new-password" minlength="8" required></label>
+    <p class="hint">Co najmniej 8 znaków. Zapisz je sobie w bezpiecznym miejscu.</p>
     <button class="btn btn-primary" type="submit">Zapisz hasło</button>
   </form>
 
@@ -619,7 +622,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 <div class="toast" id="toast" hidden></div>
 
 <script src="../config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous"></script>
+<!-- supabase-js 2.45.4 (UMD) – kopia na naszym serwerze, żeby aplikacja nie zależała od obcego CDN -->
+<script src="supabase.js"></script>
 <script>
 const cfg = window.SKLEP_CONFIG || {};
 const $ = (id) => document.getElementById(id);
@@ -659,9 +663,22 @@ let wysylane = 0;
 // ---------- logowanie ----------
 sb.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') return pokaz('nowe-haslo');
-  if (session) { if ($('panel').hidden) start(); }
+  // setTimeout: wewnątrz tej funkcji nie wolno od razu wołać innych zapytań do Supabase
+  if (session) { if ($('panel').hidden && $('nowe-haslo').hidden) setTimeout(wejdz, 0); }
   else pokaz('logowanie');
 });
+
+// Pierwsze logowanie: gdy konto ma znacznik „zmien_haslo” (ustawia go Michał w Supabase),
+// panel najpierw prosi o własne hasło.
+async function wejdz() {
+  const { data } = await sb.auth.getUser();
+  if (data && data.user && data.user.user_metadata && data.user.user_metadata.zmien_haslo) {
+    $('nowe-haslo-tytul').textContent = 'Ustaw swoje hasło';
+    $('nowe-haslo-opis').hidden = false;
+    return pokaz('nowe-haslo');
+  }
+  start();
+}
 
 $('logowanie').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -682,9 +699,21 @@ $('zapomnialem').addEventListener('click', async () => {
 
 $('nowe-haslo').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const { error } = await sb.auth.updateUser({ password: $('nowe-haslo-pole').value });
-  if (error) return toast('Nie udało się zmienić hasła: ' + error.message, true);
-  toast('Hasło zmienione'); start();
+  const blad = (t) => { $('haslo-blad').textContent = t; $('haslo-blad').hidden = false; };
+  $('haslo-blad').hidden = true;
+  const h = $('nowe-haslo-pole').value;
+  if (h !== $('nowe-haslo-pole2').value) return blad('Hasła nie są takie same – wpisz dwa razy to samo.');
+  if (h.length < 8) return blad('Hasło musi mieć co najmniej 8 znaków.');
+  const btn = e.submitter; if (btn) btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: h, data: { zmien_haslo: false } });
+  if (btn) btn.disabled = false;
+  if (error) {
+    return blad(/different|same/i.test(error.message) ? 'Nowe hasło musi być inne niż dotychczasowe.' :
+      /weak|short|characters/i.test(error.message) ? 'To hasło jest za słabe – dodaj więcej znaków, cyfry albo litery.' :
+      'Nie udało się zmienić hasła: ' + error.message);
+  }
+  $('nowe-haslo-pole').value = $('nowe-haslo-pole2').value = '';
+  toast('Hasło zapisane – od teraz logujesz się nowym hasłem'); start();
 });
 
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
