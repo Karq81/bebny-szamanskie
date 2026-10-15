@@ -3,11 +3,12 @@
 // Linki: ta sama lista co „Grają na moich bębnach” w sekcji O mnie (klucz grali albo treść z HTML).
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
+  const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
   // zdjęcia względem miejsca skryptu – działa też w wersji /app/
   const IMG = new URL('img/', document.currentScript.src).href;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const FILMY_START = [
-    { url: 'https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA', tytul: 'Zespół WADADA', kto: 'kanał zespołu na YouTube' }
+    { url: 'https://www.youtube.com/channel/UCURKlxa0wvclrphrG6iONKA', tytul: T('Zespół WADADA'), kto: T('kanał zespołu na YouTube') }
   ];
 
   // Link do filmu, playlisty albo kanału (youtube.com/channel/UC…) -> adres odtwarzacza i miniatura.
@@ -43,7 +44,7 @@
       lista.innerHTML = filmy.map((f, i) =>
         '<li><button type="button" data-i="' + i + '">' +
           '<span class="mini"><img src="' + f.yt.mini + '" alt="" loading="lazy"></span>' +
-          '<span><b>' + esc(f.tytul) + '</b>' + (f.kto || f.yt.seria ? '<small>' + esc(f.kto) + (f.yt.seria ? (f.kto ? ' · ' : '') + 'kilka filmów po kolei' : '') + '</small>' : '') + '</span>' +
+          '<span><b>' + esc(f.tytul) + '</b>' + (f.kto || f.yt.seria ? '<small>' + esc(f.kto) + (f.yt.seria ? (f.kto ? ' · ' : '') + T('kilka filmów po kolei') : '') + '</small>' : '') + '</span>' +
         '</button></li>').join('');
       lista.addEventListener('click', (e) => {
         const b = e.target.closest('button[data-i]'); if (!b) return;
@@ -59,7 +60,7 @@
     }
 
     if (linki.length) {
-      document.getElementById('listen-linki').innerHTML = '<h3>Zobacz i posłuchaj więcej</h3><ul>' +
+      document.getElementById('listen-linki').innerHTML = '<h3>' + T('Zobacz i posłuchaj więcej') + '</h3><ul>' +
         linki.map((l) => '<li><a href="' + esc(l.link) + '" target="_blank" rel="noopener">' + esc(l.nazwa) + '</a></li>').join('') + '</ul>';
     }
 

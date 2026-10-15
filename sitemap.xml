@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://bebny-szamanskie.pl/</loc><lastmod>2026-10-13</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://bebny-szamanskie.pl/</loc><lastmod>2026-10-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://bebny-szamanskie.pl/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://bebny-szamanskie.pl/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bebny-szamanskie.pl/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bebny-szamanskie.pl/"/>
+  </url>
+  <url>
+    <loc>https://bebny-szamanskie.pl/de/</loc><lastmod>2026-10-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://bebny-szamanskie.pl/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://bebny-szamanskie.pl/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bebny-szamanskie.pl/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bebny-szamanskie.pl/"/>
+  </url>
+  <url>
+    <loc>https://bebny-szamanskie.pl/en/</loc><lastmod>2026-10-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://bebny-szamanskie.pl/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://bebny-szamanskie.pl/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bebny-szamanskie.pl/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bebny-szamanskie.pl/"/>
+  </url>
   <url><loc>https://bebny-szamanskie.pl/polityka-prywatnosci/</loc><lastmod>2026-10-14</lastmod></url>
 </urlset>

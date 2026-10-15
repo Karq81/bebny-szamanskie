@@ -2,6 +2,7 @@
 // Przeglądarki nie pozwalają grać dźwięku przed pierwszym dotknięciem strony – wtedy muzyka rusza
 // przy pierwszym kliknięciu / dotknięciu. Wyciszenie zapamiętujemy, żeby nie grała przy kolejnych wizytach.
 (function () {
+  const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
   const PLAYLISTA = 'UUURKlxa0wvclrphrG6iONKA';   // wszystkie filmy z kanału WADADA, po kolei
   const GLOSNOSC = 15;
   const czytaj = () => { try { return localStorage.getItem('muzyka'); } catch (e) { return null; } };
@@ -16,8 +17,8 @@
   document.body.appendChild(btn);
   const ikona = () => {
     btn.classList.toggle('gra', gra);
-    btn.setAttribute('aria-label', gra ? 'Wycisz muzykę w tle' : 'Włącz muzykę w tle');
-    btn.title = gra ? 'Gra: Zespół WADADA – kliknij, aby wyciszyć' : 'Włącz muzykę (Zespół WADADA)';
+    btn.setAttribute('aria-label', gra ? T('Wycisz muzykę w tle') : T('Włącz muzykę w tle'));
+    btn.title = gra ? T('Gra: Zespół WADADA – kliknij, aby wyciszyć') : T('Włącz muzykę (Zespół WADADA)');
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor"/>' +
       (gra ? '<path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/>' : '<path d="M16 9l5 6M21 9l-5 6"/>') + '</svg>';

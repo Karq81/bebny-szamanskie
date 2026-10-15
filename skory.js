@@ -2,15 +2,16 @@
 // Korpusy i skóry Paweł dodaje w panelu. Gdy baza nie odpowiada, zostają skóry zapisane w HTML.
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
+  const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const wybor = { rozmiar: '', korpus: null, skora: null };
   let korpusy = [];
   let skory = [];
 
   function suma() {
-    document.getElementById('suma-rozmiar').textContent = wybor.rozmiar || 'do ustalenia';
-    document.getElementById('suma-korpus').textContent = wybor.korpus ? wybor.korpus.nazwa : 'do ustalenia';
-    document.getElementById('suma-skora').textContent = wybor.skora ? wybor.skora.nazwa : 'do ustalenia';
+    document.getElementById('suma-rozmiar').textContent = wybor.rozmiar || T('do ustalenia');
+    document.getElementById('suma-korpus').textContent = wybor.korpus ? wybor.korpus.nazwa : T('do ustalenia');
+    document.getElementById('suma-skora').textContent = wybor.skora ? wybor.skora.nazwa : T('do ustalenia');
   }
 
   // ---------- rozmiar ----------
@@ -72,9 +73,9 @@
     grid.innerHTML = skory.map((s, i) => {
       const rez = s.status === 'zarezerwowana';
       return '<button type="button" class="skin" data-skora="' + i + '" aria-pressed="false"' + (rez ? ' disabled' : '') +
-        ' aria-label="' + esc(s.nazwa) + (rez ? ' – zarezerwowana' : '') + '"' + (s.opis ? ' title="' + esc(s.opis) + '"' : '') + '>' +
+        ' aria-label="' + esc(s.nazwa) + (rez ? ' – ' + T('Zarezerwowana') : '') + '"' + (s.opis ? ' title="' + esc(s.opis) + '"' : '') + '>' +
         '<span class="skin-foto"><img src="' + esc(s.zdjecie) + '" alt="" loading="lazy">' +
-        (rez ? '<span class="rez-stamp" aria-hidden="true">Zarezerwowana</span>' : '') + '</span>' +
+        (rez ? '<span class="rez-stamp" aria-hidden="true">' + T('Zarezerwowana') + '</span>' : '') + '</span>' +
         '<span>' + esc(s.nazwa) + '</span></button>';
     }).join('');
   }).catch(() => { /* zostają skóry z HTML */ });

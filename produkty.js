@@ -3,20 +3,23 @@
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
   if (!cfg.supabaseUrl || !cfg.supabaseKey) return;
+  const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
 
   const api = (path) => fetch(cfg.supabaseUrl + '/rest/v1/' + path, {
     headers: { apikey: cfg.supabaseKey, Authorization: 'Bearer ' + cfg.supabaseKey }
   }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const zl = (n) => n.toLocaleString('pl-PL') + ' zł';
+  const LANG = document.documentElement.lang || 'pl';
+  // w wersjach DE/EN obok złotówek orientacyjnie euro (kurs przybliżony)
+  const zl = (n) => n.toLocaleString('pl-PL') + ' zł' + (LANG === 'pl' ? '' : ' <small class="eur">(≈ ' + Math.round(n / 4.3) + ' €)</small>');
 
   const STATUS = {
     dostepny: null,
-    zarezerwowany: { tekst: 'Zarezerwowany', klasa: 'reserved' },
-    na_zamowienie: { tekst: 'Na zamówienie', klasa: 'custom' },
-    wkrotce: { tekst: 'Wkrótce', klasa: 'soon' },
-    sprzedany: { tekst: 'Sprzedany', klasa: 'sold' }
+    zarezerwowany: { tekst: T('Zarezerwowany'), klasa: 'reserved' },
+    na_zamowienie: { tekst: T('Na zamówienie'), klasa: 'custom' },
+    wkrotce: { tekst: T('Wkrótce'), klasa: 'soon' },
+    sprzedany: { tekst: T('Sprzedany'), klasa: 'sold' }
   };
 
   function youtubeId(url) {
@@ -47,7 +50,7 @@
 
   function cena(p) {
     if (p.cena == null) {
-      return '<span>' + (p.status === 'wkrotce' ? 'cena wkrótce' : p.status === 'na_zamowienie' ? 'cena po ustaleniu szczegółów' : 'zapytaj o cenę') + '</span>';
+      return '<span>' + (p.status === 'wkrotce' ? T('cena wkrótce') : p.status === 'na_zamowienie' ? T('cena po ustaleniu szczegółów') : T('zapytaj o cenę')) + '</span>';
     }
     let h = '<strong>' + zl(p.cena) + '</strong>';
     if (p.cena_przed && p.cena_przed > p.cena) h += '<s>' + zl(p.cena_przed) + '</s>';
@@ -56,15 +59,15 @@
 
   function omnibus(p) {
     return p.cena_przed && p.cena_najnizsza_30
-      ? '<p class="omnibus">Najniższa cena z 30 dni przed obniżką: ' + zl(p.cena_najnizsza_30) + '</p>' : '';
+      ? '<p class="omnibus">' + T('Najniższa cena z 30 dni przed obniżką:') + ' ' + zl(p.cena_najnizsza_30) + '</p>' : '';
   }
 
   // Napis „Zarezerwowany” na samym zdjęciu (karta i okienko szczegółów).
-  const napisRez = (p) => p.status === 'zarezerwowany' ? '<span class="rez-stamp" aria-hidden="true">Zarezerwowany</span>' : '';
+  const napisRez = (p) => p.status === 'zarezerwowany' ? '<span class="rez-stamp" aria-hidden="true">' + T('Zarezerwowany') + '</span>' : '';
 
   function badge(p) {
     if (p.status === 'zarezerwowany') return '';
-    if (p.status === 'dostepny' && p.cena_przed && p.cena && p.cena_przed > p.cena) return '<span class="badge">Promocja</span>';
+    if (p.status === 'dostepny' && p.cena_przed && p.cena && p.cena_przed > p.cena) return '<span class="badge">' + T('Promocja') + '</span>';
     const s = STATUS[p.status];
     return s ? '<span class="badge ' + s.klasa + '">' + s.tekst + '</span>' : '';
   }
@@ -75,12 +78,12 @@
     return '<article class="card' + (p.status === 'sprzedany' ? ' card-sold' : p.status === 'zarezerwowany' ? ' card-reserved' : '') + '">' +
       '<button class="card-img" type="button" data-produkt="' + i + '" aria-label="Szczegóły: ' + esc(p.nazwa) + '">' + badge(p) + napisRez(p) +
       (foto ? '<img src="' + esc(foto) + '" alt="' + esc(p.nazwa) + '" loading="lazy">' : '') +
-      (p.zdjecia.length > 1 ? '<span class="photo-count">' + p.zdjecia.length + ' zdjęć</span>' : '') +
+      (p.zdjecia.length > 1 ? '<span class="photo-count">' + p.zdjecia.length + ' ' + T('zdjęć') + '</span>' : '') +
       (p.film ? '<span class="photo-count video-tag">▶ film</span>' : '') + '</button>' +
       '<div class="card-body"><h3>' + esc(p.nazwa) + '</h3>' +
       (cechy.length ? '<ul class="specs">' + cechy.map((c) => '<li>' + esc(c) + '</li>').join('') + '</ul>' : '') +
       '<div class="price">' + cena(p) + '</div>' +
-      '<button class="btn btn-dark" type="button" data-produkt="' + i + '">' + (p.status === 'sprzedany' || p.status === 'zarezerwowany' ? 'Zobacz szczegóły' : 'Zobacz i zapytaj') + '</button>' +
+      '<button class="btn btn-dark" type="button" data-produkt="' + i + '">' + (p.status === 'sprzedany' || p.status === 'zarezerwowany' ? T('Zobacz szczegóły') : T('Zobacz i zapytaj')) + '</button>' +
       '</div></article>';
   }
 
@@ -88,20 +91,19 @@
   function przyciski(p) {
     const btn = (rodzaj, klasa, tekst) => '<button type="button" class="btn ' + klasa + '" data-zapytaj="' + rodzaj + '">' + tekst + '</button>';
     if (p.status === 'dostepny' || p.status === 'na_zamowienie') {
-      return '<p class="pm-note">Każdy bęben jest jedyny w swoim rodzaju, dlatego przed zakupem zawsze rozmawiamy. ' +
-        'Wyślij zgłoszenie – odezwę się, odpowiem na pytania, a gdy się zdecydujesz, zarezerwuję bęben dla Ciebie.</p>' +
-        '<div class="pm-ctas">' + btn('kupno', 'btn-primary', p.status === 'na_zamowienie' ? 'Chcę zamówić' : 'Chcę kupić ten bęben') +
-        btn('pytanie', 'btn-outline', 'Mam pytanie') + '</div>';
+      return '<p class="pm-note">' + T('Każdy bęben jest jedyny w swoim rodzaju, dlatego przed zakupem zawsze rozmawiamy. Wyślij zgłoszenie – odezwę się, odpowiem na pytania, a gdy się zdecydujesz, zarezerwuję bęben dla Ciebie.') + '</p>' +
+        '<div class="pm-ctas">' + btn('kupno', 'btn-primary', p.status === 'na_zamowienie' ? T('Chcę zamówić') : T('Chcę kupić ten bęben')) +
+        btn('pytanie', 'btn-outline', T('Mam pytanie')) + '</div>';
     }
     if (p.status === 'zarezerwowany') {
-      return '<p class="pm-note">Ten bęben jest zarezerwowany dla innej osoby. Zostaw kontakt – dam znać, jeśli rezerwacja się zwolni, albo zrobię dla Ciebie podobny.</p>' +
-        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Zapytaj o ten lub podobny') + '</div>';
+      return '<p class="pm-note">' + T('Ten bęben jest zarezerwowany dla innej osoby. Zostaw kontakt – dam znać, jeśli rezerwacja się zwolni, albo zrobię dla Ciebie podobny.') + '</p>' +
+        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', T('Zapytaj o ten lub podobny')) + '</div>';
     }
     if (p.status === 'sprzedany') {
-      return '<p class="pm-note">Ten bęben ma już właściciela. Napisz, jeśli chcesz podobny.</p>' +
-        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Chcę podobny bęben') + '</div>';
+      return '<p class="pm-note">' + T('Ten bęben ma już właściciela. Napisz, jeśli chcesz podobny.') + '</p>' +
+        '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', T('Chcę podobny bęben')) + '</div>';
     }
-    return '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', 'Daj mi znać, gdy będzie') + '</div>';
+    return '<div class="pm-ctas">' + btn('pytanie', 'btn-primary', T('Daj mi znać, gdy będzie')) + '</div>';
   }
 
   let produkty = [];
@@ -162,7 +164,7 @@
 
   api('ustawienia?select=klucz,wartosc').then((rows) => {
     const film = (rows.find((r) => r.klucz === 'film_strojenie') || {}).wartosc;
-    const html = filmHtml(film, 'Jak stroję bęben');
+    const html = filmHtml(film, T('Jak stroję bęben'));
     if (!html) return;
     document.querySelector('#film-strojenie .film-slot').innerHTML = html;
   }).catch(() => {});

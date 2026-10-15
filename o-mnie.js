@@ -3,6 +3,8 @@
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
   if (!cfg.supabaseUrl || !cfg.supabaseKey) return;
+  // tekst „O mnie” z panelu jest po polsku – w wersjach DE/EN zostaje przetłumaczony tekst ze strony
+  const pl = (document.documentElement.lang || 'pl') === 'pl';
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   fetch(cfg.supabaseUrl + '/rest/v1/ustawienia?select=klucz,wartosc&klucz=in.(o_mnie,grali)', {
@@ -10,7 +12,7 @@
   }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((rows) => {
     const v = (k) => ((rows.find((r) => r.klucz === k) || {}).wartosc || '').trim();
     const tekst = v('o_mnie');
-    if (tekst) {
+    if (tekst && pl) {
       document.getElementById('o-mnie-tekst').innerHTML =
         tekst.split(/\n\s*\n/).map((a) => '<p>' + esc(a.trim()).replace(/\n/g, '<br>') + '</p>').join('');
     }
