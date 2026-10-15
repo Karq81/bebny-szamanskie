@@ -1083,6 +1083,12 @@ document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=
 <script src="../muzyka.js"></script>
 <script>
 // przełącznik języka: zaznacza bieżący i zachowuje otwartą zakładkę (#...)
+// rozwinięte menu (☰) chowa się po kliknięciu gdziekolwiek poza nim albo klawiszem Esc
+document.addEventListener('click', (e) => {
+  const ul = document.querySelector('.nav ul');
+  if (ul.classList.contains('open') && !e.target.closest('.nav ul, .menu-btn')) ul.classList.remove('open');
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelector('.nav ul').classList.remove('open'); });
 document.querySelectorAll('.jezyki a').forEach((a) => {
   a.classList.toggle('on', a.dataset.jezyk === document.documentElement.lang);
   a.addEventListener('click', () => { a.href = a.getAttribute('href').split('#')[0] + location.hash; });
