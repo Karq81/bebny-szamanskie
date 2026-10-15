@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#16110d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikona-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bębny panel">
 <title>Panel – Bębny Pawła Małkowskiego</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -155,6 +161,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--dark);color:#f6efe4;padding:12px 20px;border-radius:999px;font-size:15px;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center}
 .toast.err{background:var(--rust)}
+.toast{pointer-events:none}
+.btn.armed{background:var(--rust);color:#fff;border-color:var(--rust)}
 
 @media (max-width:640px){
   .row,.row2{grid-template-columns:1fr}
@@ -162,6 +170,57 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   .item img,.item .noimg{width:60px;height:60px}
   .item-actions{grid-column:1/-1;justify-content:flex-end}
   .card{padding:16px}
+}
+
+/* ---------- aplikacja na telefon ---------- */
+.pulpit-glowa{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.pulpit-glowa h2{font-size:34px}
+.kafle{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kafel{background:var(--card);border:0;border-radius:14px;padding:16px 14px;box-shadow:0 1px 0 var(--line);text-align:left;cursor:pointer;display:grid;gap:2px}
+.kafel b{font-family:var(--serif);font-size:40px;line-height:1;color:var(--ochre)}
+.kafel span{font-size:14px;color:var(--ink-soft)}
+.kafel.alarm b{color:var(--rust)}
+.kafel.alarm{box-shadow:inset 4px 0 0 var(--rust),0 1px 0 var(--line)}
+.szybkie{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.szybkie .btn{min-height:58px;font-size:16px;border-radius:14px}
+.pulpit-lista h3{font-family:var(--serif);font-size:24px;margin:18px 0 10px}
+.mini-zap{display:grid;grid-template-columns:1fr auto;gap:2px 10px;background:var(--card);border-radius:12px;padding:12px 14px;box-shadow:0 1px 0 var(--line);border:0;width:100%;text-align:left;cursor:pointer;margin-bottom:8px}
+.mini-zap.nowe{box-shadow:inset 4px 0 0 var(--ochre),0 1px 0 var(--line)}
+.mini-zap strong{font-size:16px}
+.mini-zap small{color:var(--ink-soft);font-size:13px}
+.mini-zap .co{grid-column:1/-1;font-size:14px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.baner{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-bottom:14px}
+.baner .ico{font-size:28px}
+.baner strong{display:block}
+.baner span{font-size:14px;color:var(--ink-soft)}
+.add-photo.aparat span{font-size:26px}
+@media (hover:hover) and (pointer:fine){ .add-photo.aparat{display:none} }
+
+.dolny{display:none}
+.wiecej-tlo{position:fixed;inset:0;background:rgba(22,17,13,.45);z-index:40}
+.wiecej{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--card);border-radius:18px 18px 0 0;padding:10px 12px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.2);display:grid;gap:4px}
+.wiecej::before{content:"";width:44px;height:5px;border-radius:9px;background:var(--line);justify-self:center;margin-bottom:6px}
+.wiecej button,.wiecej a{display:flex;align-items:center;gap:14px;padding:14px 12px;border:0;background:none;border-radius:12px;font-size:17px;color:var(--ink);text-decoration:none;cursor:pointer;text-align:left}
+.wiecej button:active,.wiecej a:active{background:var(--bg-2)}
+.wiecej .ico{width:26px;text-align:center;font-size:20px}
+
+@media (max-width:700px){
+  header .wrap{padding-block:10px}
+  header h1{font-size:21px}
+  header #wyloguj{display:none}
+  main{padding-block:18px calc(96px + env(safe-area-inset-bottom))}
+  #panel > .tabs{display:none}
+  .kafle{grid-template-columns:1fr 1fr}
+  .kafel b{font-size:36px}
+  .list-head h2,.form h2,.pulpit-glowa h2{font-size:28px}
+  .dolny{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--dark);padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+  .dolny button{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:#b9a88f;font-size:11.5px;font-weight:500;padding:6px 0;cursor:pointer}
+  .dolny button .ico{font-size:21px;line-height:1.1}
+  .dolny button.on{color:#f0c27b}
+  .dolny .licznik{position:absolute;top:0;left:calc(50% + 6px);min-width:19px;padding:0 5px;border-radius:999px;background:var(--rust);color:#fff;font-size:11px;line-height:19px;text-align:center}
+  .form-actions{bottom:calc(66px + env(safe-area-inset-bottom))}
+  .toast{bottom:auto;top:calc(10px + env(safe-area-inset-top))}
+  .item-actions{flex-wrap:wrap}
 }
 </style>
 </head>
@@ -206,7 +265,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <!-- Panel -->
   <div id="panel" hidden>
     <div class="tabs" role="tablist">
-      <button type="button" class="on" data-tab="lista">Gotowe bębny</button>
+      <button type="button" class="on" data-tab="pulpit">Start</button>
+      <button type="button" data-tab="lista">Gotowe bębny</button>
       <button type="button" data-tab="skory">Skóry</button>
       <button type="button" data-tab="korpusy">Korpusy</button>
       <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
@@ -216,7 +276,37 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
       <button type="button" data-tab="statystyki">Statystyki</button>
     </div>
 
-    <section id="tab-lista">
+    <section id="tab-pulpit">
+      <div class="pulpit-glowa"><h2 id="pulpit-powitanie">Dzień dobry</h2><span class="hint" id="pulpit-data"></span></div>
+      <div class="card baner" id="instaluj" hidden>
+        <span class="ico">📲</span>
+        <div><strong>Zainstaluj panel jako aplikację</strong><span>Ikonka z bębnem na ekranie telefonu – otwierasz jednym dotknięciem.</span></div>
+        <button class="btn btn-primary btn-sm" type="button" id="instaluj-btn">Zainstaluj</button>
+      </div>
+      <div class="card baner" id="push-baner" hidden>
+        <span class="ico">🔔</span>
+        <div><strong>Powiadomienia o nowych zapytaniach</strong><span>Telefon da znać, gdy klient napisze przez stronę.</span></div>
+        <button class="btn btn-primary btn-sm" type="button" id="push-baner-btn">Włącz</button>
+      </div>
+      <div class="kafle">
+        <button type="button" class="kafel" data-idz="zapytania" id="kafel-nowe"><b id="k-nowe">–</b><span>nowe zapytania</span></button>
+        <button type="button" class="kafel" data-idz="zapytania"><b id="k-otwarte">–</b><span>do załatwienia</span></button>
+        <button type="button" class="kafel" data-idz="lista"><b id="k-rez">–</b><span>zarezerwowane</span></button>
+        <button type="button" class="kafel" data-idz="statystyki"><b id="k-odw">–</b><span>odwiedziny dziś</span></button>
+      </div>
+      <div class="szybkie">
+        <button class="btn btn-primary" type="button" id="p-nowy">＋ Nowy bęben</button>
+        <button class="btn btn-dark" type="button" id="p-foto">📷 Bęben ze zdjęcia</button>
+      </div>
+      <div class="pulpit-lista">
+        <h3>Do załatwienia</h3>
+        <div id="pulpit-zap"></div>
+        <h3>Zarezerwowane bębny i skóry</h3>
+        <div id="pulpit-rez"></div>
+      </div>
+    </section>
+
+    <section id="tab-lista" hidden>
       <div class="list-head">
         <h2>Gotowe bębny</h2>
         <button class="btn btn-primary" type="button" id="dodaj">+ Dodaj bęben</button>
@@ -360,8 +450,18 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
     </section>
 
     <section id="tab-powiadomienia" hidden>
+      <div class="card form" style="margin-bottom:22px">
+        <h2>Powiadomienia w aplikacji</h2>
+        <p class="hint" style="font-size:15px">Telefon pokaże powiadomienie, gdy klient wyśle zapytanie przez stronę – tak jak wiadomość z Messengera. Włącz to osobno na każdym telefonie i komputerze, na którym chcesz je dostawać.</p>
+        <p id="push-stan">Sprawdzam…</p>
+        <div class="film-row">
+          <button class="btn btn-primary" type="button" id="push-wlacz" hidden>🔔 Włącz powiadomienia</button>
+          <button class="btn btn-light" type="button" id="push-test" hidden>Wyślij próbne powiadomienie</button>
+          <button class="linkbtn" type="button" id="push-wylacz" hidden>Wyłącz na tym urządzeniu</button>
+        </div>
+      </div>
       <form class="card form" id="powiadomienia-form">
-        <h2>Powiadomienia o zapytaniach</h2>
+        <h2>WhatsApp i e-mail</h2>
         <p class="hint" style="font-size:15px">Gdy klient wyśle zgłoszenie ze strony, dostaniesz wiadomość na WhatsAppa (i e-mail, jeśli go ustawisz). Wszystkie zgłoszenia zawsze są też w zakładce „Zapytania”.</p>
 
         <div class="info-box">
@@ -455,6 +555,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <legend>Zdjęcia – pierwsze jest główne (★ zmienia główne)</legend>
           <div class="photos" id="zdjecia">
             <label class="add-photo" id="dodaj-zdjecie"><span>+</span>Dodaj zdjęcia<input type="file" id="f-pliki" accept="image/*" multiple></label>
+            <label class="add-photo aparat" id="aparat-zdjecie"><span>📷</span>Zrób zdjęcie<input type="file" id="f-aparat" accept="image/*" capture="environment"></label>
           </div>
         </fieldset>
       </div>
@@ -497,10 +598,28 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   </div>
 </main>
 
+<nav class="dolny" id="dolny" hidden aria-label="Menu panelu">
+  <button type="button" data-tab="pulpit" class="on"><span class="ico">🏠</span>Start</button>
+  <button type="button" data-tab="lista"><span class="ico">🥁</span>Bębny</button>
+  <button type="button" data-tab="zapytania"><span class="ico">💬</span>Zapytania<span class="licznik" id="licznik-dolny" hidden></span></button>
+  <button type="button" data-tab="skory"><span class="ico">🟤</span>Skóry</button>
+  <button type="button" data-tab="wiecej"><span class="ico">☰</span>Więcej</button>
+</nav>
+<div class="wiecej-tlo" id="wiecej-tlo" hidden></div>
+<div class="wiecej" id="wiecej" hidden role="dialog" aria-label="Więcej">
+  <button type="button" data-tab="korpusy"><span class="ico">🪵</span>Korpusy</button>
+  <button type="button" data-tab="statystyki"><span class="ico">📊</span>Odwiedziny strony</button>
+  <button type="button" data-tab="omnie"><span class="ico">✍️</span>O mnie</button>
+  <button type="button" data-tab="filmy"><span class="ico">▶️</span>Filmy na stronie</button>
+  <button type="button" data-tab="powiadomienia"><span class="ico">🔔</span>Powiadomienia</button>
+  <a href="../" target="_blank" rel="noopener"><span class="ico">🌐</span>Zobacz stronę</a>
+  <button type="button" id="wyloguj-2"><span class="ico">🚪</span>Wyloguj</button>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script src="../config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script>
 const cfg = window.SKLEP_CONFIG || {};
 const $ = (id) => document.getElementById(id);
@@ -522,6 +641,7 @@ function toast(msg, err) {
 function pokaz(id) {
   ['brak-konfiguracji', 'logowanie', 'nowe-haslo', 'panel'].forEach((x) => $(x).hidden = x !== id);
   $('wyloguj').hidden = id !== 'panel';
+  $('dolny').hidden = id !== 'panel';
 }
 
 if (!cfg.supabaseUrl || !cfg.supabaseKey) {
@@ -568,25 +688,44 @@ $('nowe-haslo').addEventListener('submit', async (e) => {
 });
 
 $('wyloguj').addEventListener('click', () => sb.auth.signOut());
+$('wyloguj-2').addEventListener('click', () => { pokazWiecej(false); sb.auth.signOut(); });
 
 // ---------- zakładki ----------
-const ZAKLADKI = ['lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia', 'statystyki'];
+const ZAKLADKI = ['pulpit', 'lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia', 'statystyki'];
+// czy jest otwarty formularz edycji (bęben, skóra, korpus)
+const edycjaOtwarta = () => ['edycja', 'skora-edycja', 'korpus-edycja'].some((id) => $(id) && !$(id).hidden);
 function zakladka(nazwa) {
+  if (!ZAKLADKI.includes(nazwa)) nazwa = 'pulpit';
+  if (edycjaOtwarta() && !confirm('Masz otwarty formularz – wyjść bez zapisywania?')) { pokazWiecej(false); return; }
+  if (edycjaOtwarta()) { $('edycja').hidden = true; edytowany = null; zamknijSkore(); zamknijKorpus(); }
   document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
+  const wDolnym = ['pulpit', 'lista', 'zapytania', 'skory'].includes(nazwa) ? nazwa : 'wiecej';
+  document.querySelectorAll('#dolny button').forEach((x) => x.classList.toggle('on', x.dataset.tab === wDolnym));
+  pokazWiecej(false);
   ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
+  scrollTo(0, 0);
   $('edycja').hidden = true;
   if (nazwa === 'zapytania') wczytajZapytania();
   if (nazwa === 'skory') zamknijSkore();
   if (nazwa === 'korpusy') zamknijKorpus();
   if (nazwa === 'statystyki') wczytajStatystyki();
+  if (nazwa === 'pulpit') { rysujPulpit(); odwiedzinyDzis(); wczytajZapytania(); }
 }
+function pokazWiecej(tak) { $('wiecej').hidden = $('wiecej-tlo').hidden = !tak; }
+document.querySelectorAll('#dolny button, #wiecej button[data-tab]').forEach((b) => b.addEventListener('click', () =>
+  b.dataset.tab === 'wiecej' ? pokazWiecej($('wiecej').hidden) : zakladka(b.dataset.tab)));
+$('wiecej-tlo').addEventListener('click', () => pokazWiecej(false));
 document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => zakladka(b.dataset.tab)));
 
 async function start() {
   pokaz('panel');
   // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
   await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia(), wczytajOMnie(), wczytajMuzykow()]);
-  if (zapytania.some((z) => z.status === 'nowe')) zakladka('zapytania');
+  // skróty z ikonki aplikacji: ?akcja=nowy (nowy bęben), #zapytania itd.
+  const cel = location.hash.slice(1);
+  if (new URLSearchParams(location.search).get('akcja') === 'nowy') otworzEdycje(null);
+  else zakladka(ZAKLADKI.includes(cel) ? cel : 'pulpit');
+  history.replaceState(null, '', location.pathname);
 }
 
 // ---------- lista ----------
@@ -594,7 +733,7 @@ async function wczytaj() {
   const { data, error } = await sb.from('produkty').select('*').order('kolejnosc').order('created_at', { ascending: false });
   if (error) return toast('Nie udało się wczytać bębnów: ' + error.message, true);
   produkty = data; produkty.forEach((p) => { p.zdjecia = (p.zdjecia || []).map(adresZdj); });
-  rysujListe();
+  rysujListe(); rysujPulpit();
 }
 
 function rysujListe() {
@@ -616,6 +755,7 @@ function rysujListe() {
         '<button class="icon" type="button" data-akcja="dol" data-i="' + i + '" aria-label="Przesuń niżej"' + (i === produkty.length - 1 ? ' disabled' : '') + '>↓</button>' +
         (p.status === 'dostepny' ? '<button class="btn btn-ok btn-sm" type="button" data-akcja="rezerwuj" data-i="' + i + '">Zarezerwuj</button>' : '') +
         (p.status === 'zarezerwowany' ? '<button class="btn btn-light btn-sm" type="button" data-akcja="zwolnij" data-i="' + i + '">Zdejmij rezerwację</button>' : '') +
+        (p.status === 'dostepny' || p.status === 'zarezerwowany' ? '<button class="btn btn-light btn-sm" type="button" data-akcja="sprzedany" data-i="' + i + '">Sprzedany</button>' : '') +
         '<button class="btn btn-dark" type="button" data-akcja="edytuj" data-i="' + i + '">Edytuj</button>' +
         '<button class="btn btn-danger btn-sm" type="button" data-akcja="usun" data-i="' + i + '">Usuń</button>' +
       '</div></div>').join('');
@@ -627,6 +767,14 @@ $('lista').addEventListener('click', async (e) => {
   if (b.dataset.akcja === 'edytuj') return otworzEdycje(produkty[i]);
   if (b.dataset.akcja === 'rezerwuj') return zmienStatus(produkty[i], 'zarezerwowany');
   if (b.dataset.akcja === 'zwolnij') return zmienStatus(produkty[i], 'dostepny');
+  if (b.dataset.akcja === 'sprzedany') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Na pewno sprzedany?';
+      setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Sprzedany'; }, 4000);
+      return;
+    }
+    return zmienStatus(produkty[i], 'sprzedany');
+  }
   if (b.dataset.akcja === 'usun') {
     if (!b.classList.contains('armed')) {
       b.classList.add('armed'); b.textContent = 'Na pewno usunąć?';
@@ -652,6 +800,7 @@ $('dodaj').addEventListener('click', () => otworzEdycje(null));
 $('anuluj').addEventListener('click', zamknijEdycje);
 
 function otworzEdycje(p) {
+  if ($('tab-lista').hidden) zakladka('lista');
   edytowany = p;
   zdjecia = p ? [...p.zdjecia] : [];
   doUsuniecia = [];
@@ -739,7 +888,9 @@ function zmniejsz(file) {
   });
 }
 
-$('f-pliki').addEventListener('change', async (e) => {
+$('f-pliki').addEventListener('change', dodajPliki);
+$('f-aparat').addEventListener('change', dodajPliki);
+async function dodajPliki(e) {
   const pliki = [...e.target.files]; e.target.value = '';
   for (const f of pliki) {
     const ph = document.createElement('div'); ph.className = 'ph loading';
@@ -757,7 +908,7 @@ $('f-pliki').addEventListener('change', async (e) => {
       wysylane--; ph.remove(); rysujZdjecia();
     }
   }
-});
+}
 
 function sciezkaWBazie(url) {
   const znak = '/storage/v1/object/public/' + BUCKET + '/';
@@ -874,7 +1025,10 @@ async function wczytajZapytania() {
   $('usun-stare').textContent = 'Usuń zapytania starsze niż rok (' + stare + ')';
   const nowe = zapytania.filter((z) => z.status === 'nowe').length;
   $('licznik-zapytan').hidden = !nowe; $('licznik-zapytan').textContent = nowe;
-  rysujZapytania();
+  $('licznik-dolny').hidden = !nowe; $('licznik-dolny').textContent = nowe;
+  // liczba nowych zapytań na ikonce aplikacji (gdzie telefon to obsługuje)
+  if ('setAppBadge' in navigator) (nowe ? navigator.setAppBadge(nowe) : navigator.clearAppBadge()).catch(() => {});
+  rysujZapytania(); rysujPulpit();
 }
 
 function waNumer(tel) {
@@ -1547,6 +1701,126 @@ $('tlumacz-wszystko').addEventListener('click', async () => {
     wczytaj();
   } catch (e) { toast('Nie udało się: ' + e.message, true); }
   finally { b.disabled = false; b.textContent = napis; }
+});
+// ---------- Start (pulpit) ----------
+function rysujPulpit() {
+  if (!$('tab-pulpit') || $('panel').hidden) return;
+  const godz = new Date().getHours();
+  $('pulpit-powitanie').textContent = (godz < 5 || godz >= 19 ? 'Dobry wieczór' : 'Dzień dobry') + ', Paweł';
+  $('pulpit-data').textContent = new Date().toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' });
+  const nowe = zapytania.filter((z) => z.status === 'nowe');
+  const otwarte = zapytania.filter((z) => z.status === 'nowe' || z.status === 'w_toku');
+  const rezB = produkty.filter((p) => p.status === 'zarezerwowany');
+  const rezS = skory.filter((x) => x.status === 'zarezerwowana');
+  $('k-nowe').textContent = nowe.length;
+  $('kafel-nowe').classList.toggle('alarm', nowe.length > 0);
+  $('k-otwarte').textContent = otwarte.length;
+  $('k-rez').textContent = rezB.length + rezS.length;
+  const kiedy = (d) => {
+    const t = new Date(d), dzis = new Date();
+    return t.toDateString() === dzis.toDateString() ? 'dziś ' + t.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
+      : t.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
+  };
+  $('pulpit-zap').innerHTML = otwarte.length ? otwarte.slice(0, 5).map((z) =>
+    '<button type="button" class="mini-zap ' + z.status + '" data-idz="zapytania"><strong>' + esc(z.imie) + '</strong><small>' +
+      (z.status === 'nowe' ? '🟠 nowe · ' : '') + kiedy(z.created_at) + '</small>' +
+      '<span class="co">' + RODZAJ[z.rodzaj] + (z.produkt_nazwa ? ': ' + esc(z.produkt_nazwa) : z.rodzaj === 'zamowienie' ? ': bęben na zamówienie' : '') +
+      (z.wiadomosc ? ' – ' + esc(z.wiadomosc) : '') + '</span></button>').join('') +
+      (otwarte.length > 5 ? '<p class="hint">…i ' + (otwarte.length - 5) + ' więcej w zakładce Zapytania</p>' : '')
+    : '<div class="card empty" style="padding:18px">Wszystko załatwione 👍</div>';
+  $('pulpit-rez').innerHTML = rezB.length + rezS.length ? rezB.map((p) =>
+    '<button type="button" class="mini-zap" data-idz="lista"><strong>🥁 ' + esc(p.nazwa) + '</strong><small>zarezerwowany</small></button>').join('') +
+    rezS.map((x) => '<button type="button" class="mini-zap" data-idz="skory"><strong>🟤 ' + esc(x.nazwa) + '</strong><small>zarezerwowana</small></button>').join('')
+    : '<div class="card empty" style="padding:18px">Nic nie jest zarezerwowane.</div>';
+}
+async function odwiedzinyDzis() {
+  const dzis = new Date(); dzis.setHours(0, 0, 0, 0);
+  const { count, error } = await sb.from('odwiedziny').select('id', { count: 'exact', head: true }).gte('created_at', dzis.toISOString());
+  $('k-odw').textContent = error || count == null ? '–' : count;
+}
+$('tab-pulpit').addEventListener('click', (e) => { const b = e.target.closest('[data-idz]'); if (b) zakladka(b.dataset.idz); });
+$('p-nowy').addEventListener('click', () => otworzEdycje(null));
+// od razu aparat: nowy bęben + zdjęcie (kliknięcie musi być w tym samym dotknięciu)
+$('p-foto').addEventListener('click', () => { otworzEdycje(null); $('f-aparat').click(); });
+
+// ---------- aplikacja: instalacja i praca w tle ----------
+let instalacja = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); instalacja = e; $('instaluj').hidden = false; });
+window.addEventListener('appinstalled', () => { instalacja = null; $('instaluj').hidden = true; toast('Zainstalowane – ikonka jest na ekranie telefonu'); });
+$('instaluj-btn').addEventListener('click', async () => {
+  if (!instalacja) return;
+  instalacja.prompt();
+  await instalacja.userChoice; instalacja = null; $('instaluj').hidden = true;
+});
+let pracownik = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then((r) => { pracownik = r; pushOdswiezStan(); }).catch(() => {});
+  // kliknięcie w powiadomienie, gdy panel jest już otwarty
+  navigator.serviceWorker.addEventListener('message', (e) => {
+    if (e.data && e.data.typ === 'otworz') { zakladka((e.data.url.split('#')[1]) || 'zapytania'); }
+  });
+}
+
+// ---------- powiadomienia na telefon (push) ----------
+const PUSH_URL = cfg.supabaseUrl + '/functions/v1/push';
+const pushMozliwe = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+async function pushFetch(dane) {
+  const { data: { session } } = await sb.auth.getSession();
+  const r = await fetch(PUSH_URL + (dane ? '' : '?klucz=1'), {
+    method: dane ? 'POST' : 'GET',
+    headers: { apikey: cfg.supabaseKey, Authorization: 'Bearer ' + (session ? session.access_token : cfg.supabaseKey), 'Content-Type': 'application/json' },
+    body: dane ? JSON.stringify(dane) : undefined
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.blad || ('błąd ' + r.status));
+  return j;
+}
+const b64 = (s) => { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(b, (c) => c.charCodeAt(0)); };
+async function pushSubskrypcja() {
+  if (!pracownik) pracownik = await navigator.serviceWorker.ready;
+  return pracownik.pushManager.getSubscription();
+}
+async function pushOdswiezStan() {
+  const tekst = $('push-stan'), wl = $('push-wlacz'), test = $('push-test');
+  if (!pushMozliwe()) {
+    tekst.textContent = 'Ta przeglądarka nie obsługuje powiadomień. Na telefonie z Androidem użyj Chrome i zainstaluj panel jako aplikację.';
+    wl.hidden = test.hidden = true; $('push-baner').hidden = true; return;
+  }
+  const sub = await pushSubskrypcja().catch(() => null);
+  const odmowa = Notification.permission === 'denied';
+  const wlaczone = !!sub && Notification.permission === 'granted';
+  tekst.textContent = wlaczone ? '✅ Włączone na tym urządzeniu.' :
+    odmowa ? '⛔ Powiadomienia są zablokowane w ustawieniach telefonu (Ustawienia → Aplikacje → Chrome/Bębny panel → Powiadomienia → zezwól).' :
+    'Wyłączone na tym urządzeniu.';
+  wl.hidden = wlaczone || odmowa; test.hidden = !wlaczone; $('push-wylacz').hidden = !wlaczone;
+  $('push-baner').hidden = wlaczone || odmowa;
+}
+async function pushWlacz() {
+  try {
+    if (!pushMozliwe()) return toast('Ta przeglądarka nie obsługuje powiadomień', true);
+    const zgoda = await Notification.requestPermission();
+    if (zgoda !== 'granted') { pushOdswiezStan(); return toast('Bez zgody telefon nie pokaże powiadomień', true); }
+    const { klucz } = await pushFetch(null);
+    const reg = pracownik || await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(klucz) });
+    await pushFetch({ akcja: 'zapisz', subskrypcja: sub.toJSON(), urzadzenie: navigator.userAgent.slice(0, 200) });
+    toast('Powiadomienia włączone 🔔');
+  } catch (err) {
+    toast('Nie udało się włączyć powiadomień: ' + (err.message || err) + '. Czy funkcja „push” jest dodana w Supabase?', true);
+  }
+  pushOdswiezStan();
+}
+$('push-wlacz').addEventListener('click', pushWlacz);
+$('push-baner-btn').addEventListener('click', pushWlacz);
+$('push-wylacz').addEventListener('click', async () => {
+  const sub = await pushSubskrypcja().catch(() => null);
+  if (sub) { await pushFetch({ akcja: 'usun', endpoint: sub.endpoint }).catch(() => {}); await sub.unsubscribe().catch(() => {}); }
+  toast('Powiadomienia wyłączone na tym urządzeniu'); pushOdswiezStan();
+});
+$('push-test').addEventListener('click', async () => {
+  try { const { wyslane } = await pushFetch({ akcja: 'test' }); toast('Wysłane na ' + wyslane + ' urządz. – powinno przyjść za chwilę'); }
+  catch (err) { toast('Nie udało się: ' + (err.message || err), true); }
 });
 </script>
 </body>

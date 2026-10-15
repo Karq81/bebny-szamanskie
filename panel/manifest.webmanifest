@@ -1,0 +1,22 @@
+{
+  "name": "Bębny – panel Pawła",
+  "short_name": "Bębny panel",
+  "description": "Zarządzanie stroną bebny-szamanskie.pl: bębny, skóry, zapytania od klientów.",
+  "id": "/panel/",
+  "start_url": "/panel/?aplikacja=1",
+  "scope": "/panel/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "pl",
+  "background_color": "#16110d",
+  "theme_color": "#16110d",
+  "icons": [
+    { "src": "ikona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ikona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Nowy bęben", "short_name": "Nowy bęben", "url": "/panel/?akcja=nowy", "icons": [{ "src": "ikona-96.png", "sizes": "96x96" }] },
+    { "name": "Zapytania od klientów", "short_name": "Zapytania", "url": "/panel/#zapytania", "icons": [{ "src": "ikona-96.png", "sizes": "96x96" }] }
+  ]
+}
