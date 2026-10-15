@@ -4,6 +4,9 @@
   const cfg = window.SKLEP_CONFIG || {};
   if (!cfg.supabaseUrl || !cfg.supabaseKey) return;
   const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
+  // wersja DE/EN: pola nazwa_de / opis_en itd. z panelu; puste = tekst polski (albo słownik i18n)
+  const LOK = document.documentElement.lang || 'pl';
+  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || T(r[k]); }); return r; };
 
   const api = (path) => fetch(cfg.supabaseUrl + '/rest/v1/' + path, {
     headers: { apikey: cfg.supabaseKey, Authorization: 'Bearer ' + cfg.supabaseKey }
@@ -152,6 +155,7 @@
 
   api('produkty?select=*&order=kolejnosc.asc,created_at.desc').then((lista) => {
     if (!lista.length) return;
+    lista.forEach((p) => lokalnie(p, ['nazwa', 'cechy', 'opis']));
     // sprzedane na końcu listy
     produkty = lista.filter((p) => p.status !== 'sprzedany').concat(lista.filter((p) => p.status === 'sprzedany'));
     const kontener = document.getElementById('lista-produktow');

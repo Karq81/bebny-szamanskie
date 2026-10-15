@@ -3,6 +3,9 @@
 (function () {
   const cfg = window.SKLEP_CONFIG || {};
   const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
+  // wersja DE/EN: pola nazwa_de / opis_en itd. z panelu; puste = tekst polski (albo słownik i18n)
+  const LOK = document.documentElement.lang || 'pl';
+  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || T(r[k]); }); return r; };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const wybor = { rozmiar: '', korpus: null, skora: null };
   let korpusy = [];
@@ -69,6 +72,7 @@
 
   api('skory?select=*&order=kolejnosc.asc,created_at.asc').then((lista) => {
     if (!lista.length) return;
+    lista.forEach((r) => lokalnie(r, ['nazwa', 'opis']));
     skory = lista; wybor.skora = null; suma();
     grid.innerHTML = skory.map((s, i) => {
       const rez = s.status === 'zarezerwowana';
@@ -83,6 +87,7 @@
   // korpusy – krok pokazuje się dopiero, gdy Paweł doda choć jeden
   api('korpusy?select=*&order=kolejnosc.asc,created_at.asc').then((lista) => {
     if (!lista.length) return;
+    lista.forEach((r) => lokalnie(r, ['nazwa', 'opis']));
     korpusy = lista;
     korpusyBox.innerHTML = korpusy.map((k, i) =>
       '<button type="button" class="korpus" data-korpus="' + i + '" aria-pressed="false">' +

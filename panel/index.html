@@ -106,6 +106,10 @@ textarea{resize:vertical;min-height:110px}
 .stat{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 1px 0 var(--line)}
 .stat b{display:block;font-family:var(--serif);font-size:38px;line-height:1.1;color:var(--ochre)}
 .stat span{font-size:14px;color:var(--ink-soft)}
+.tlum{background:var(--bg);border-radius:12px;padding:12px 14px}
+.tlum summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.tlum fieldset{margin-top:12px;display:grid;gap:10px}
+.tlum[open] summary{margin-bottom:4px}
 .info-box{background:var(--bg-2);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink-soft);display:grid;gap:6px}
 .info-box ol{padding-left:20px;display:grid;gap:4px}
 .info-box code{background:#fff;padding:1px 6px;border-radius:6px}
@@ -237,6 +241,17 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           </fieldset>
           <label>Nazwa *<input type="text" id="s-nazwa" required placeholder="np. Skóra łaciata, biało-ruda"></label>
           <label>Krótki opis (opcjonalnie)<textarea id="s-opis" rows="3" placeholder="np. gruba skóra krowia, mocny bas, wzór w ciapki"></textarea></label>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<fieldset><legend>🇩🇪 Deutsch</legend>
+<label>Nazwa<input type="text" id="s-nazwa-de"></label>
+<label>Krótki opis<textarea id="s-opis-de" rows="3"></textarea></label>
+</fieldset>
+<fieldset><legend>🇬🇧 English</legend>
+<label>Nazwa<input type="text" id="s-nazwa-en"></label>
+<label>Krótki opis<textarea id="s-opis-en" rows="3"></textarea></label>
+</fieldset>
+</details>
+
           <div class="row2">
             <label>Status
               <select id="s-status">
@@ -277,6 +292,17 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           </fieldset>
           <label>Nazwa *<input type="text" id="k-nazwa" required placeholder="np. Opalany ogniem"></label>
           <label>Krótki opis (opcjonalnie)<textarea id="k-opis" rows="3" placeholder="np. każdy wychodzi trochę inaczej – efekt ognia jest niepowtarzalny"></textarea></label>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<fieldset><legend>🇩🇪 Deutsch</legend>
+<label>Nazwa<input type="text" id="k-nazwa-de"></label>
+<label>Krótki opis<textarea id="k-opis-de" rows="3"></textarea></label>
+</fieldset>
+<fieldset><legend>🇬🇧 English</legend>
+<label>Nazwa<input type="text" id="k-nazwa-en"></label>
+<label>Krótki opis<textarea id="k-opis-en" rows="3"></textarea></label>
+</fieldset>
+</details>
+
           <label class="check"><input type="checkbox" id="k-widoczny" checked> Pokazuj na stronie</label>
         </div>
         <div class="form-actions">
@@ -436,6 +462,18 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <input type="url" id="f-film" placeholder="https://youtu.be/…">
         </label>
         <div class="film-row"><div class="yt-preview" id="f-film-podglad"></div><button class="btn btn-danger" type="button" id="f-film-usun" hidden>Usuń film</button></div>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<fieldset><legend>🇩🇪 Deutsch</legend>
+<label>Nazwa<input type="text" id="f-nazwa-de"></label>
+<label>Cechy (każda w nowej linii)<textarea id="f-cechy-de" rows="4"></textarea></label>
+<label>Opis<textarea id="f-opis-de" rows="6"></textarea></label>
+</fieldset>
+<fieldset><legend>🇬🇧 English</legend>
+<label>Nazwa<input type="text" id="f-nazwa-en"></label>
+<label>Cechy (każda w nowej linii)<textarea id="f-cechy-en" rows="4"></textarea></label>
+<label>Opis<textarea id="f-opis-en" rows="6"></textarea></label>
+</fieldset>
+</details>
         <label class="check"><input type="checkbox" id="f-widoczny" checked> Pokazuj na stronie</label>
       </div>
 
@@ -614,6 +652,7 @@ function otworzEdycje(p) {
   $('f-cena-30').value = p?.cena_najnizsza_30 ?? '';
   $('f-cechy').value = p?.cechy || '';
   $('f-opis').value = p?.opis || '';
+  wpiszTlum('f', p);
   $('f-film').value = p?.film || '';
   $('f-widoczny').checked = p ? p.widoczny : true;
   $('usun').hidden = !p;
@@ -729,6 +768,7 @@ $('edycja').addEventListener('submit', async (e) => {
     cena_najnizsza_30: $('f-cena-przed').value === '' ? null : liczba('f-cena-30'),
     cechy: $('f-cechy').value.trim(),
     opis: $('f-opis').value.trim(),
+    ...zbierzTlum('f', produkty),
     film: $('f-film').value.trim(),
     zdjecia,
     widoczny: $('f-widoczny').checked
@@ -1043,6 +1083,7 @@ function otworzSkore(s) {
   $('skora-tytul').textContent = s ? 'Edytuj skórę' : 'Nowa skóra';
   $('s-nazwa').value = s?.nazwa || '';
   $('s-opis').value = s?.opis || '';
+  wpiszTlum('s', s);
   $('s-status').value = s?.status || 'dostepna';
   $('s-widoczna').checked = s ? s.widoczna : true;
   $('s-usun').hidden = !s;
@@ -1087,6 +1128,7 @@ $('skora-edycja').addEventListener('submit', async (e) => {
   const dane = {
     nazwa: $('s-nazwa').value.trim(),
     opis: $('s-opis').value.trim(),
+    ...zbierzTlum('s', skory),
     status: $('s-status').value,
     widoczna: $('s-widoczna').checked,
     zdjecie: skoraZdjecie
@@ -1177,6 +1219,7 @@ function otworzKorpus(k) {
   $('korpus-tytul').textContent = k ? 'Edytuj korpus' : 'Nowy korpus';
   $('k-nazwa').value = k?.nazwa || '';
   $('k-opis').value = k?.opis || '';
+  wpiszTlum('k', k);
   $('k-widoczny').checked = k ? k.widoczny : true;
   $('k-usun').hidden = !k;
   $('k-usun').classList.remove('armed'); $('k-usun').textContent = 'Usuń korpus';
@@ -1216,7 +1259,7 @@ $('korpus-edycja').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (wysylane) return toast('Poczekaj, aż zdjęcie się wyśle');
   if (!korpusZdjecie) return toast('Dodaj zdjęcie korpusu – klient wybiera po wyglądzie', true);
-  const dane = { nazwa: $('k-nazwa').value.trim(), opis: $('k-opis').value.trim(), widoczny: $('k-widoczny').checked, zdjecie: korpusZdjecie };
+  const dane = { nazwa: $('k-nazwa').value.trim(), opis: $('k-opis').value.trim(), ...zbierzTlum('k', korpusy), widoczny: $('k-widoczny').checked, zdjecie: korpusZdjecie };
   const btn = $('k-zapisz'); btn.disabled = true;
   const res = korpusEdytowany
     ? await sb.from('korpusy').update(dane).eq('id', korpusEdytowany.id)
@@ -1380,6 +1423,20 @@ async function wczytajStatystyki() {
   }
 }
 $('odswiez-statystyki').addEventListener('click', wczytajStatystyki);
+// ---------- tłumaczenia DE/EN w formularzach ----------
+const POLA_TLUM = { f: ['nazwa', 'cechy', 'opis'], s: ['nazwa', 'opis'], k: ['nazwa', 'opis'] };
+function wpiszTlum(pre, r) {
+  POLA_TLUM[pre].forEach((k) => ['de', 'en'].forEach((j) => { $(pre + '-' + k + '-' + j).value = (r && r[k + '_' + j]) || ''; }));
+  // gdy coś już jest przetłumaczone, sekcja otwiera się sama
+  $(pre + '-nazwa-de').closest('details').open = POLA_TLUM[pre].some((k) => r && (r[k + '_de'] || r[k + '_en']));
+}
+// pola dokładamy do zapisu tylko wtedy, gdy baza je ma (po uruchomieniu supabase/tlumaczenia.sql)
+function zbierzTlum(pre, lista) {
+  if (!lista.some((r) => 'nazwa_de' in r)) return {};
+  const o = {};
+  POLA_TLUM[pre].forEach((k) => ['de', 'en'].forEach((j) => { o[k + '_' + j] = $(pre + '-' + k + '-' + j).value.trim(); }));
+  return o;
+}
 </script>
 </body>
 </html>
