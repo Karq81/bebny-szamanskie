@@ -35,6 +35,8 @@
   }
 
   const BLAD = T('Nie udało się wysłać. Spróbuj jeszcze raz za chwilę albo napisz do mnie na Messengerze.');
+  // komunikat z bazy (limit zgłoszeń) jest po polsku – klient widzi go w swoim języku
+  const ZA_DUZO = T('Za dużo zgłoszeń – spróbuj ponownie później.');
 
   function waLink(tekst) {
     const nr = String(cfg.whatsapp || '').replace(/\D/g, '');
@@ -175,7 +177,7 @@
       pokazOk();
     } catch (err) {
       if (err.dotarlo) return pokazOk();
-      blad.textContent = err.dlaKlienta ? err.message : BLAD; blad.hidden = false;
+      blad.textContent = err.dlaKlienta ? ZA_DUZO : BLAD; blad.hidden = false;
     } finally {
       btn.disabled = false; btn.textContent = btn.dataset.tekst;
     }
@@ -205,7 +207,7 @@
     } catch (err) {
       btn.disabled = false; btn.textContent = T('Wyślij wiadomość');
       if (err.dotarlo) return pokazOk();
-      blad.textContent = err.dlaKlienta ? err.message : BLAD; blad.hidden = false;
+      blad.textContent = err.dlaKlienta ? ZA_DUZO : BLAD; blad.hidden = false;
     }
   });
 })();

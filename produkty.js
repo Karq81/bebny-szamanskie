@@ -132,7 +132,7 @@
     const zdj = p.zdjecia;
     modal.querySelector('.pm-body').innerHTML =
       '<div class="pm-media">' +
-        (zdj[0] ? '<div class="pm-foto"><img class="pm-main" src="' + esc(zdj[0]) + '" alt="' + esc(p.nazwa) + (p.status === 'zarezerwowany' ? ' – zarezerwowany' : '') + '">' + napisRez(p) + '</div>' : '') +
+        (zdj[0] ? '<div class="pm-foto"><img class="pm-main" src="' + esc(zdj[0]) + '" alt="' + esc(p.nazwa) + (p.status === 'zarezerwowany' ? ' – ' + T('zarezerwowany') : '') + '">' + napisRez(p) + '</div>' : '') +
         (zdj.length > 1 ? '<div class="pm-thumbs">' + zdj.map((z, k) => '<button type="button" data-src="' + esc(z) + '"' + (k === 0 ? ' class="on"' : '') + '><img src="' + esc(z) + '" alt="' + T('Zdjęcie') + ' ' + (k + 1) + '" loading="lazy"></button>').join('') + '</div>' : '') +
         (p.film ? filmHtml(p.film, p.nazwa) : '') +
       '</div>' +
@@ -181,7 +181,7 @@
     });
   }).catch(() => { /* zostają karty z HTML */ });
 
-  api('ustawienia?select=klucz,wartosc').then((rows) => {
+  api('ustawienia?select=klucz,wartosc&klucz=eq.film_strojenie').then((rows) => {
     const film = (rows.find((r) => r.klucz === 'film_strojenie') || {}).wartosc;
     const html = filmHtml(film, T('Jak stroję bęben'));
     if (!html) return;
