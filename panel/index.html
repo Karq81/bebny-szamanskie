@@ -110,6 +110,7 @@ textarea{resize:vertical;min-height:110px}
 .tlum summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .tlum fieldset{margin-top:12px;display:grid;gap:10px}
 .tlum[open] summary{margin-bottom:4px}
+.tlum-wszystko{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:22px}
 .tlum-auto{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px}
 .info-box{background:var(--bg-2);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink-soft);display:grid;gap:6px}
 .info-box ol{padding-left:20px;display:grid;gap:4px}
@@ -221,6 +222,10 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <button class="btn btn-primary" type="button" id="dodaj">+ Dodaj bęben</button>
       </div>
       <div class="items" id="lista"></div>
+      <div class="tlum-wszystko">
+        <button class="btn btn-light btn-sm" type="button" id="tlumacz-wszystko">🌍 Przetłumacz wszystko, czego brakuje (DE/EN)</button>
+        <span class="hint">Bębny, skóry i korpusy bez tłumaczenia dostaną je od razu. Istniejących tłumaczeń nie zmienia.</span>
+      </div>
     </section>
 
     <section id="tab-skory" hidden>
@@ -1513,6 +1518,33 @@ document.querySelectorAll('[data-tlumacz]').forEach((b) => b.addEventListener('c
   catch (e) { toast('Tłumacz nie odpowiada – spróbuj za chwilę albo wpisz ręcznie', true); }
   b.disabled = false; b.textContent = napis;
 }));
+// jednym kliknięciem: tłumaczy w bazie wszystkie bębny, skóry i korpusy, którym brakuje DE/EN
+$('tlumacz-wszystko').addEventListener('click', async () => {
+  const b = $('tlumacz-wszystko'); const napis = b.textContent; b.disabled = true;
+  let zrobione = 0, bledy = 0;
+  try {
+    for (const [tabela, pre] of [['produkty', 'f'], ['skory', 's'], ['korpusy', 'k']]) {
+      const { data, error } = await sb.from(tabela).select('*');
+      if (error) throw error;
+      if (data.length && !data.some((r) => 'nazwa_de' in r)) return toast('Najpierw trzeba dodać w bazie miejsce na tłumaczenia (część 1 – tlumaczenia.sql)', true);
+      for (const r of data) {
+        const zmiany = {};
+        for (const k of POLA_TLUM[pre]) for (const j of ['de', 'en']) {
+          if ((r[k] || '').trim() && !(r[k + '_' + j] || '').trim()) {
+            try { zmiany[k + '_' + j] = await tlumacz(r[k], j); } catch (e) { bledy++; }
+          }
+        }
+        if (!Object.keys(zmiany).length) continue;
+        b.textContent = 'Tłumaczę: ' + r.nazwa + '…';
+        const { error: e2 } = await sb.from(tabela).update(zmiany).eq('id', r.id);
+        if (e2) bledy++; else zrobione++;
+      }
+    }
+    toast(zrobione ? 'Przetłumaczone pozycje: ' + zrobione + (bledy ? ' (część się nie udała – kliknij jeszcze raz)' : '') : (bledy ? 'Tłumacz nie odpowiada – spróbuj za chwilę' : 'Wszystko jest już przetłumaczone'), !!bledy && !zrobione);
+    wczytaj();
+  } catch (e) { toast('Nie udało się: ' + e.message, true); }
+  finally { b.disabled = false; b.textContent = napis; }
+});
 </script>
 </body>
 </html>
