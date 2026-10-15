@@ -34,7 +34,7 @@
   function filmHtml(url, tytul) {
     const id = youtubeId(url);
     if (!id) return '';
-    return '<button class="film" type="button" data-yt="' + id + '" aria-label="Odtwórz film: ' + esc(tytul) + '">' +
+    return '<button class="film" type="button" data-yt="' + id + '" aria-label="' + T('Odtwórz film:') + ' ' + esc(tytul) + '">' +
       '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="" loading="lazy">' +
       '<span class="film-play" aria-hidden="true"></span></button>';
   }
@@ -79,7 +79,7 @@
     const cechy = p.cechy.split('\n').map((c) => c.trim()).filter(Boolean).slice(0, 4);
     const foto = p.zdjecia[0];
     return '<article class="card' + (p.status === 'sprzedany' ? ' card-sold' : p.status === 'zarezerwowany' ? ' card-reserved' : '') + '">' +
-      '<button class="card-img" type="button" data-produkt="' + i + '" aria-label="Szczegóły: ' + esc(p.nazwa) + '">' + badge(p) + napisRez(p) +
+      '<button class="card-img" type="button" data-produkt="' + i + '" aria-label="' + T('Szczegóły:') + ' ' + esc(p.nazwa) + '">' + badge(p) + napisRez(p) +
       (foto ? '<img src="' + esc(foto) + '" alt="' + esc(p.nazwa) + '" loading="lazy">' : '') +
       (p.zdjecia.length > 1 ? '<span class="photo-count">' + p.zdjecia.length + ' ' + T('zdjęć') + '</span>' : '') +
       (p.film ? '<span class="photo-count video-tag">▶ film</span>' : '') + '</button>' +
@@ -118,7 +118,7 @@
     modal.querySelector('.pm-body').innerHTML =
       '<div class="pm-media">' +
         (zdj[0] ? '<div class="pm-foto"><img class="pm-main" src="' + esc(zdj[0]) + '" alt="' + esc(p.nazwa) + (p.status === 'zarezerwowany' ? ' – zarezerwowany' : '') + '">' + napisRez(p) + '</div>' : '') +
-        (zdj.length > 1 ? '<div class="pm-thumbs">' + zdj.map((z, k) => '<button type="button" data-src="' + esc(z) + '"' + (k === 0 ? ' class="on"' : '') + '><img src="' + esc(z) + '" alt="Zdjęcie ' + (k + 1) + '" loading="lazy"></button>').join('') + '</div>' : '') +
+        (zdj.length > 1 ? '<div class="pm-thumbs">' + zdj.map((z, k) => '<button type="button" data-src="' + esc(z) + '"' + (k === 0 ? ' class="on"' : '') + '><img src="' + esc(z) + '" alt="' + T('Zdjęcie') + ' ' + (k + 1) + '" loading="lazy"></button>').join('') + '</div>' : '') +
         (p.film ? filmHtml(p.film, p.nazwa) : '') +
       '</div>' +
       '<div class="pm-info">' + badge(p) +

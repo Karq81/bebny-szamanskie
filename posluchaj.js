@@ -37,7 +37,7 @@
         const f = filmy[i];
         main.innerHTML = (graj
           ? '<iframe class="film film-on" src="https://www.youtube-nocookie.com/embed/' + f.yt.embed + 'autoplay=1&rel=0" title="' + esc(f.tytul || 'Film') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'
-          : '<button class="film" type="button" data-graj="' + i + '" aria-label="Odtwórz: ' + esc(f.tytul) + '"><img src="' + f.yt.mini + '" alt=""><span class="film-play" aria-hidden="true"></span></button>') +
+          : '<button class="film" type="button" data-graj="' + i + '" aria-label="' + T('Odtwórz:') + ' ' + esc(f.tytul) + '"><img src="' + f.yt.mini + '" alt=""><span class="film-play" aria-hidden="true"></span></button>') +
           '<div class="listen-teraz"><strong>' + esc(f.tytul) + '</strong>' + (f.kto ? '<span>' + esc(f.kto) + '</span>' : '') + '</div>';
         lista.querySelectorAll('button').forEach((b) => b.classList.toggle('on', +b.dataset.i === i));
       };
