@@ -110,6 +110,7 @@ textarea{resize:vertical;min-height:110px}
 .tlum summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .tlum fieldset{margin-top:12px;display:grid;gap:10px}
 .tlum[open] summary{margin-bottom:4px}
+.tlum-auto{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px}
 .info-box{background:var(--bg-2);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink-soft);display:grid;gap:6px}
 .info-box ol{padding-left:20px;display:grid;gap:4px}
 .info-box code{background:#fff;padding:1px 6px;border-radius:6px}
@@ -241,7 +242,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           </fieldset>
           <label>Nazwa *<input type="text" id="s-nazwa" required placeholder="np. Skóra łaciata, biało-ruda"></label>
           <label>Krótki opis (opcjonalnie)<textarea id="s-opis" rows="3" placeholder="np. gruba skóra krowia, mocny bas, wzór w ciapki"></textarea></label>
-<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(wypełniają się same przy zapisie – możesz je poprawić)</span></summary>
+<div class="tlum-auto"><button type="button" class="btn btn-light btn-sm" data-tlumacz="s">✨ Przetłumacz automatycznie z polskiego</button><span class="hint">Nadpisze pola niżej. Tłumaczenie maszynowe – warto rzucić okiem.</span></div>
 <fieldset><legend>🇩🇪 Deutsch</legend>
 <label>Nazwa<input type="text" id="s-nazwa-de"></label>
 <label>Krótki opis<textarea id="s-opis-de" rows="3"></textarea></label>
@@ -292,7 +294,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           </fieldset>
           <label>Nazwa *<input type="text" id="k-nazwa" required placeholder="np. Opalany ogniem"></label>
           <label>Krótki opis (opcjonalnie)<textarea id="k-opis" rows="3" placeholder="np. każdy wychodzi trochę inaczej – efekt ognia jest niepowtarzalny"></textarea></label>
-<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(wypełniają się same przy zapisie – możesz je poprawić)</span></summary>
+<div class="tlum-auto"><button type="button" class="btn btn-light btn-sm" data-tlumacz="k">✨ Przetłumacz automatycznie z polskiego</button><span class="hint">Nadpisze pola niżej. Tłumaczenie maszynowe – warto rzucić okiem.</span></div>
 <fieldset><legend>🇩🇪 Deutsch</legend>
 <label>Nazwa<input type="text" id="k-nazwa-de"></label>
 <label>Krótki opis<textarea id="k-opis-de" rows="3"></textarea></label>
@@ -462,7 +465,8 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <input type="url" id="f-film" placeholder="https://youtu.be/…">
         </label>
         <div class="film-row"><div class="yt-preview" id="f-film-podglad"></div><button class="btn btn-danger" type="button" id="f-film-usun" hidden>Usuń film</button></div>
-<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(opcjonalnie – puste pole = tekst polski na stronie)</span></summary>
+<details class="tlum"><summary>🌍 Tłumaczenia – Deutsch / English <span class="hint">(wypełniają się same przy zapisie – możesz je poprawić)</span></summary>
+<div class="tlum-auto"><button type="button" class="btn btn-light btn-sm" data-tlumacz="f">✨ Przetłumacz automatycznie z polskiego</button><span class="hint">Nadpisze pola niżej. Tłumaczenie maszynowe – warto rzucić okiem.</span></div>
 <fieldset><legend>🇩🇪 Deutsch</legend>
 <label>Nazwa<input type="text" id="f-nazwa-de"></label>
 <label>Cechy (każda w nowej linii)<textarea id="f-cechy-de" rows="4"></textarea></label>
@@ -759,6 +763,7 @@ const liczba = (id) => $(id).value === '' ? null : Math.round(+$(id).value);
 $('edycja').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (wysylane) return toast('Poczekaj, aż zdjęcia się wyślą');
+  await uzupelnijTlum('f', produkty, $('zapisz'));
   const dane = {
     nazwa: $('f-nazwa').value.trim(),
     kategoria: $('f-kategoria').value,
@@ -1125,6 +1130,7 @@ $('skora-edycja').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (wysylane) return toast('Poczekaj, aż zdjęcie się wyśle');
   if (!skoraZdjecie) return toast('Dodaj zdjęcie skóry – klient wybiera po wyglądzie', true);
+  await uzupelnijTlum('s', skory, $('s-zapisz'));
   const dane = {
     nazwa: $('s-nazwa').value.trim(),
     opis: $('s-opis').value.trim(),
@@ -1259,6 +1265,7 @@ $('korpus-edycja').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (wysylane) return toast('Poczekaj, aż zdjęcie się wyśle');
   if (!korpusZdjecie) return toast('Dodaj zdjęcie korpusu – klient wybiera po wyglądzie', true);
+  await uzupelnijTlum('k', korpusy, $('k-zapisz'));
   const dane = { nazwa: $('k-nazwa').value.trim(), opis: $('k-opis').value.trim(), ...zbierzTlum('k', korpusy), widoczny: $('k-widoczny').checked, zdjecie: korpusZdjecie };
   const btn = $('k-zapisz'); btn.disabled = true;
   const res = korpusEdytowany
@@ -1437,6 +1444,75 @@ function zbierzTlum(pre, lista) {
   POLA_TLUM[pre].forEach((k) => ['de', 'en'].forEach((j) => { o[k + '_' + j] = $(pre + '-' + k + '-' + j).value.trim(); }));
   return o;
 }
+// ---------- automatyczne tłumaczenie (bez konta i klucza) ----------
+// Najpierw darmowy tłumacz Google, a gdy nie odpowie – MyMemory. Tłumaczymy linijka po linijce,
+// żeby zachować podział na akapity i cechy.
+async function tlumaczGoogle(tekst, jezyk) {
+  const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=pl&tl=' + jezyk + '&dt=t&q=' + encodeURIComponent(tekst));
+  if (!r.ok) throw new Error('google ' + r.status);
+  const d = await r.json();
+  const wynik = (d[0] || []).map((x) => x[0]).join('');
+  if (!wynik) throw new Error('google pusto');
+  return wynik;
+}
+async function tlumaczMyMemory(tekst, jezyk) {
+  // MyMemory przyjmuje do 500 znaków – dzielimy po zdaniach
+  const zdania = tekst.match(/[^.!?]+[.!?]*\s*/g) || [tekst];
+  const kawalki = [];
+  zdania.forEach((z) => { if (kawalki.length && (kawalki[kawalki.length - 1] + z).length < 450) kawalki[kawalki.length - 1] += z; else kawalki.push(z); });
+  const out = [];
+  for (const k of kawalki) {
+    const r = await fetch('https://api.mymemory.translated.net/get?langpair=pl|' + jezyk + '&q=' + encodeURIComponent(k.trim()));
+    const d = await r.json();
+    if (!r.ok || d.responseStatus != 200 || !d.responseData) throw new Error('mymemory ' + (d.responseDetails || r.status));
+    out.push(d.responseData.translatedText);
+  }
+  return out.join(' ');
+}
+async function tlumaczLinijke(tekst, jezyk) {
+  try { return await tlumaczGoogle(tekst, jezyk); } catch (e) { return await tlumaczMyMemory(tekst, jezyk); }
+}
+async function tlumacz(tekst, jezyk) {
+  if (!tekst.trim()) return '';
+  const linie = tekst.split('\n');
+  const wynik = await Promise.all(linie.map((l) => (l.trim() ? tlumaczLinijke(l.trim(), jezyk) : '')));
+  return wynik.join('\n');
+}
+// nadpisz = true (przycisk): tłumaczy wszystko od nowa; false (zapis): tylko puste pola
+async function tlumaczFormularz(pre, nadpisz) {
+  const zadania = [];
+  POLA_TLUM[pre].forEach((k) => {
+    const pl = $(pre + '-' + k).value.trim();
+    if (!pl) return;
+    ['de', 'en'].forEach((j) => {
+      const pole = $(pre + '-' + k + '-' + j);
+      if (nadpisz || !pole.value.trim()) zadania.push(tlumacz(pl, j).then((t) => { pole.value = t; }));
+    });
+  });
+  if (!zadania.length) return 0;
+  const wyniki = await Promise.allSettled(zadania);
+  const bledy = wyniki.filter((w) => w.status === 'rejected').length;
+  if (bledy === wyniki.length) throw new Error('tłumacz nie odpowiada');
+  return zadania.length - bledy;
+}
+// przy zapisie: brakujące tłumaczenia uzupełniają się same (gdy baza ma już kolumny DE/EN)
+async function uzupelnijTlum(pre, lista, btn) {
+  if (!lista.some((r) => 'nazwa_de' in r)) return;
+  const brak = POLA_TLUM[pre].some((k) => $(pre + '-' + k).value.trim() && ['de', 'en'].some((j) => !$(pre + '-' + k + '-' + j).value.trim()));
+  if (!brak) return;
+  btn.disabled = true; toast('Tłumaczę na niemiecki i angielski…');
+  try { await tlumaczFormularz(pre, false); }
+  catch (e) { toast('Nie udało się przetłumaczyć – zapisuję, na stronie DE/EN będzie tekst polski', true); }
+  btn.disabled = false;
+}
+document.querySelectorAll('[data-tlumacz]').forEach((b) => b.addEventListener('click', async () => {
+  const pre = b.dataset.tlumacz;
+  if (!$(pre + '-nazwa').value.trim()) return toast('Najpierw wpisz nazwę i opis po polsku', true);
+  b.disabled = true; const napis = b.textContent; b.textContent = 'Tłumaczę…';
+  try { await tlumaczFormularz(pre, true); toast('Przetłumaczone – sprawdź i zapisz'); }
+  catch (e) { toast('Tłumacz nie odpowiada – spróbuj za chwilę albo wpisz ręcznie', true); }
+  b.disabled = false; b.textContent = napis;
+}));
 </script>
 </body>
 </html>
