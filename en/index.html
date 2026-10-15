@@ -312,6 +312,10 @@ button.card-img{border:0;padding:0;width:100%;cursor:pointer;font:inherit;displa
 .pm-info .price{border:0;padding:0;margin:0}
 .pm-opis{display:grid;gap:12px;color:var(--ink-soft);font-size:16px}
 .pm-note{background:var(--bg-2);padding:12px 16px;border-radius:10px;font-size:15px}
+.pm-cytat{margin:0 0 14px;padding:4px 0 4px 16px;border-left:3px solid var(--ochre)}
+.pm-cytat blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.4;color:var(--ink)}
+.pm-cytat figcaption{margin-top:6px;font-size:13px;color:var(--ink-soft)}
+.pm-cytat a{color:var(--ochre)}
 .pm-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
 .pm-ctas .btn{border-width:2px;font-family:inherit}
 .btn-outline{background:transparent;border-color:var(--ink);color:var(--ink)}
@@ -569,6 +573,25 @@ footer .spol{margin:0 14px 0 0;vertical-align:middle}
 .eur{font-family:var(--sans);font-size:.5em;color:var(--ink-soft);font-weight:500}
 @media (max-width:820px){.jezyki{margin-left:auto}.jezyki a{padding:4px 7px;font-size:12px}.app .logo{white-space:nowrap;font-size:19px;gap:8px}}
 @media (max-width:430px){.app .logo svg{display:none}.app .logo{font-size:18px}.app .menu-btn{padding:7px 9px}}
+.polecaja .wrap{max-width:980px}
+.polecaja h2{margin-bottom:26px}
+.pol-cytat{margin:0;padding:28px 30px;background:rgba(255,248,236,.72);border-left:4px solid var(--ochre);border-radius:var(--radius)}
+.pol-cytat blockquote{font-family:var(--serif);font-size:clamp(24px,2.6vw,34px);line-height:1.3;color:var(--ink);margin:0}
+.pol-cytat figcaption{display:flex;align-items:center;gap:14px;margin-top:20px}
+.pol-cytat figcaption small{display:block;color:var(--ink-soft);font-size:15px}
+.pol-cytat figcaption strong{font-size:18px}
+.pol-znak{flex:none;width:52px;height:52px;border-radius:50%;background:var(--ochre);color:#fff;display:grid;place-items:center;font-family:var(--serif);font-size:20px;font-weight:600}
+.pol-liczby{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:28px 0}
+.pol-liczby div{font-size:15px;color:var(--ink-soft)}
+.pol-liczby strong{display:block;font-family:var(--serif);font-size:clamp(30px,3.4vw,42px);color:var(--ochre);font-weight:600;line-height:1.1}
+.rekomendacja{margin:auto;max-width:720px;width:calc(100% - 32px);max-height:88vh;border:0;border-radius:var(--radius);padding:34px 30px 30px;background:var(--bg);color:var(--ink);line-height:1.7}
+.rekomendacja::backdrop{background:rgba(22,17,13,.7)}
+.rekomendacja h3{font-family:var(--serif);font-size:26px;line-height:1.25;margin:0 30px 16px 0}
+.rekomendacja p{color:var(--ink-soft);margin:0 0 12px}
+.rekomendacja .rek-autor{margin-top:22px;color:var(--ink);font-size:18px}
+.rekomendacja .rek-podpis{font-size:14px}
+.rek-zamknij{position:sticky;top:0;float:right;margin:-18px -12px 0 0;width:40px;height:40px;border-radius:50%;border:0;background:var(--bg-2);color:var(--ink);font-size:24px;cursor:pointer}
+@media (max-width:600px){.pol-cytat{padding:20px}.pol-liczby{grid-template-columns:1fr;gap:12px}.pol-liczby div{display:grid;grid-template-columns:118px 1fr;align-items:baseline;gap:10px}.pol-liczby strong{font-size:26px}.rekomendacja{padding:26px 20px 22px}.rekomendacja h3{font-size:22px}}
 </style>
 </head>
 <body class="app">
@@ -663,6 +686,19 @@ footer .spol{margin:0 14px 0 0;vertical-align:middle}
         <li><a href="https://www.budkasuflera.pl/ania/" target="_blank" rel="noopener">Anna Patynek (Budka Suflera)</a></li>
         <li><a href="https://annasierpowska.com/o-mnie-kontakt/" target="_blank" rel="noopener">Anna Sierpowska</a></li>
       </ul><a id="grali-posluchaj" hidden></a></div>
+</section>
+
+<section id="polecaja" class="polecaja om-start" data-widok="start">
+  <div class="wrap">
+    <span class="eyebrow">Recommendations</span>
+    <h2>Tested in thousands of hands</h2>
+    <figure class="pol-cytat">
+      <blockquote>“You can tell a good drum not only by how it sounds when it is new, but also by how it plays after ten years.”</blockquote>
+      <figcaption><span class="pol-znak" aria-hidden="true">DM</span><span><strong>Dominik Muszyński</strong><small>musician, therapist, percussionist, leader of the band WaDaDa</small></span></figcaption>
+    </figure>
+    <div class="pol-liczby"><div><strong>20+</strong>of my drums in Dominik’s workshops</div><div><strong>10+ years</strong>on the road all over Poland</div><div><strong>thousands</strong>people have played them</div></div>
+    <button type="button" class="btn btn-ghost" data-rekomendacja>Read the full recommendation →</button>
+  </div>
 </section>
 
 <section id="posluchaj" data-widok="posluchaj" class="listen" hidden>
@@ -1031,9 +1067,9 @@ document.querySelectorAll('.gallery a').forEach(a=>a.addEventListener('click',e=
 }));
 document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.nav ul').classList.remove('open')));
 </script>
-<script src="../i18n.js?v=b1170004"></script>
+<script src="../i18n.js?v=e1b76bc9"></script>
 <script src="../config.js?v=a4c1b98b"></script>
-<script src="../produkty.js?v=ac7cb1c5"></script>
+<script src="../produkty.js?v=a958d881"></script>
 <script src="../zapytania.js?v=42ec1fbd"></script>
 <script src="../skory.js?v=8244b1da"></script>
 <script src="../o-mnie.js?v=aa1f8e7e"></script>
@@ -1082,6 +1118,37 @@ document.querySelectorAll('.jezyki a').forEach((a) => {
   a.classList.toggle('on', a.dataset.jezyk === document.documentElement.lang);
   a.addEventListener('click', () => { a.href = a.getAttribute('href').split('#')[0] + location.hash; });
 });
+</script>
+<dialog id="rekomendacja" class="rekomendacja" aria-labelledby="rek-tytul">
+  <button type="button" class="rek-zamknij" aria-label="Close" data-zamknij>×</button>
+  <h3 id="rek-tytul">Paweł Małkowski, Lepsza Strona Djembe. Drums tested in thousands of hands.</h3>
+  <p>I have been working with Paweł Małkowski for well over a decade. In that time he has become not only my drum maker and repairer, but also a partner in the search for ever better solutions in construction and sound.</p>
+  <p>Paweł makes custom instruments for me, tailored to my needs as a musician, percussionist and leader of drumming, personal development and team-building workshops. Over the years we have looked together at what could be improved, simplified and refined in these instruments.</p>
+  <p>We have paid particular attention to frame drums with pneumatic tuning, using an air tube inside the frame. These instruments have huge potential, but their construction has to reconcile several seemingly contradictory needs.</p>
+  <p>One of the biggest challenges was combining low weight with a deep, full sound. In my experience, around 80% of the people who buy these instruments are women. That is why ergonomics, ease of use and weight mattered so much to us.</p>
+  <p>Over the years we talked about different materials, types of wood, their density and hardness, and ways of protecting the construction. We looked for solutions that would reduce the weight of the drum without any real loss of its acoustic qualities. There were also smaller but very important improvements, such as eliminating unwanted vibration and buzzing of the frame.</p>
+  <p>In time, more unusual designs appeared too, including double-sided drums with two heads and independent pneumatic tuning for each. It shows that Paweł does not stop at one proven idea but keeps developing his instruments.</p>
+  <p>For me, though, the best test of quality is practice.</p>
+  <p>For more than ten years I have been using over twenty drums made by Paweł for my workshops. These instruments have travelled all over Poland with me. Thousands of people have played them at personal development workshops, music classes, training sessions, team-building meetings and large corporate events.</p>
+  <p>They have been transported, set up, packed and played many times by people with very different musical experience – often by people holding such an instrument for the first time in their lives.</p>
+  <p>And most importantly, after all these years the drums still play and are in very good condition.</p>
+  <p>A great advantage of these instruments is how practical they are. They are relatively light, take up little space and are easy to transport, yet they deliver a deep bass sound. In my work they often serve successfully as bass drums, even though they are frame drums by design. That is extremely practical, especially when working with large groups and transporting dozens of instruments.</p>
+  <p>Over all these years I have watched Lepsza Strona Djembe grow – and above all the enormous amount of work Paweł has put into perfecting his drums. I value his openness to suggestions, his willingness to experiment and his ability to listen to the people who later play these instruments.</p>
+  <p>But there is one more thing that is fundamental for me: reliability.</p>
+  <p>Paweł is someone you can rely on. His instruments are solidly made, well thought out and crafted with great attention to detail. And if a problem comes up, he looks for a solution instead of pretending there is no problem.</p>
+  <p>After well over a decade of working together I can say one thing: these drums are not just musical equipment to me. They have become the tools of my daily work, with me in my meetings with people, in music, and in creating spaces where rhythm is shared.</p>
+  <p>I wholeheartedly recommend Paweł Małkowski’s instruments to anyone looking for great sound, durability, practicality and quality proven by many years of use.</p>
+  <p>Because you can tell a good drum not only by how it sounds when it is new, but also by how it plays after ten years.</p>
+  <p class="rek-autor"><strong>Dominik Muszyński</strong></p>
+  <p class="rek-podpis">Musician, therapist, percussionist, leader of the band WaDaDa. Runs drumming, personal development and team-building workshops. He has worked with percussion instruments since 1991, sharing them through workshops, concerts, music therapy and team events.</p>
+</dialog>
+<script>
+// pełna rekomendacja w okienku; zamyka ×, Esc albo kliknięcie obok
+(function () {
+  const d = document.getElementById('rekomendacja');
+  document.querySelectorAll('[data-rekomendacja]').forEach((b) => b.addEventListener('click', () => d.showModal()));
+  d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-zamknij]')) d.close(); });
+})();
 </script>
 </body>
 </html>

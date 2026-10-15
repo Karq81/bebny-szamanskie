@@ -98,11 +98,18 @@
       '</div></article>';
   }
 
+  // krótki cytat z rekomendacji Dominika Muszyńskiego (WaDaDa) – przy bębnach, nie przy kongach
+  function polecenie(p) {
+    if (p.kategoria === 'Konga') return '';
+    return '<figure class="pm-cytat"><blockquote>' + T('I co najważniejsze, po tych wszystkich latach bębny nadal grają i pozostają w bardzo dobrym stanie.') + '</blockquote>' +
+      '<figcaption>– ' + T('Dominik Muszyński, lider zespołu WaDaDa') + ' · <a href="#polecaja">' + T('Polecają mnie') + '</a></figcaption></figure>';
+  }
+
   // Każdy bęben jest jedyny – zamiast „Kup teraz” klient najpierw pisze, a Paweł po rozmowie rezerwuje.
   function przyciski(p) {
     const btn = (rodzaj, klasa, tekst) => '<button type="button" class="btn ' + klasa + '" data-zapytaj="' + rodzaj + '">' + tekst + '</button>';
     if (p.status === 'dostepny' || p.status === 'na_zamowienie') {
-      return '<p class="pm-note">' + T('Każdy bęben jest jedyny w swoim rodzaju, dlatego przed zakupem zawsze rozmawiamy. Wyślij zgłoszenie – odezwę się, odpowiem na pytania, a gdy się zdecydujesz, zarezerwuję bęben dla Ciebie.') + '</p>' +
+      return polecenie(p) + '<p class="pm-note">' + T('Każdy bęben jest jedyny w swoim rodzaju, dlatego przed zakupem zawsze rozmawiamy. Wyślij zgłoszenie – odezwę się, odpowiem na pytania, a gdy się zdecydujesz, zarezerwuję bęben dla Ciebie.') + '</p>' +
         '<div class="pm-ctas">' + btn('kupno', 'btn-primary', p.status === 'na_zamowienie' ? T('Chcę zamówić') : T('Chcę kupić ten bęben')) +
         btn('pytanie', 'btn-outline', T('Mam pytanie')) + '</div>';
     }
@@ -152,7 +159,7 @@
   }
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal || e.target.closest('.pm-close')) return zamknij();
+    if (e.target === modal || e.target.closest('.pm-close, .pm-cytat a')) return zamknij();
     const t = e.target.closest('.pm-thumbs button');
     if (t) {
       modal.querySelector('.pm-main').src = t.dataset.src;
