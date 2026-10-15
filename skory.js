@@ -8,6 +8,8 @@
   // „Skóra nr 3” → „Fell Nr. 3” / „Hide no. 3”, gdy w panelu nie ma tłumaczenia
   const NR = { de: 'Fell Nr. ', en: 'Hide no. ' };
   const zeSlownika = (tekst) => { const m = /^Skóra nr (\d+)$/.exec(String(tekst || '').trim()); return m && NR[LOK] ? NR[LOK] + m[1] : T(tekst); };
+  // zdjęcia z własnej strony zawsze z tego samego adresu co strona (działa i na http, i na https)
+  const adresZdj = (u) => String(u || '').replace(/^https?:\/\/(karq81\.github\.io\/bebny-szamanskie|(www\.)?bebny-szamanskie\.pl)\//, '/');
   const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || zeSlownika(r[k]); }); return r; };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const wybor = { rozmiar: '', korpus: null, skora: null };
@@ -75,7 +77,7 @@
 
   api('skory?select=*&order=kolejnosc.asc,created_at.asc').then((lista) => {
     if (!lista.length) return;
-    lista.forEach((r) => lokalnie(r, ['nazwa', 'opis']));
+    lista.forEach((r) => { lokalnie(r, ['nazwa', 'opis']); r.zdjecie = adresZdj(r.zdjecie); });
     skory = lista; wybor.skora = null; suma();
     grid.innerHTML = skory.map((s, i) => {
       const rez = s.status === 'zarezerwowana';
@@ -90,7 +92,7 @@
   // korpusy – krok pokazuje się dopiero, gdy Paweł doda choć jeden
   api('korpusy?select=*&order=kolejnosc.asc,created_at.asc').then((lista) => {
     if (!lista.length) return;
-    lista.forEach((r) => lokalnie(r, ['nazwa', 'opis']));
+    lista.forEach((r) => { lokalnie(r, ['nazwa', 'opis']); r.zdjecie = adresZdj(r.zdjecie); });
     korpusy = lista;
     korpusyBox.innerHTML = korpusy.map((k, i) =>
       '<button type="button" class="korpus" data-korpus="' + i + '" aria-pressed="false">' +

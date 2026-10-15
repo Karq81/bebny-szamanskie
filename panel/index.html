@@ -507,6 +507,9 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const STATUS = { dostepny: 'Dostępny', zarezerwowany: 'Zarezerwowany', na_zamowienie: 'Na zamówienie', wkrotce: 'Wkrótce', sprzedany: 'Sprzedany' };
 const BUCKET = 'zdjecia';
+// zdjęcia z własnej strony zawsze z tego samego adresu co strona (działa i na http, i na https)
+const adresZdj = (u) => String(u || '').replace(/^https?:\/\/(karq81\.github\.io\/bebny-szamanskie|(www\.)?bebny-szamanskie\.pl)\//, '/');
+
 // Login bez @ (np. „pawel”) zamieniamy na adres konta w Supabase: pawel@panel.bebny
 const LOGIN_DOMENA = '@panel.bebny';
 const naEmail = (login) => login.includes('@') ? login : login.toLowerCase() + LOGIN_DOMENA;
@@ -590,7 +593,7 @@ async function start() {
 async function wczytaj() {
   const { data, error } = await sb.from('produkty').select('*').order('kolejnosc').order('created_at', { ascending: false });
   if (error) return toast('Nie udało się wczytać bębnów: ' + error.message, true);
-  produkty = data;
+  produkty = data; produkty.forEach((p) => { p.zdjecia = (p.zdjecia || []).map(adresZdj); });
   rysujListe();
 }
 
@@ -1026,7 +1029,7 @@ async function wczytajSkory() {
     $('lista-skor').innerHTML = '<div class="card empty">Nie udało się wczytać skór.<br><small>' + esc(error.message) + '</small></div>';
     return;
   }
-  skory = data;
+  skory = data; skory.forEach((x) => { x.zdjecie = adresZdj(x.zdjecie); });
   rysujSkory();
 }
 
@@ -1183,7 +1186,7 @@ async function wczytajKorpusy() {
     $('lista-korpusow').innerHTML = '<div class="card empty">Nie udało się wczytać korpusów.<br><small>' + esc(error.message) + '</small></div>';
     return;
   }
-  korpusy = data;
+  korpusy = data; korpusy.forEach((k) => { k.zdjecie = adresZdj(k.zdjecie); });
   rysujKorpusy();
 }
 

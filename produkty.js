@@ -12,6 +12,8 @@
     if (T(s) !== s) return T(s);
     return s.split('\n').map((l) => (l.trim() && T(l.trim()) !== l.trim() ? T(l.trim()) : l)).join('\n');
   };
+  // zdjęcia z własnej strony zawsze z tego samego adresu co strona (działa i na http, i na https)
+  const adresZdj = (u) => String(u || '').replace(/^https?:\/\/(karq81\.github\.io\/bebny-szamanskie|(www\.)?bebny-szamanskie\.pl)\//, '/');
   const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || zeSlownika(r[k]); }); return r; };
 
   const api = (path) => fetch(cfg.supabaseUrl + '/rest/v1/' + path, {
@@ -161,7 +163,7 @@
 
   api('produkty?select=*&order=kolejnosc.asc,created_at.desc').then((lista) => {
     if (!lista.length) return;
-    lista.forEach((p) => lokalnie(p, ['nazwa', 'cechy', 'opis']));
+    lista.forEach((p) => { lokalnie(p, ['nazwa', 'cechy', 'opis']); p.zdjecia = (p.zdjecia || []).map(adresZdj); });
     // sprzedane na końcu listy
     produkty = lista.filter((p) => p.status !== 'sprzedany').concat(lista.filter((p) => p.status === 'sprzedany'));
     const kontener = document.getElementById('lista-produktow');
