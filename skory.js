@@ -5,7 +5,10 @@
   const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
   // wersja DE/EN: pola nazwa_de / opis_en itd. z panelu; puste = tekst polski (albo słownik i18n)
   const LOK = document.documentElement.lang || 'pl';
-  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || T(r[k]); }); return r; };
+  // „Skóra nr 3” → „Fell Nr. 3” / „Hide no. 3”, gdy w panelu nie ma tłumaczenia
+  const NR = { de: 'Fell Nr. ', en: 'Hide no. ' };
+  const zeSlownika = (tekst) => { const m = /^Skóra nr (\d+)$/.exec(String(tekst || '').trim()); return m && NR[LOK] ? NR[LOK] + m[1] : T(tekst); };
+  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || zeSlownika(r[k]); }); return r; };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const wybor = { rozmiar: '', korpus: null, skora: null };
   let korpusy = [];

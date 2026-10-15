@@ -6,7 +6,13 @@
   const T = window.T || ((s) => s);   // tłumaczenia (i18n.js – tylko w wersjach DE/EN)
   // wersja DE/EN: pola nazwa_de / opis_en itd. z panelu; puste = tekst polski (albo słownik i18n)
   const LOK = document.documentElement.lang || 'pl';
-  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || T(r[k]); }); return r; };
+  // tekst z bazy w wersji DE/EN: tłumaczenie z panelu, a gdy go brak – słownik strony (całość albo linijka po linijce)
+  const zeSlownika = (tekst) => {
+    const s = String(tekst || '');
+    if (T(s) !== s) return T(s);
+    return s.split('\n').map((l) => (l.trim() && T(l.trim()) !== l.trim() ? T(l.trim()) : l)).join('\n');
+  };
+  const lokalnie = (r, pola) => { if (LOK !== 'pl') pola.forEach((k) => { const t = (r[k + '_' + LOK] || '').trim(); r[k] = t || zeSlownika(r[k]); }); return r; };
 
   const api = (path) => fetch(cfg.supabaseUrl + '/rest/v1/' + path, {
     headers: { apikey: cfg.supabaseKey, Authorization: 'Bearer ' + cfg.supabaseKey }
