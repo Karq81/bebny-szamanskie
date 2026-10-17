@@ -275,6 +275,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
       <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
       <button type="button" data-tab="omnie">O mnie</button>
       <button type="button" data-tab="filmy">Filmy na stronie</button>
+      <button type="button" data-tab="zmiany">Co zmienić</button>
       <button type="button" data-tab="powiadomienia">Powiadomienia</button>
       <button type="button" data-tab="statystyki">Statystyki</button>
     </div>
@@ -452,6 +453,20 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
         <button class="linkbtn" type="button" id="usun-stare" hidden></button></p>
     </section>
 
+    <section id="tab-zmiany" hidden>
+      <form class="card form" id="zmiany-form" style="margin-bottom:22px">
+        <h2>Co zmienić na stronie?</h2>
+        <p class="hint" style="font-size:15px">Napisz własnymi słowami, co chcesz zmienić, dodać albo poprawić na stronie (np. „zmień cenę bębna 50 cm na 800 zł” albo „dodaj akapit o renowacji”). Wiadomość trafi do Michała, który ją przeczyta i przygotuje zmianę. Zmiana pojawi się na stronie dopiero po jego zatwierdzeniu.</p>
+        <label>Twoja prośba<textarea id="zm-tresc" rows="5" maxlength="3000" placeholder="Napisz, co zmienić…"></textarea></label>
+        <p class="hint" id="zm-licznik">0 / 3000</p>
+        <p class="hint">Zdjęcia do zmiany wyślij osobno Michałowi (np. na WhatsAppie) i dopisz tutaj, czego dotyczą.</p>
+        <div class="film-row"><button class="btn btn-primary" type="submit" id="zm-wyslij">Wyślij prośbę</button></div>
+      </form>
+      <div class="list-head"><h2>Twoje prośby</h2>
+        <button class="btn btn-light btn-sm" type="button" id="odswiez-zmiany">↻ Odśwież</button></div>
+      <div class="items" id="zmiany"></div>
+    </section>
+
     <section id="tab-powiadomienia" hidden>
       <div class="card form" style="margin-bottom:22px">
         <h2>Powiadomienia w aplikacji</h2>
@@ -614,6 +629,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <button type="button" data-tab="statystyki"><span class="ico">📊</span>Odwiedziny strony</button>
   <button type="button" data-tab="omnie"><span class="ico">✍️</span>O mnie</button>
   <button type="button" data-tab="filmy"><span class="ico">▶️</span>Filmy na stronie</button>
+  <button type="button" data-tab="zmiany"><span class="ico">📝</span>Co zmienić na stronie</button>
   <button type="button" data-tab="powiadomienia"><span class="ico">🔔</span>Powiadomienia</button>
   <a href="../" target="_blank" rel="noopener"><span class="ico">🌐</span>Zobacz stronę</a>
   <button type="button" id="wyloguj-2"><span class="ico">🚪</span>Wyloguj</button>
@@ -720,7 +736,7 @@ $('wyloguj').addEventListener('click', () => sb.auth.signOut());
 $('wyloguj-2').addEventListener('click', () => { pokazWiecej(false); sb.auth.signOut(); });
 
 // ---------- zakładki ----------
-const ZAKLADKI = ['pulpit', 'lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia', 'statystyki'];
+const ZAKLADKI = ['pulpit', 'lista', 'skory', 'korpusy', 'zapytania', 'omnie', 'filmy', 'powiadomienia', 'statystyki', 'zmiany'];
 // czy jest otwarty formularz edycji (bęben, skóra, korpus)
 const edycjaOtwarta = () => ['edycja', 'skora-edycja', 'korpus-edycja'].some((id) => $(id) && !$(id).hidden);
 function zakladka(nazwa) {
@@ -738,6 +754,7 @@ function zakladka(nazwa) {
   if (nazwa === 'skory') zamknijSkore();
   if (nazwa === 'korpusy') zamknijKorpus();
   if (nazwa === 'statystyki') wczytajStatystyki();
+  if (nazwa === 'zmiany') wczytajZmiany();
   if (nazwa === 'pulpit') { rysujPulpit(); odwiedzinyDzis(); wczytajZapytania(); }
 }
 function pokazWiecej(tak) { $('wiecej').hidden = $('wiecej-tlo').hidden = !tak; }
@@ -756,6 +773,34 @@ async function start() {
   else zakladka(ZAKLADKI.includes(cel) ? cel : 'pulpit');
   history.replaceState(null, '', location.pathname);
 }
+
+
+// ---------- prośby o zmiany na stronie ----------
+const STATUS_ZMIAN = { nowa: 'Wysłane – czeka na przeczytanie', w_toku: 'Michał nad tym pracuje', zrobione: 'Zrobione', odrzucone: 'Nie do zrobienia' };
+async function wczytajZmiany() {
+  const box = $('zmiany');
+  const { data, error } = await sb.from('prosby').select('*').order('created_at', { ascending: false }).limit(50);
+  if (error) { box.innerHTML = '<p class="hint">Nie udało się wczytać próśb. Jeśli to się powtarza, napisz do Michała.</p>'; return; }
+  box.innerHTML = data.length ? data.map((z) => `<div class="card" style="margin-bottom:10px">
+      <div class="hint">${esc(new Date(z.created_at).toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' }))} · <b>${esc(STATUS_ZMIAN[z.status] || z.status)}</b></div>
+      <p style="margin:8px 0 0;white-space:pre-wrap">${esc(z.tresc)}</p>
+      ${z.odpowiedz ? `<p class="hint" style="margin:8px 0 0;font-size:14px">Odpowiedź: ${esc(z.odpowiedz)}</p>` : ''}
+    </div>`).join('') : '<p class="hint">Nie wysłałeś jeszcze żadnej prośby.</p>';
+}
+$('zm-tresc').addEventListener('input', () => $('zm-licznik').textContent = $('zm-tresc').value.length + ' / 3000');
+$('odswiez-zmiany').addEventListener('click', wczytajZmiany);
+$('zmiany-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const tresc = $('zm-tresc').value.trim();
+  if (tresc.length < 3) return toast('Napisz, co zmienić.', true);
+  const b = $('zm-wyslij'); b.disabled = true;
+  const { error } = await sb.from('prosby').insert({ tresc });
+  b.disabled = false;
+  if (error) return toast('Nie udało się wysłać. Spróbuj za chwilę.', true);
+  $('zm-tresc').value = ''; $('zm-licznik').textContent = '0 / 3000';
+  toast('Wysłane. Michał to przeczyta.');
+  wczytajZmiany();
+});
 
 // ---------- lista ----------
 async function wczytaj() {
