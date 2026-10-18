@@ -1708,11 +1708,18 @@ async function tlumaczMyMemory(tekst, jezyk) {
 async function tlumaczLinijke(tekst, jezyk) {
   try { return await tlumaczGoogle(tekst, jezyk); } catch (e) { return await tlumaczMyMemory(tekst, jezyk); }
 }
+// skróty, które tłumacz czyta błędnie (śr. = środa, pałka = ołówek) – poprawiamy przed i po tłumaczeniu
+const PRZED_TLUM = [[/(^|\s)śr\.\s*/gi, '$1średnica ']];
+const PO_TLUM = {
+  de: [[/Filzstifte?/g, 'Filzschlägel'], [/Bassstift|Bassstock/g, 'Bassschlägel']],
+  en: [[/felt sticks/gi, 'felt beaters'], [/bass stick/gi, 'bass beater']],
+};
 async function tlumacz(tekst, jezyk) {
   if (!tekst.trim()) return '';
+  tekst = PRZED_TLUM.reduce((t, [re, z]) => t.replace(re, z), tekst);
   const linie = tekst.split('\n');
   const wynik = await Promise.all(linie.map((l) => (l.trim() ? tlumaczLinijke(l.trim(), jezyk) : '')));
-  return wynik.join('\n');
+  return (PO_TLUM[jezyk] || []).reduce((t, [re, z]) => t.replace(re, z), wynik.join('\n'));
 }
 // nadpisz = true (przycisk): tłumaczy wszystko od nowa; false (zapis): tylko puste pola
 async function tlumaczFormularz(pre, nadpisz) {
