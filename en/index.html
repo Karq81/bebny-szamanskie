@@ -235,6 +235,12 @@ button.skin:disabled{cursor:default}
 /* strojenie */
 .tuning{display:grid;grid-template-columns:1.05fr 1fr;gap:70px;align-items:center}
 .diagram{background:var(--bg-2);border-radius:var(--radius);padding:30px}
+.zdj-strojenie{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}
+.zdj-strojenie figure{margin:0}
+.zdj-strojenie img{width:100%;height:auto;object-fit:cover;border-radius:calc(var(--radius) - 6px);display:block;aspect-ratio:4/5}
+.zdj-strojenie .zs-duze{grid-column:1 / -1}
+.zdj-strojenie .zs-duze img{aspect-ratio:4/3}
+.zdj-strojenie figcaption{margin-top:6px;font-size:13px;color:var(--ink-soft);text-align:center}
 .diagram svg{width:100%;height:auto}
 .perks{margin-top:28px;display:grid;gap:14px}
 .perk{display:flex;gap:14px;align-items:flex-start}
@@ -833,27 +839,10 @@ footer .spol{margin:0 14px 0 0;vertical-align:middle}
         <div class="perk"><div class="ico">♪</div><p><b>A very wide range of tones.</b> Play deep bass with a beater or use finger technique.</p></div>
       </div>
     </div>
-    <div class="diagram">
-      <svg viewBox="0 0 460 300" role="img" aria-label="Cross-section of the drum with an air tube between the frame and the hide">
-        <defs><linearGradient id="sk" x1="0" x2="1"><stop offset="0" stop-color="#e8d6b6"/><stop offset="1" stop-color="#d4b98d"/></linearGradient></defs>
-        <rect x="60" y="120" width="340" height="70" rx="6" fill="#7a4a26"/>
-        <rect x="72" y="132" width="316" height="46" rx="4" fill="#9a6235"/>
-        <path d="M44 112 Q230 92 416 112" stroke="url(#sk)" stroke-width="12" fill="none" stroke-linecap="round"/>
-        <ellipse cx="230" cy="122" rx="150" ry="9" fill="#2a2119" opacity=".85"/>
-        <ellipse cx="230" cy="122" rx="150" ry="9" fill="none" stroke="#b5762f" stroke-width="2" stroke-dasharray="5 5"/>
-        <rect x="320" y="190" width="10" height="38" fill="#2a2119"/>
-        <rect x="306" y="226" width="38" height="16" rx="4" fill="#b5762f"/>
-        <g font-family="Work Sans, sans-serif" font-size="14" fill="#2a2119">
-          <text x="44" y="70">hide</text><path d="M66 76 L84 104" stroke="#2a2119"/>
-          <text x="250" y="60">air tube</text><path d="M268 66 L250 114" stroke="#2a2119"/>
-          <text x="96" y="230">frame</text><path d="M116 214 L130 186" stroke="#2a2119"/>
-          <text x="356" y="262">valve</text><path d="M354 254 L340 240" stroke="#2a2119"/>
-        </g>
-        <g fill="#b5762f" font-family="Work Sans, sans-serif" font-size="13" font-weight="600">
-          <text x="18" y="28">↑ more air = higher pitch</text>
-          <text x="18" y="290">↓ less air = lower pitch</text>
-        </g>
-      </svg>
+    <div class="diagram zdj-strojenie">
+      <figure class="zs-duze"><img src="../img/strojenie-beben.jpg" alt="Bęben szamański oparty o drzewo w lesie" loading="lazy" width="900" height="1396"><figcaption>Shaman drum with an air tube inside</figcaption></figure>
+      <figure><img src="../img/strojenie-wentyl.jpg" alt="Wentyl do pompowania dętki w korpusie bębna" loading="lazy" width="900" height="1031"><figcaption>Valve in the frame – this is where you pump</figcaption></figure>
+      <figure><img src="../img/strojenie-detka.jpg" alt="Krawędź bębna: dętka między korpusem a skórą" loading="lazy" width="900" height="1429"><figcaption>Air tube between the frame and the hide</figcaption></figure>
     </div>
   </div>
   <div class="wrap film-strojenie" id="film-strojenie">
@@ -1069,7 +1058,7 @@ document.querySelectorAll('.gallery a').forEach(a=>a.addEventListener('click',e=
 }));
 document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.nav ul').classList.remove('open')));
 </script>
-<script src="../i18n.js?v=b4ee9cb4"></script>
+<script src="../i18n.js?v=8ca367eb"></script>
 <script src="../config.js?v=a4c1b98b"></script>
 <script src="../produkty.js?v=61ce6f04"></script>
 <script src="../zapytania.js?v=a354f4ea"></script>
