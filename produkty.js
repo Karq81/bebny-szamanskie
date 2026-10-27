@@ -76,9 +76,12 @@
   // Napis „Zarezerwowany” na samym zdjęciu (karta i okienko szczegółów).
   const napisRez = (p) => p.status === 'zarezerwowany' ? '<span class="rez-stamp" aria-hidden="true">' + T('Zarezerwowany') + '</span>' : '';
 
-  // „Nowość” – przez 2 tygodnie od dodania bębna (data dodania jest w bazie: created_at)
-  const NOWOSC_DNI = 14;
-  const nowosc = (p) => p.status === 'dostepny' && p.created_at && (Date.now() - new Date(p.created_at).getTime()) < NOWOSC_DNI * 864e5;
+  // „Nowość” – przez wybrany czas od dodania bębna (data dodania jest w bazie: created_at)
+  // Paweł wybiera liczbę tygodni (0–5) przy każdym bębnie w panelu; bez wyboru (albo gdy baza nie ma jeszcze tej kolumny) – 2 tygodnie
+  const nowosc = (p) => {
+    const tyg = p.nowosc_tygodnie == null ? 2 : p.nowosc_tygodnie;
+    return p.status === 'dostepny' && p.created_at && tyg > 0 && (Date.now() - new Date(p.created_at).getTime()) < tyg * 7 * 864e5;
+  };
 
   function badge(p) {
     if (p.status === 'zarezerwowany') return '';

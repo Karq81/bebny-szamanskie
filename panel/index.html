@@ -603,6 +603,17 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 </fieldset>
 </details>
         <label class="check"><input type="checkbox" id="f-widoczny" checked> Pokazuj na stronie</label>
+        <label id="f-nowosc-pole">Plakietka „Nowość” na bębnie
+          <select id="f-nowosc">
+            <option value="0">Bez plakietki</option>
+            <option value="1">przez 1 tydzień</option>
+            <option value="2" selected>przez 2 tygodnie (zalecane)</option>
+            <option value="3">przez 3 tygodnie</option>
+            <option value="4">przez 4 tygodnie</option>
+            <option value="5">przez 5 tygodni</option>
+          </select>
+          <span class="hint">Liczone od dnia dodania bębna. Potem plakietka znika sama.</span>
+        </label>
       </div>
 
       <div class="form-actions">
@@ -967,6 +978,8 @@ function otworzEdycje(p) {
   wpiszTlum('f', p);
   $('f-film').value = p?.film || '';
   $('f-widoczny').checked = p ? p.widoczny : true;
+  $('f-nowosc-pole').hidden = !produkty.some((r) => 'nowosc_tygodnie' in r);
+  $('f-nowosc').value = String(p && p.nowosc_tygodnie != null ? Math.min(p.nowosc_tygodnie, 5) : 2);
   $('usun').hidden = !p;
   $('usun').classList.remove('armed'); $('usun').textContent = 'Usuń bęben';
   omnibus(); podgladYt('f-film', 'f-film-podglad'); rysujZdjecia();
@@ -1084,6 +1097,7 @@ $('edycja').addEventListener('submit', async (e) => {
     cechy: $('f-cechy').value.trim(),
     opis: $('f-opis').value.trim(),
     ...zbierzTlum('f', produkty),
+    ...(produkty.some((r) => 'nowosc_tygodnie' in r) ? { nowosc_tygodnie: +$('f-nowosc').value } : {}),
     film: $('f-film').value.trim(),
     zdjecia,
     widoczny: $('f-widoczny').checked
