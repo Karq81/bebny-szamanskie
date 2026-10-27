@@ -635,6 +635,18 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <button type="button" id="wyloguj-2"><span class="ico">🚪</span>Wyloguj</button>
 </div>
 
+<div class="wiecej-tlo" id="udost-tlo" hidden></div>
+<div class="wiecej" id="udost" hidden role="dialog" aria-label="Udostępnij bęben">
+  <p id="udost-tytul" style="margin:0 6px 6px;font-weight:600"></p>
+  <button type="button" id="ud-system"><span class="ico">📲</span>Udostępnij… (Facebook, Instagram, Messenger, WhatsApp)</button>
+  <button type="button" id="ud-fb"><span class="ico">📘</span>Facebook – nowy post z linkiem</button>
+  <button type="button" id="ud-msg"><span class="ico">💬</span>Messenger</button>
+  <button type="button" id="ud-wa"><span class="ico">🟢</span>WhatsApp</button>
+  <button type="button" id="ud-tekst"><span class="ico">📋</span>Skopiuj gotowy tekst posta</button>
+  <button type="button" id="ud-link"><span class="ico">🔗</span>Skopiuj sam link</button>
+  <p class="hint" style="margin:6px 8px 0">Instagram nie pozwala wkleić linku do posta – użyj pierwszego przycisku albo skopiuj tekst i dodaj zdjęcie z galerii.</p>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script src="../config.js"></script>
@@ -746,7 +758,7 @@ function zakladka(nazwa) {
   document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === nazwa));
   const wDolnym = ['pulpit', 'lista', 'zapytania', 'skory'].includes(nazwa) ? nazwa : 'wiecej';
   document.querySelectorAll('#dolny button').forEach((x) => x.classList.toggle('on', x.dataset.tab === wDolnym));
-  pokazWiecej(false);
+  pokazWiecej(false); pokazUdost(false);
   ZAKLADKI.forEach((z) => $('tab-' + z).hidden = z !== nazwa);
   scrollTo(0, 0);
   $('edycja').hidden = true;
@@ -802,6 +814,69 @@ $('zmiany-form').addEventListener('submit', async (e) => {
   wczytajZmiany();
 });
 
+
+// ---------- udostępnianie bębna (Facebook, Messenger, WhatsApp…) ----------
+const ADRES_STRONY = 'https://bebny-szamanskie.pl/';
+let udostBeben = null;
+const linkBebna = (p) => ADRES_STRONY + '#b=' + p.id;
+function tekstPostu(p) {
+  const cechy = String(p.cechy || '').split('\n').map((c) => c.trim()).filter(Boolean).slice(0, 4);
+  const cena = p.cena != null ? ' – ' + Number(p.cena).toLocaleString('pl-PL') + ' zł' : '';
+  const stan = p.status === 'zarezerwowany' ? '\n(zarezerwowany)' : p.status === 'sprzedany' ? '\n(sprzedany)' : '';
+  return '🥁 ' + p.nazwa + cena + stan + (cechy.length ? '\n\n' + cechy.map((c) => '• ' + c).join('\n') : '') +
+    '\n\nRęcznie robione w mojej pracowni. Szczegóły i zdjęcia:\n' + linkBebna(p);
+}
+async function kopiuj(tekst) {
+  try { await navigator.clipboard.writeText(tekst); return true; }
+  catch (e) {
+    const t = document.createElement('textarea'); t.value = tekst; t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {}
+    t.remove(); return ok;
+  }
+}
+function pokazUdost(tak) { $('udost').hidden = $('udost-tlo').hidden = !tak; }
+function otworzUdost(p) {
+  udostBeben = p;
+  $('udost-tytul').textContent = 'Udostępnij: ' + p.nazwa;
+  $('ud-system').hidden = !navigator.share;
+  $('ud-msg').hidden = !/Android|iPhone|iPad/i.test(navigator.userAgent);
+  pokazUdost(true);
+}
+$('udost-tlo').addEventListener('click', () => pokazUdost(false));
+$('ud-system').addEventListener('click', async () => {
+  const p = udostBeben; if (!p) return;
+  try { await navigator.share({ title: p.nazwa, text: tekstPostu(p).replace(linkBebna(p), '').trim(), url: linkBebna(p) }); pokazUdost(false); }
+  catch (e) { /* anulowane */ }
+});
+$('ud-fb').addEventListener('click', async () => {
+  const p = udostBeben; if (!p) return;
+  const ok = await kopiuj(tekstPostu(p));
+  toast(ok ? 'Tekst skopiowany – wklej go w poście na Facebooku' : 'Wklej link do posta ręcznie');
+  window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(linkBebna(p)), '_blank', 'noopener');
+  pokazUdost(false);
+});
+$('ud-msg').addEventListener('click', () => {
+  const p = udostBeben; if (!p) return;
+  location.href = 'fb-messenger://share/?link=' + encodeURIComponent(linkBebna(p));
+  pokazUdost(false);
+});
+$('ud-wa').addEventListener('click', () => {
+  const p = udostBeben; if (!p) return;
+  window.open('https://wa.me/?text=' + encodeURIComponent(tekstPostu(p)), '_blank', 'noopener');
+  pokazUdost(false);
+});
+$('ud-tekst').addEventListener('click', async () => {
+  const p = udostBeben; if (!p) return;
+  toast((await kopiuj(tekstPostu(p))) ? 'Tekst posta skopiowany' : 'Nie udało się skopiować', false);
+  pokazUdost(false);
+});
+$('ud-link').addEventListener('click', async () => {
+  const p = udostBeben; if (!p) return;
+  toast((await kopiuj(linkBebna(p))) ? 'Link skopiowany' : 'Nie udało się skopiować', false);
+  pokazUdost(false);
+});
+
 // ---------- lista ----------
 async function wczytaj() {
   const { data, error } = await sb.from('produkty').select('*').order('kolejnosc').order('created_at', { ascending: false });
@@ -830,6 +905,7 @@ function rysujListe() {
         (p.status === 'dostepny' ? '<button class="btn btn-ok btn-sm" type="button" data-akcja="rezerwuj" data-i="' + i + '">Zarezerwuj</button>' : '') +
         (p.status === 'zarezerwowany' ? '<button class="btn btn-light btn-sm" type="button" data-akcja="zwolnij" data-i="' + i + '">Zdejmij rezerwację</button>' : '') +
         (p.status === 'dostepny' || p.status === 'zarezerwowany' ? '<button class="btn btn-light btn-sm" type="button" data-akcja="sprzedany" data-i="' + i + '">Sprzedany</button>' : '') +
+        (p.widoczny ? '<button class="btn btn-light btn-sm" type="button" data-akcja="udostepnij" data-i="' + i + '">📤 Udostępnij</button>' : '') +
         '<button class="btn btn-dark" type="button" data-akcja="edytuj" data-i="' + i + '">Edytuj</button>' +
         '<button class="btn btn-danger btn-sm" type="button" data-akcja="usun" data-i="' + i + '">Usuń</button>' +
       '</div></div>').join('');
@@ -838,6 +914,7 @@ function rysujListe() {
 $('lista').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-akcja]'); if (!b) return;
   const i = +b.dataset.i;
+  if (b.dataset.akcja === 'udostepnij') return otworzUdost(produkty[i]);
   if (b.dataset.akcja === 'edytuj') return otworzEdycje(produkty[i]);
   if (b.dataset.akcja === 'rezerwuj') return zmienStatus(produkty[i], 'zarezerwowany');
   if (b.dataset.akcja === 'zwolnij') return zmienStatus(produkty[i], 'dostepny');
@@ -1016,13 +1093,15 @@ $('edycja').addEventListener('submit', async (e) => {
   const btn = $('zapisz'); btn.disabled = true;
   let res;
   if (edytowany) res = await sb.from('produkty').update(dane).eq('id', edytowany.id);
-  else res = await sb.from('produkty').insert({ ...dane, kolejnosc: 0 });
+  else res = await sb.from('produkty').insert({ ...dane, kolejnosc: 0 }).select('id').single();
   btn.disabled = false;
   if (res.error) return toast('Nie udało się zapisać: ' + res.error.message, true);
   const pliki = doUsuniecia.map(sciezkaWBazie).filter(Boolean);
   if (pliki.length) sb.storage.from(BUCKET).remove(pliki);
   toast('Zapisane – bęben jest już na stronie' + (dane.widoczny ? '' : ' (ukryty)'));
   zamknijEdycje(); wczytaj();
+  // nowy, widoczny bęben: od razu propozycja udostępnienia (Facebook, WhatsApp…)
+  if (!edytowany && dane.widoczny && res.data && res.data.id) setTimeout(() => otworzUdost({ ...dane, id: res.data.id }), 400);
 });
 
 $('usun').addEventListener('click', async () => {

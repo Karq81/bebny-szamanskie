@@ -150,12 +150,23 @@
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
     modal.querySelector('.pm-close').focus();
+    // własny adres bębna (do wklejenia na Facebooku, w Messengerze itd.): strona#b=<id>
+    try { history.replaceState(null, '', location.pathname + location.search + '#b=' + p.id); } catch (e) {}
   }
 
   function zamknij() {
     modal.hidden = true;
     modal.querySelector('.pm-body').innerHTML = '';
     document.body.style.overflow = '';
+    if (/^#b=/.test(location.hash)) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+  }
+
+  // wejście z linku #b=<id> otwiera od razu okienko tego bębna
+  function otworzZLinku() {
+    const m = /^#b=([\w-]+)$/.exec(location.hash);
+    if (!m) return;
+    const p = produkty.find((x) => String(x.id) === m[1]);
+    if (p) otworz(p);
   }
 
   modal.addEventListener('click', (e) => {
@@ -179,6 +190,8 @@
       const b = e.target.closest('[data-produkt]');
       if (b) otworz(produkty[+b.dataset.produkt]);
     });
+    otworzZLinku();
+    addEventListener('hashchange', () => { if (modal.hidden) otworzZLinku(); });
   }).catch(() => { /* zostają karty z HTML */ });
 
   api('ustawienia?select=klucz,wartosc&klucz=eq.film_strojenie').then((rows) => {
