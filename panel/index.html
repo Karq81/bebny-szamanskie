@@ -649,13 +649,13 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
 <div class="wiecej-tlo" id="udost-tlo" hidden></div>
 <div class="wiecej" id="udost" hidden role="dialog" aria-label="Udostępnij bęben">
   <p id="udost-tytul" style="margin:0 6px 6px;font-weight:600"></p>
-  <button type="button" id="ud-system"><span class="ico">📲</span>Udostępnij… (Facebook, Instagram, Messenger, WhatsApp)</button>
+  <button type="button" id="ud-system"><span class="ico">📲</span>Udostępnij ze zdjęciami (Facebook, Instagram, Messenger, WhatsApp)</button>
   <button type="button" id="ud-fb"><span class="ico">📘</span>Facebook – nowy post z linkiem</button>
   <button type="button" id="ud-msg"><span class="ico">💬</span>Messenger</button>
   <button type="button" id="ud-wa"><span class="ico">🟢</span>WhatsApp</button>
   <button type="button" id="ud-tekst"><span class="ico">📋</span>Skopiuj gotowy tekst posta</button>
   <button type="button" id="ud-link"><span class="ico">🔗</span>Skopiuj sam link</button>
-  <p class="hint" style="margin:6px 8px 0">Instagram nie pozwala wkleić linku do posta – użyj pierwszego przycisku albo skopiuj tekst i dodaj zdjęcie z galerii.</p>
+  <p class="hint" style="margin:6px 8px 0">Pierwszy przycisk wysyła zdjęcia bębna od razu do wybranej aplikacji. Facebook i Instagram nie pozwalają wpisać tekstu za Ciebie – tekst posta jest już skopiowany, w poście przytrzymaj pole i wybierz „Wklej”.</p>
 </div>
 
 <div class="toast" id="toast" hidden></div>
@@ -851,14 +851,39 @@ function otworzUdost(p) {
   udostBeben = p;
   $('udost-tytul').textContent = 'Udostępnij: ' + p.nazwa;
   $('ud-system').hidden = !navigator.share;
+  udostPliki = navigator.share ? plikiZdjec(p) : Promise.resolve([]);
   $('ud-msg').hidden = !/Android|iPhone|iPad/i.test(navigator.userAgent);
   pokazUdost(true);
 }
 $('udost-tlo').addEventListener('click', () => pokazUdost(false));
+// zdjęcia bębna jako pliki – telefon przekaże je od razu do Facebooka/Instagrama/WhatsAppa.
+// Pobieramy je już przy otwarciu okienka, bo telefon pozwala udostępnić tylko chwilę po dotknięciu przycisku.
+let udostPliki = Promise.resolve([]);
+async function plikiZdjec(p) {
+  const pliki = [];
+  for (const [k, u] of (p.zdjecia || []).slice(0, 6).entries()) {
+    try {
+      const r = await fetch(u); if (!r.ok) continue;
+      const blob = await r.blob();
+      const typ = blob.type && blob.type.startsWith('image/') ? blob.type : 'image/jpeg';
+      pliki.push(new File([blob], 'beben-' + (k + 1) + '.' + (typ === 'image/png' ? 'png' : typ === 'image/webp' ? 'webp' : 'jpg'), { type: typ }));
+    } catch (e) { /* to zdjęcie pomijamy */ }
+  }
+  return pliki;
+}
 $('ud-system').addEventListener('click', async () => {
   const p = udostBeben; if (!p) return;
-  try { await navigator.share({ title: p.nazwa, text: tekstPostu(p).replace(linkBebna(p), '').trim(), url: linkBebna(p) }); pokazUdost(false); }
-  catch (e) { /* anulowane */ }
+  const tekst = tekstPostu(p);
+  // Facebook i Instagram nie pozwalają wstawić tekstu za użytkownika – tekst czeka w schowku do wklejenia
+  const skopiowany = await kopiuj(tekst);
+  const pliki = await udostPliki;
+  const zPlikami = pliki.length > 0 && !!navigator.canShare && navigator.canShare({ files: pliki });
+  try {
+    await navigator.share(zPlikami ? { files: pliki, title: p.nazwa, text: tekst }
+      : { title: p.nazwa, text: tekst.replace(linkBebna(p), '').trim(), url: linkBebna(p) });
+    pokazUdost(false);
+    if (skopiowany) toast('Tekst posta jest skopiowany – w Facebooku przytrzymaj pole tekstu i wybierz „Wklej”');
+  } catch (e) { /* anulowane */ }
 });
 $('ud-fb').addEventListener('click', async () => {
   const p = udostBeben; if (!p) return;
