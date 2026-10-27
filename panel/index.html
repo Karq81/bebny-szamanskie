@@ -1271,6 +1271,10 @@ function rysujZapytania() {
       '<div class="zap-head"><strong>' + esc(z.imie) + '</strong>' +
         '<div class="zap-meta"><span class="chip ' + (z.rodzaj === 'kupno' || z.rodzaj === 'zamowienie' ? 'kupno' : '') + '">' + RODZAJ[z.rodzaj] + '</span>' +
         '<span class="chip ' + z.status + '">' + STATUS_ZAP[z.status] + '</span><span>' + data + '</span></div></div>' +
+      (sledzenieZap() ? '<div class="zap-meta zap-slad">' +
+        (z.przeczytane_at ? '<span>👁 przeczytane ' + kiedy(z.przeczytane_at) + '</span>' : '<span class="chip nowe">Nieprzeczytane</span>') +
+        (z.kontakt_at ? '<span>✅ kontakt: ' + esc(JAK_KONTAKT[z.kontakt_jak] || z.kontakt_jak) + ' ' + kiedy(z.kontakt_at) + '</span>' : '') +
+      '</div>' : '') +
       (z.produkt_nazwa ? '<div class="zap-meta"><span class="zap-produkt">🥁 ' + esc(z.produkt_nazwa) + '</span>' +
         (p ? '<span class="chip ' + p.status + '">' + STATUS[p.status] + '</span>' : '<span>(bęben usunięty z listy)</span>') + '</div>' : '') +
       (z.rodzaj === 'zamowienie' ? '<div class="zap-meta"><span class="zap-produkt">🥁 Bęben na zamówienie</span>' +
@@ -1286,7 +1290,50 @@ function rysujZapytania() {
       '</div>' +
       '<div class="zap-akcje">' + akcje.join('') + '</div></div>';
   }).join('');
+  obserwujPrzeczytane();
 }
+
+// ---------- „przeczytane” i „kontakt” przy zapytaniach ----------
+// Zapytanie liczy się jako przeczytane, gdy jego karta była widoczna na ekranie w zakładce „Zapytania” przez ok. 1,5 s.
+// Kliknięcie WhatsApp / telefon / e-mail przy zapytaniu zapisuje, że Paweł się odezwał (i jak).
+const JAK_KONTAKT = { whatsapp: 'WhatsApp', telefon: 'telefon', email: 'e-mail' };
+const sledzenieZap = () => zapytania.some((z) => 'przeczytane_at' in z);
+const kiedy = (d) => new Date(d).toLocaleString('pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+let okoZap = null;
+const czekaZap = new Map();
+async function oznaczZap(id, zmiany) {
+  const z = zapytania.find((x) => x.id === id); if (!z) return;
+  const { error } = await sb.from('zapytania').update(zmiany).eq('id', id);
+  if (!error) { Object.assign(z, zmiany); rysujZapytania(); }
+}
+function obserwujPrzeczytane() {
+  if (okoZap) okoZap.disconnect();
+  czekaZap.forEach(clearTimeout); czekaZap.clear();
+  if (!sledzenieZap() || !('IntersectionObserver' in window)) return;
+  okoZap = new IntersectionObserver((wpisy) => wpisy.forEach((w) => {
+    const id = w.target.dataset.id;
+    if (w.isIntersecting && !$('tab-zapytania').hidden && document.visibilityState === 'visible') {
+      if (!czekaZap.has(id)) czekaZap.set(id, setTimeout(() => {
+        czekaZap.delete(id);
+        const z = zapytania.find((x) => x.id === id);
+        if (z && !z.przeczytane_at && !$('tab-zapytania').hidden) oznaczZap(id, { przeczytane_at: new Date().toISOString() });
+      }, 1500));
+    } else if (czekaZap.has(id)) { clearTimeout(czekaZap.get(id)); czekaZap.delete(id); }
+  }), { threshold: 0.6 });
+  zapytania.filter((z) => !z.przeczytane_at).forEach((z) => {
+    const el = document.querySelector('#zapytania .zap[data-id="' + z.id + '"]');
+    if (el) okoZap.observe(el);
+  });
+}
+$('zapytania').addEventListener('click', (e) => {
+  const a = e.target.closest('.zap-kontakt a'); if (!a || !sledzenieZap()) return;
+  const id = a.closest('.zap').dataset.id;
+  const jak = a.classList.contains('wa') ? 'whatsapp' : a.href.startsWith('tel:') ? 'telefon' : 'email';
+  const z = zapytania.find((x) => x.id === id); if (!z) return;
+  const teraz = new Date().toISOString();
+  // link otwiera się normalnie (WhatsApp, telefon, poczta) – zapis idzie w tle
+  oznaczZap(id, { kontakt_at: teraz, kontakt_jak: jak, ...(z.przeczytane_at ? {} : { przeczytane_at: teraz }) });
+});
 
 $('usun-stare').addEventListener('click', async () => {
   const b = $('usun-stare');
