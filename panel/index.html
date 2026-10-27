@@ -274,7 +274,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
       <button type="button" data-tab="korpusy">Korpusy</button>
       <button type="button" data-tab="zapytania">Zapytania<span class="licznik" id="licznik-zapytan" hidden></span></button>
       <button type="button" data-tab="omnie">O mnie</button>
-      <button type="button" data-tab="filmy">Filmy na stronie</button>
+      <button type="button" data-tab="filmy">Filmy i muzyka</button>
       <button type="button" data-tab="zmiany">Co zmienić</button>
       <button type="button" data-tab="powiadomienia">Powiadomienia</button>
       <button type="button" data-tab="statystyki">Statystyki</button>
@@ -531,6 +531,17 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
           <button class="btn btn-primary" type="submit">Zapisz</button>
         </div>
       </form>
+
+      <form class="card form" id="tlo-form" style="margin-top:22px">
+        <h2>Muzyka w tle</h2>
+        <p class="hint" style="font-size:15px">Cicha muzyka, która gra na stronie (klient może ją wyciszyć głośniczkiem w rogu). Wklej jeden albo kilka linków z YouTube – utworów, playlisty albo kanału. Grają po kolei, a po ostatnim znowu od pierwszego. Bez linków gra kanał zespołu WADADA.</p>
+        <label class="check"><input type="checkbox" id="tlo-wlaczona" checked> Muzyka w tle włączona</label>
+        <div class="items" id="tlo-lista"></div>
+        <div class="film-row">
+          <button class="btn btn-light" type="button" id="tlo-dodaj">+ Dodaj utwór</button>
+          <button class="btn btn-primary" type="submit">Zapisz</button>
+        </div>
+      </form>
     </section>
 
     <!-- Edycja bębna -->
@@ -639,7 +650,7 @@ legend{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:6px}
   <button type="button" data-tab="korpusy"><span class="ico">🪵</span>Korpusy</button>
   <button type="button" data-tab="statystyki"><span class="ico">📊</span>Odwiedziny strony</button>
   <button type="button" data-tab="omnie"><span class="ico">✍️</span>O mnie</button>
-  <button type="button" data-tab="filmy"><span class="ico">▶️</span>Filmy na stronie</button>
+  <button type="button" data-tab="filmy"><span class="ico">▶️</span>Filmy i muzyka w tle</button>
   <button type="button" data-tab="zmiany"><span class="ico">📝</span>Co zmienić na stronie</button>
   <button type="button" data-tab="powiadomienia"><span class="ico">🔔</span>Powiadomienia</button>
   <a href="../" target="_blank" rel="noopener"><span class="ico">🌐</span>Zobacz stronę</a>
@@ -789,7 +800,7 @@ document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('cli
 async function start() {
   pokaz('panel');
   // zapytania po bębnach – przy zapytaniu widać aktualny status bębna
-  await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajPowiadomienia(), wczytajOMnie(), wczytajMuzykow()]);
+  await Promise.all([Promise.all([wczytaj(), wczytajSkory(), wczytajKorpusy()]).then(wczytajZapytania), wczytajFilmy(), wczytajTlo(), wczytajPowiadomienia(), wczytajOMnie(), wczytajMuzykow()]);
   // skróty z ikonki aplikacji: ?akcja=nowy (nowy bęben), #zapytania itd.
   const cel = location.hash.slice(1);
   if (new URLSearchParams(location.search).get('akcja') === 'nowy') otworzEdycje(null);
@@ -1763,6 +1774,59 @@ $('muzycy-form').addEventListener('submit', async (e) => {
   if (error) return toast('Nie udało się zapisać: ' + error.message, true);
   muzycy = lista; rysujMuzykow();
   toast(lista.length ? 'Zapisane – filmy są już na stronie' : 'Zapisane – sekcja z filmami jest ukryta');
+});
+
+// ---------- muzyka w tle (klucz muzyka_tlo: {wlaczona, linki}) ----------
+let tlo = { wlaczona: true, linki: [] };
+async function wczytajTlo() {
+  const { data } = await sb.from('ustawienia').select('wartosc').eq('klucz', 'muzyka_tlo').maybeSingle();
+  try { tlo = Object.assign({ wlaczona: true, linki: [] }, JSON.parse(data?.wartosc || '{}')); } catch (e) { tlo = { wlaczona: true, linki: [] }; }
+  rysujTlo();
+}
+function rysujTlo() {
+  $('tlo-wlaczona').checked = tlo.wlaczona !== false;
+  const el = $('tlo-lista');
+  if (!tlo.linki.length) { el.innerHTML = '<div class="empty" style="padding:16px">Brak linków – gra kanał zespołu WADADA. Kliknij „+ Dodaj utwór”, żeby ustawić własną muzykę.</div>'; return; }
+  el.innerHTML = tlo.linki.map((u, i) =>
+    '<div class="muzyk" data-i="' + i + '">' +
+      '<div class="mini">' + ytMini(u) + '</div>' +
+      '<div class="muzyk-pola">' +
+        '<input type="url" data-tlo="url" value="' + esc(u) + '" placeholder="Link z YouTube: utwór, playlista albo kanał">' +
+        '<div class="muzyk-akcje">' +
+          '<span class="hint" style="margin-right:auto">' + (i + 1) + '. w kolejce</span>' +
+          '<button class="icon" type="button" data-t="gora" aria-label="Wyżej"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+          '<button class="icon" type="button" data-t="dol" aria-label="Niżej"' + (i === tlo.linki.length - 1 ? ' disabled' : '') + '>↓</button>' +
+          '<button class="btn btn-danger btn-sm" type="button" data-t="usun">Usuń</button>' +
+        '</div></div></div>').join('');
+}
+$('tlo-lista').addEventListener('input', (e) => {
+  if (e.target.dataset.tlo !== 'url') return;
+  const i = +e.target.closest('[data-i]').dataset.i;
+  tlo.linki[i] = e.target.value;
+  e.target.closest('.muzyk').querySelector('.mini').innerHTML = ytMini(e.target.value.trim());
+});
+$('tlo-lista').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-t]'); if (!b) return;
+  const i = +b.closest('[data-i]').dataset.i;
+  if (b.dataset.t === 'usun') tlo.linki.splice(i, 1);
+  else { const j = b.dataset.t === 'gora' ? i - 1 : i + 1; [tlo.linki[i], tlo.linki[j]] = [tlo.linki[j], tlo.linki[i]]; }
+  rysujTlo(); toast('Pamiętaj kliknąć „Zapisz”');
+});
+$('tlo-wlaczona').addEventListener('change', () => { tlo.wlaczona = $('tlo-wlaczona').checked; });
+$('tlo-dodaj').addEventListener('click', () => {
+  tlo.linki.push(''); rysujTlo();
+  $('tlo-lista').lastElementChild.querySelector('input').focus();
+});
+$('tlo-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const linki = tlo.linki.map((u) => String(u).trim()).filter(Boolean);
+  const zly = linki.find((u) => !ytOk(u));
+  if (zly) return toast('Tego linku nie da się odtworzyć: ' + zly + ' – wklej link do utworu, playlisty albo kanału (youtube.com/channel/UC…)', true);
+  const wartosc = JSON.stringify({ wlaczona: $('tlo-wlaczona').checked, linki });
+  const { error } = await sb.from('ustawienia').upsert({ klucz: 'muzyka_tlo', wartosc });
+  if (error) return toast('Nie udało się zapisać: ' + error.message, true);
+  tlo = { wlaczona: $('tlo-wlaczona').checked, linki }; rysujTlo();
+  toast(!tlo.wlaczona ? 'Zapisane – muzyka w tle wyłączona' : linki.length ? 'Zapisane – na stronie gra Twoja muzyka (' + linki.length + ')' : 'Zapisane – gra kanał zespołu WADADA');
 });
 // ---------- statystyki odwiedzin ----------
 async function wczytajStatystyki() {
