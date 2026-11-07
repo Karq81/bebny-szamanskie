@@ -13,10 +13,11 @@ def isf(d): return any(a<=d<=b for _,a,b in ferien)
 def month(m):
     n=calendar.monthrange(Y,m)[1]
     days=[dt.date(Y,m,d) for d in range(1,32) if d<=n]
-    def cls(d): return "red" if d.weekday()>=5 or (d.month,d.day) in hol else ("fer" if isf(d) else "")
+    def cls(d): return "red" if d.weekday()>=5 or (d.month,d.day) in hol else ""
+    def dcls(d): return cls(d) or ("fer" if isf(d) else "")
     h=f'<table class="m"><colgroup><col class="nc">'+'<col>'*31+'</colgroup>'
     h+=f'<tr class="t"><th class="name"></th><th colspan="31">{months[m-1]} {Y}</th></tr>'
-    h+='<tr class="dn"><th class="name">Name</th>'+''.join(f'<td class="{cls(d)}">{d.day}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
+    h+='<tr class="dn"><th class="name">Name</th>'+''.join(f'<td class="{dcls(d)}">{d.day}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
     h+='<tr class="wd"><th class="name"></th>'+''.join(f'<td class="{cls(d)}">{wd[d.weekday()]}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
     for nm in names+[""]*blank:
         h+=f'<tr class="p"><th class="name">{nm}</th>'+''.join(f'<td class="{cls(d)}"></td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
@@ -55,6 +56,6 @@ td.x{{background:#bbb}}
 <div><h3>Schulferien {Y} (Schleswig-Holstein)</h3><table>{ferrows}</table></div>
 <div class="leg"><h3>Legende</h3>
 <div><span class="sw" style="background:#d2143a"></span>Wochenende / Feiertag</div>
-<div><span class="sw" style="background:#ffe55c"></span>Schulferien Schleswig-Holstein</div></div>
+<div><span class="sw" style="background:#ffe55c"></span>Schulferien Schleswig-Holstein (Datum gelb)</div></div>
 </div></body></html>'''
 open("urlaubsplan_2027_A0.html","w").write(html)
