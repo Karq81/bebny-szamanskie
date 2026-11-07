@@ -12,12 +12,12 @@ N_RIBS   = 40    # liczba pionowych żeberek
 RIB_R    = 1.6   # promień żeberka
 WIN_W    = 54    # szerokość okienka (cięciwa)
 WIN_Z0   = 14    # dół okienka od podłoża
-WIN_Z1   = H-36  # góra okienka (nad nim pole na napis)
+WIN_Z1   = None  # góra okienka (auto: H-14, z napisem H-36)
 WIN_RAD  = 8     # zaokrąglenie rogów okienka
 CLEAR    = 0.3   # luz pokrywki
 LID_T    = 3     # grubość pokrywki
 LIP_H    = 6     # wysokość kołnierza pokrywki
-TEXT     = "Maya" # napis na froncie ("" = bez napisu)
+TEXT     = ""     # napis na froncie ("" = bez napisu)
 FONT     = "Pacifico.ttf"
 TEXT_W   = 58    # max szerokość napisu
 TEXT_H   = 23    # max wysokość napisu
@@ -25,6 +25,7 @@ TEXT_Z   = H-19  # środek napisu (wysokość)
 TEXT_UP  = 1.2   # o ile napis wystaje ponad żeberka
 
 R_OUT = R_IN + WALL
+if WIN_Z1 is None: WIN_Z1 = H-36 if TEXT else H-14
 def cyl(h, r, z=0): return Manifold.cylinder(h, r, r).translate((0,0,z))
 
 def rounded_rect(w, h, r):

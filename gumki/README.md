@@ -1,8 +1,8 @@
 # Pojemnik na gumki do włosów (druk 3D)
 
-Okrągły pojemnik z żeberkami, okienkiem z przodu (widać gumki), wypukłym napisem **Maya** nad okienkiem i nakładaną pokrywką.
+Okrągły pojemnik z żeberkami, okienkiem z przodu (widać gumki) i nakładaną pokrywką.
 
-Napis zmienisz w `gumki.py` (`TEXT = "..."`) albo w `gumki.scad` (`TEXT="..."`). Czcionka: Pacifico (licencja SIL OFL) – plik `Pacifico.ttf`.
+Opcjonalnie można dodać wypukły napis nad okienkiem: w `gumki.py` ustaw `TEXT = "Maya"`, w `gumki.scad` `TEXT_ON=true; TEXT="Maya";`. Czcionka: Pacifico (licencja SIL OFL) – plik `Pacifico.ttf`.
 
 | Plik | Opis |
 |---|---|
