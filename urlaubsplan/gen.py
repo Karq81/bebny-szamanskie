@@ -13,10 +13,10 @@ def isf(d): return any(a<=d<=b for _,a,b in ferien)
 def month(m):
     n=calendar.monthrange(Y,m)[1]
     days=[dt.date(Y,m,d) for d in range(1,32) if d<=n]
-    def cls(d): return "red" if d.weekday()>=5 or (d.month,d.day) in hol else ""
+    def cls(d): return "red" if d.weekday()>=5 or (d.month,d.day) in hol else ("fer" if isf(d) else "")
     h=f'<table class="m"><colgroup><col class="nc">'+'<col>'*31+'</colgroup>'
     h+=f'<tr class="t"><th class="name"></th><th colspan="31">{months[m-1]} {Y}</th></tr>'
-    h+='<tr class="dn"><th class="name">Name</th>'+''.join(f'<td class="{cls(d)}{" f" if isf(d) else ""}">{d.day}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
+    h+='<tr class="dn"><th class="name">Name</th>'+''.join(f'<td class="{cls(d)}">{d.day}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
     h+='<tr class="wd"><th class="name"></th>'+''.join(f'<td class="{cls(d)}">{wd[d.weekday()]}</td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
     for nm in names+[""]*blank:
         h+=f'<tr class="p"><th class="name">{nm}</th>'+''.join(f'<td class="{cls(d)}"></td>' for d in days)+'<td class="x"></td>'*(31-n)+'</tr>'
@@ -39,7 +39,7 @@ tr.dn td{{font-weight:bold;font-size:4mm}}
 tr.wd td{{font-weight:bold;font-size:4mm}}
 th.name{{text-align:left;padding-left:2mm;font-size:6mm;font-weight:bold}}
 .red{{background:#d2143a;color:#fff}}
-tr.dn td.f{{box-shadow:inset 0 -2.2mm 0 #f5c400}}
+.fer{{background:#ffe55c}}
 td.x{{background:#bbb}}
 .foot{{display:flex;gap:30mm;margin-top:9mm;font-size:6mm;align-items:flex-start}}
 .foot table td{{border:none;text-align:left;font-size:5.6mm;height:auto;padding:0.6mm 8mm 0.6mm 0}}
@@ -55,6 +55,6 @@ td.x{{background:#bbb}}
 <div><h3>Schulferien {Y} (Schleswig-Holstein)</h3><table>{ferrows}</table></div>
 <div class="leg"><h3>Legende</h3>
 <div><span class="sw" style="background:#d2143a"></span>Wochenende / Feiertag</div>
-<div><span class="sw" style="box-shadow:inset 0 -2.2mm 0 #f5c400"></span>Schulferien (gelber Streifen unter dem Datum)</div></div>
+<div><span class="sw" style="background:#ffe55c"></span>Schulferien Schleswig-Holstein</div></div>
 </div></body></html>'''
 open("urlaubsplan_2027_A0.html","w").write(html)
